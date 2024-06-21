@@ -12,6 +12,7 @@ Disassembly of section .text:
 [ 	]*[a-f0-9]+:	41 ff 10             	callq  \*\(%r8\)
 [ 	]*[a-f0-9]+:	ff 10                	callq  \*\(%rax\)
 [ 	]*[a-f0-9]+:	cb                   	lret   
+[ 	]*[a-f0-9]+:	48 cb                	lretq *
 [ 	]*[a-f0-9]+:	c3                   	retq   
 [ 	]*[a-f0-9]+:	cf                   	iret   
 [ 	]*[a-f0-9]+:	66 cf                	iretw  
@@ -45,6 +46,18 @@ Disassembly of section .text:
 [ 	]*[a-f0-9]+:	c7 00 00 00 00 70    	movl   \$0x70000000,\(%rax\)
 [ 	]*[a-f0-9]+:	49 c7 00 00 00 00 70 	movq   \$0x70000000,\(%r8\)
 [ 	]*[a-f0-9]+:	48 c7 00 00 00 00 70 	movq   \$0x70000000,\(%rax\)
+[ 	]*[a-f0-9]+:	0f b4 08             	lfs    \(%rax\),%ecx
+[ 	]*[a-f0-9]+:	0f b4 01             	lfs    \(%rcx\),%eax
+[ 	]*[a-f0-9]+:	66 0f b4 08          	lfs    \(%rax\),%cx
+[ 	]*[a-f0-9]+:	66 0f b4 01          	lfs    \(%rcx\),%ax
+[ 	]*[a-f0-9]+:	0f b5 11             	lgs    \(%rcx\),%edx
+[ 	]*[a-f0-9]+:	0f b5 0a             	lgs    \(%rdx\),%ecx
+[ 	]*[a-f0-9]+:	66 0f b5 11          	lgs    \(%rcx\),%dx
+[ 	]*[a-f0-9]+:	66 0f b5 0a          	lgs    \(%rdx\),%cx
+[ 	]*[a-f0-9]+:	0f b2 1a             	lss    \(%rdx\),%ebx
+[ 	]*[a-f0-9]+:	0f b2 13             	lss    \(%rbx\),%edx
+[ 	]*[a-f0-9]+:	66 0f b2 1a          	lss    \(%rdx\),%bx
+[ 	]*[a-f0-9]+:	66 0f b2 13          	lss    \(%rbx\),%dx
 [ 	]*[a-f0-9]+:	41 0f c3 00          	movnti %eax,\(%r8\)
 [ 	]*[a-f0-9]+:	0f c3 00             	movnti %eax,\(%rax\)
 [ 	]*[a-f0-9]+:	49 0f c3 00          	movnti %rax,\(%r8\)
@@ -309,6 +322,7 @@ Disassembly of section .text:
 [ 	]*[a-f0-9]+:	0f 00 08             	str    \(%rax\)
 [ 	]*[a-f0-9]+:	0f 05                	syscall 
 [ 	]*[a-f0-9]+:	0f 07                	sysret 
+[ 	]*[a-f0-9]+:	48 0f 07             	sysretq *
 [ 	]*[a-f0-9]+:	0f 01 f8             	swapgs 
 [ 	]*[a-f0-9]+:	66 68 22 22          	pushw  \$0x2222
 [ 	]*[a-f0-9]+:	f6 c9 01             	test   \$(0x)?0*1,%cl

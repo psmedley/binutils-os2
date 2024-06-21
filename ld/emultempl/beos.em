@@ -7,7 +7,7 @@ else
 fi
 fragment <<EOF
 /* This file is part of GLD, the Gnu Linker.
-   Copyright (C) 1995-2019 Free Software Foundation, Inc.
+   Copyright (C) 1995-2020 Free Software Foundation, Inc.
 
    This file is part of the GNU Binutils.
 
@@ -37,6 +37,7 @@ fragment <<EOF
 #include "sysdep.h"
 #include "bfd.h"
 #include "bfdlink.h"
+#include "ctf-api.h"
 #include "getopt.h"
 #include "libiberty.h"
 #include "filenames.h"
@@ -399,12 +400,13 @@ sort_by_file_name (const void *a, const void *b)
   asection *sb = (*rb)->section;
   int i, a_sec, b_sec;
 
-  i = filename_cmp (sa->owner->my_archive->filename,
-		    sb->owner->my_archive->filename);
+  i = filename_cmp (bfd_get_filename (sa->owner->my_archive),
+		    bfd_get_filename (sb->owner->my_archive));
   if (i != 0)
     return i;
 
-  i = filename_cmp (sa->owner->filename, sb->owner->filename);
+  i = filename_cmp (bfd_get_filename (sa->owner),
+		    bfd_get_filename (sb->owner));
   if (i != 0)
     return i;
   /* the tail idata4/5 are the only ones without relocs to an
@@ -762,6 +764,7 @@ struct ld_emulation_xfer_struct ld_${EMULATION_NAME}_emulation =
   after_parse_default,
   gld_${EMULATION_NAME}_after_open,
   after_check_relocs_default,
+  before_place_orphans_default,
   after_allocation_default,
   set_output_arch_default,
   ldemul_default_target,
@@ -782,6 +785,9 @@ struct ld_emulation_xfer_struct ld_${EMULATION_NAME}_emulation =
   NULL,	/* recognized file */
   NULL,	/* find_potential_libraries */
   NULL,	/* new_vers_pattern */
-  NULL	/* extra_map_file_text */
+  NULL,	/* extra_map_file_text */
+  ${LDEMUL_EMIT_CTF_EARLY-NULL},
+  ${LDEMUL_EXAMINE_STRTAB_FOR_CTF-NULL},
+  ${LDEMUL_PRINT_SYMBOL-NULL}
 };
 EOF

@@ -1,5 +1,5 @@
 /* BFD support for the ARM processor
-   Copyright (C) 1994-2019 Free Software Foundation, Inc.
+   Copyright (C) 1994-2020 Free Software Foundation, Inc.
    Contributed by Richard Earnshaw (rwe@pegasus.esprit.ec.org)
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -23,6 +23,7 @@
 #include "bfd.h"
 #include "libbfd.h"
 #include "libiberty.h"
+#include "cpu-arm.h"
 
 /* This routine is provided two arch_infos and works out which ARM
    machine which would be compatible with both and returns a pointer
@@ -221,7 +222,7 @@ scan (const struct bfd_arch_info *info, const char *string)
 
 #define N(number, print, default, next)  \
 {  32, 32, 8, bfd_arch_arm, number, "arm", print, 4, default, compatible, \
-   scan, bfd_arch_default_fill, next }
+    scan, bfd_arch_default_fill, next, 0 }
 
 static const bfd_arch_info_type arch_info_struct[] =
 {
@@ -299,8 +300,8 @@ bfd_arm_merge_machines (bfd *ibfd, bfd *obfd)
 	       || out == bfd_mach_arm_iWMMXt2))
     {
       /* xgettext: c-format */
-      _bfd_error_handler (_("\
-error: %pB is compiled for the EP9312, whereas %pB is compiled for XScale"),
+      _bfd_error_handler (_("error: %pB is compiled for the EP9312, "
+			    "whereas %pB is compiled for XScale"),
 			  ibfd, obfd);
       bfd_set_error (bfd_error_wrong_format);
       return FALSE;
@@ -311,8 +312,8 @@ error: %pB is compiled for the EP9312, whereas %pB is compiled for XScale"),
 	       || in == bfd_mach_arm_iWMMXt2))
     {
       /* xgettext: c-format */
-      _bfd_error_handler (_("\
-error: %pB is compiled for the EP9312, whereas %pB is compiled for XScale"),
+      _bfd_error_handler (_("error: %pB is compiled for the EP9312, "
+			    "whereas %pB is compiled for XScale"),
 			  obfd, ibfd);
       bfd_set_error (bfd_error_wrong_format);
       return FALSE;
@@ -457,8 +458,7 @@ bfd_arm_update_notes (bfd *abfd, const char *note_section)
   return TRUE;
 
  FAIL:
-  if (buffer != NULL)
-    free (buffer);
+  free (buffer);
   return FALSE;
 }
 
@@ -527,8 +527,7 @@ bfd_arm_get_mach_from_notes (bfd *abfd, const char *note_section)
       }
 
  FAIL:
-  if (buffer != NULL)
-    free (buffer);
+  free (buffer);
   return bfd_mach_arm_unknown;
 }
 

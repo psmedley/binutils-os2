@@ -1,5 +1,5 @@
 /* BFD back-end data structures for a.out (and similar) files.
-   Copyright (C) 1990-2019 Free Software Foundation, Inc.
+   Copyright (C) 1990-2020 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -326,7 +326,7 @@ enum machine_type
 # define N_SET_INFO(execp, magic, type, flags) \
 ((execp)->a_info = ((magic) & 0xffff) \
  | (((int)(type) & 0xff) << 16) \
- | (((flags) & 0xff) << 24))
+ | (((flags) & 0xffu) << 24))
 #endif
 
 #ifndef N_SET_DYNAMIC
@@ -349,7 +349,7 @@ enum machine_type
 #ifndef N_SET_FLAGS
 # define N_SET_FLAGS(execp, flags) \
 ((execp)->a_info = \
- ((execp)->a_info & 0x00ffffff) | (((flags) & 0xff) << 24))
+ ((execp)->a_info & 0x00ffffff) | (((flags) & 0xffu) << 24))
 #endif
 
 typedef struct aout_symbol
@@ -376,7 +376,8 @@ enum aout_magic {
   undecided_magic = 0,
   z_magic,
   o_magic,
-  n_magic
+  n_magic,
+  i_magic
 };
 
 struct aoutdata
@@ -492,8 +493,8 @@ extern bfd_boolean NAME (aout, squirt_out_relocs)
 extern bfd_boolean NAME (aout, make_sections)
   (bfd *);
 
-extern const bfd_target * NAME (aout, some_aout_object_p)
-  (bfd *, struct internal_exec *, const bfd_target *(*) (bfd *));
+extern bfd_cleanup NAME (aout, some_aout_object_p)
+  (bfd *, struct internal_exec *, bfd_cleanup (*) (bfd *));
 
 extern bfd_boolean NAME (aout, mkobject)
   (bfd *);
@@ -625,9 +626,6 @@ extern bfd_boolean NAME (aout, bfd_free_cached_info)
 #define	aout_32_get_section_contents	_bfd_generic_get_section_contents
 
 #define	aout_64_get_section_contents	_bfd_generic_get_section_contents
-#ifndef NO_WRITE_HEADER_KLUDGE
-#define NO_WRITE_HEADER_KLUDGE 0
-#endif
 
 #ifndef aout_32_bfd_is_local_label_name
 #define aout_32_bfd_is_local_label_name bfd_generic_is_local_label_name
