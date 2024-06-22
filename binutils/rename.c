@@ -171,29 +171,32 @@ set_times (const char *destination, const struct stat *statbuf)
   int result;
 
   {
-#ifdef HAVE_GOOD_UTIME_H
-    struct utimbuf tb;
+#if defined HAVE_UTIMENSAT
+  struct timespec times[2];
+  times[0] = get_stat_atime (statbuf);
+  times[1] = get_stat_mtime (statbuf);
+  result = utimensat (AT_FDCWD, destination, times, 0);
+#elif defined HAVE_UTIMES
+  struct timeval tv[2];
 
-    tb.actime = statbuf->st_atime;
-    tb.modtime = statbuf->st_mtime;
-    result = utime (destination, &tb);
-#else /* ! HAVE_GOOD_UTIME_H */
-#ifndef HAVE_UTIMES
-    long tb[2];
+  tv[0].tv_sec = statbuf->st_atime;
+  tv[0].tv_usec = get_stat_atime_ns (statbuf) / 1000;
+  tv[1].tv_sec = statbuf->st_mtime;
+  tv[1].tv_usec = get_stat_mtime_ns (statbuf) / 1000;
+  result = utimes (destination, tv);
+#elif defined HAVE_GOOD_UTIME_H
+  struct utimbuf tb;
 
-    tb[0] = statbuf->st_atime;
-    tb[1] = statbuf->st_mtime;
-    result = utime (destination, tb);
-#else /* HAVE_UTIMES */
-    struct timeval tv[2];
+  tb.actime = statbuf->st_atime;
+  tb.modtime = statbuf->st_mtime;
+  result = utime (destination, &tb);
+#else
+  long tb[2];
 
-    tv[0].tv_sec = statbuf->st_atime;
-    tv[0].tv_usec = 0;
-    tv[1].tv_sec = statbuf->st_mtime;
-    tv[1].tv_usec = 0;
-    result = utimes (destination, tv);
-#endif /* HAVE_UTIMES */
-#endif /* ! HAVE_GOOD_UTIME_H */
+  tb[0] = statbuf->st_atime;
+  tb[1] = statbuf->st_mtime;
+  result = utime (destination, tb);
+#endif
   }
 
   if (result != 0)

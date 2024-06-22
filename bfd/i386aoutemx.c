@@ -77,6 +77,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* end of old hosts/i386emx.h */
 
+// used to be declaredin include/ansidecl.h
+#define PTR		void *
+
 
 #include <symcat.h>
 #define MY_object_p                 MY(object_p)
@@ -86,7 +89,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "libaout.h"
 #include "aout/aout64.h"
 
-static bfd_boolean      MY(set_sizes) (bfd *);
+static bool      MY(set_sizes) (bfd *);
 const bfd_target *      MY(object_p) (bfd *);
 reloc_howto_type *      MY(reloc_type_lookup) (bfd *, bfd_reloc_code_real_type);
 bfd_reloc_status_type   MY(generic_reloc) (bfd *, arelent *, asymbol *, PTR, asection *, bfd *, char **);
@@ -95,29 +98,23 @@ bfd_reloc_status_type   MY(generic_reloc) (bfd *, arelent *, asymbol *, PTR, ase
 reloc_howto_type MY(howto_table)[] =
 {
   /* type              rs size bsz  pcrel bitpos ovrf                     sf                name      part_inpl readmask  setmask    pcdone.  */
-HOWTO ( 0,             0,  0,   8,  FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"8",        TRUE, 0x000000ff,0x000000ff, FALSE),
-HOWTO ( 1,             0,  1,   16, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"16",       TRUE, 0x0000ffff,0x0000ffff, FALSE),
-HOWTO ( 2,             0,  2,   32, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"32",       TRUE, 0xffffffff,0xffffffff, FALSE),
-HOWTO ( 3,             0,  4,   64, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"64",       TRUE, 0xdeaddead,0xdeaddead, FALSE),
-HOWTO ( 4,             0,  0,   8,  TRUE,  0, complain_overflow_signed,   MY(generic_reloc),"DISP8",    TRUE, 0x000000ff,0x000000ff, FALSE),
-HOWTO ( 5,             0,  1,   16, TRUE,  0, complain_overflow_signed,   MY(generic_reloc),"DISP16",   TRUE, 0x0000ffff,0x0000ffff, FALSE),
-HOWTO ( 6,             0,  2,   32, TRUE,  0, complain_overflow_signed,   MY(generic_reloc),"DISP32",   TRUE, 0xffffffff,0xffffffff, FALSE),
-HOWTO ( 7,             0,  4,   64, TRUE,  0, complain_overflow_signed,   MY(generic_reloc),"DISP64",   TRUE, 0xfeedface,0xfeedface, FALSE),
-HOWTO ( 8,             0,  2,    0, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"GOT_REL",  FALSE,         0,0x00000000, FALSE),
-HOWTO ( 9,             0,  1,   16, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"BASE16",   FALSE,0xffffffff,0xffffffff, FALSE),
-HOWTO (10,             0,  2,   32, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"BASE32",   FALSE,0xffffffff,0xffffffff, FALSE),
+HOWTO ( 0,             0,  0,   8,  false, 0, complain_overflow_bitfield, MY(generic_reloc),"8",        true, 0x000000ff,0x000000ff, false),
+HOWTO ( 1,             0,  1,   16, false, 0, complain_overflow_bitfield, MY(generic_reloc),"16",       true, 0x0000ffff,0x0000ffff, false),
+HOWTO ( 2,             0,  2,   32, false, 0, complain_overflow_bitfield, MY(generic_reloc),"32",       true, 0xffffffff,0xffffffff, false),
+HOWTO ( 3,             0,  4,   64, false, 0, complain_overflow_bitfield, MY(generic_reloc),"64",       true, 0xdeaddead,0xdeaddead, false),
+HOWTO ( 4,             0,  0,   8,  true,  0, complain_overflow_signed,   MY(generic_reloc),"DISP8",    true, 0x000000ff,0x000000ff, false),
+HOWTO ( 5,             0,  1,   16, true,  0, complain_overflow_signed,   MY(generic_reloc),"DISP16",   true, 0x0000ffff,0x0000ffff, false),
+HOWTO ( 6,             0,  2,   32, true,  0, complain_overflow_signed,   MY(generic_reloc),"DISP32",   true, 0xffffffff,0xffffffff, false),
+HOWTO ( 7,             0,  4,   64, true,  0, complain_overflow_signed,   MY(generic_reloc),"DISP64",   true, 0xfeedface,0xfeedface, false),
+HOWTO ( 8,             0,  2,    0, false, 0, complain_overflow_bitfield, MY(generic_reloc),"GOT_REL",  false,         0,0x00000000, false),
+HOWTO ( 9,             0,  1,   16, false, 0, complain_overflow_bitfield, MY(generic_reloc),"BASE16",   false,0xffffffff,0xffffffff, false),
+HOWTO (10,             0,  2,   32, false, 0, complain_overflow_bitfield, MY(generic_reloc),"BASE32",   false,0xffffffff,0xffffffff, false),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
-  HOWTO (16,	       0,  2,	 0, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"JMP_TABLE", FALSE,         0,0x00000000, FALSE),
-EMPTY_HOWTO (-1),
-EMPTY_HOWTO (-1),
-EMPTY_HOWTO (-1),
-EMPTY_HOWTO (-1),
-EMPTY_HOWTO (-1),
-EMPTY_HOWTO (-1),
+  HOWTO (16,	       0,  2,	 0, false, 0, complain_overflow_bitfield, MY(generic_reloc),"JMP_TABLE", false,         0,0x00000000, false),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
@@ -127,7 +124,13 @@ EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
-  HOWTO (32,	       0,  2,	 0, FALSE, 0, complain_overflow_bitfield, MY(generic_reloc),"RELATIVE",  FALSE,         0,0x00000000, FALSE),
+EMPTY_HOWTO (-1),
+EMPTY_HOWTO (-1),
+EMPTY_HOWTO (-1),
+EMPTY_HOWTO (-1),
+EMPTY_HOWTO (-1),
+EMPTY_HOWTO (-1),
+  HOWTO (32,	       0,  2,	 0, false, 0, complain_overflow_bitfield, MY(generic_reloc),"RELATIVE",  false,         0,0x00000000, false),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
@@ -135,7 +138,7 @@ EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
 EMPTY_HOWTO (-1),
-  HOWTO (40,	       0,  2,	 0, FALSE, 0, complain_overflow_bitfield,0,"BASEREL",   FALSE,         0,0x00000000, FALSE),
+  HOWTO (40,	       0,  2,	 0, false, 0, complain_overflow_bitfield,0,"BASEREL",   false,         0,0x00000000, false),
 };
 
 

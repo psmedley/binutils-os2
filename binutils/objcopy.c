@@ -3879,6 +3879,9 @@ copy_file (const char *input_filename, const char *output_filename, int ofd,
           FILE *child;
           char szCmd[1024];
           char *psz;
+          struct stat statbuf;
+          int tmpfd = -1;
+          int copyfd = -1;
           sprintf (szCmd, "emxbind.exe -i \"%s\" 2> nul", input_filename);
           for (psz = szCmd; *psz; psz++)
               if (*psz == '\\')  *psz = '/';
@@ -3889,7 +3892,7 @@ copy_file (const char *input_filename, const char *output_filename, int ofd,
                   char *tmpname;
                   char  tmpnameexe[260];
 
-                  tmpname = make_tempname (output_filename);
+                  tmpname = make_tempname (output_filename, &tmpfd);
                   if (!tmpname)
 			{
 			  status = 1;
@@ -3904,7 +3907,7 @@ copy_file (const char *input_filename, const char *output_filename, int ofd,
                   for (psz = szCmd; *psz; psz++)
                       if (*psz == '\\')  *psz = '/';
                   if (!system (szCmd))
-                      smart_rename (tmpnameexe, output_filename, preserve_dates);
+                      smart_rename (tmpnameexe, output_filename, copyfd, &statbuf, preserve_dates);
                   unlink (tmpnameexe);
                 }
             }
