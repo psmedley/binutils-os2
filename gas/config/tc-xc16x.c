@@ -1,5 +1,5 @@
 /* tc-xc16x.c -- Assembler for the Infineon XC16X.
-   Copyright (C) 2006-2020 Free Software Foundation, Inc.
+   Copyright (C) 2006-2021 Free Software Foundation, Inc.
    Contributed by KPIT Cummins Infosystems
 
    This file is part of GAS, the GNU Assembler.
@@ -228,7 +228,7 @@ md_parse_option (int c ATTRIBUTE_UNUSED,
 const char *
 md_atof (int type, char *litP, int *sizeP)
 {
-  return ieee_md_atof (type, litP, sizeP, FALSE);
+  return ieee_md_atof (type, litP, sizeP, false);
 }
 
 valueT

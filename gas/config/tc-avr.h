@@ -1,5 +1,5 @@
 /* This file is tc-avr.h
-   Copyright (C) 1999-2020 Free Software Foundation, Inc.
+   Copyright (C) 1999-2021 Free Software Foundation, Inc.
 
    Contributed by Denis Chertykov <denisc@overta.ru>
 
@@ -214,7 +214,7 @@ extern void tc_cfi_frame_initial_instructions (void);
 /* The difference between same-section symbols may be affected by linker
    relaxation, so do not resolve such expressions in the assembler.  */
 #define md_allow_local_subtract(l,r,s) avr_allow_local_subtract (l, r, s)
-extern bfd_boolean avr_allow_local_subtract (expressionS *, expressionS *, segT);
+extern bool avr_allow_local_subtract (expressionS *, expressionS *, segT);
 
 #define elf_tc_final_processing 	avr_elf_final_processing
 extern void avr_elf_final_processing (void);

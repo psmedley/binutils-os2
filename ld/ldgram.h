@@ -337,8 +337,8 @@ union YYSTYPE
   union etree_union *etree;
   struct phdr_info
     {
-      bfd_boolean filehdr;
-      bfd_boolean phdrs;
+      bool filehdr;
+      bool phdrs;
       union etree_union *at;
       union etree_union *flags;
     } phdr;

@@ -101,6 +101,7 @@ cpu-pj.c
 cpu-powerpc.c
 cpu-pru.c
 cpu-riscv.c
+cpu-riscv.h
 cpu-rl78.c
 cpu-rs6000.c
 cpu-rx.c
@@ -314,7 +315,6 @@ pe-arm-wince.c
 pe-arm.c
 pe-i386.c
 pe-mcore.c
-pe-ppc.c
 pe-sh.c
 pe-x86_64.c
 pef-traceback.h
@@ -325,7 +325,6 @@ pei-arm.c
 pei-i386.c
 pei-ia64.c
 pei-mcore.c
-pei-ppc.c
 pei-sh.c
 pei-x86_64.c
 peicode.h

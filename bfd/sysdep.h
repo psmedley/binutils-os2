@@ -1,5 +1,5 @@
 /* sysdep.h -- handle host dependencies for the BFD library
-   Copyright (C) 1995-2020 Free Software Foundation, Inc.
+   Copyright (C) 1995-2021 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -34,31 +34,10 @@
 #endif
 #endif /* __EMX__ */
 
-#ifdef HAVE_STDDEF_H
-#include <stddef.h>
-#endif
-
 #include <stdio.h>
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-
-#include <errno.h>
-#if !(defined(errno) || defined(_MSC_VER) && defined(_INC_ERRNO))
-extern int errno;
-#endif
-
-#ifdef STRING_WITH_STRINGS
-#include <string.h>
-#include <strings.h>
-#else
-#ifdef HAVE_STRING_H
-#include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#else
-extern char *strchr ();
-extern char *strrchr ();
-#endif
 #endif
 #endif
 
@@ -129,28 +108,8 @@ extern char *strrchr ();
 extern int ffs (int);
 #endif
 
-#if !HAVE_DECL_FREE
-extern void free ();
-#endif
-
-#if !HAVE_DECL_GETENV
-extern char *getenv ();
-#endif
-
-#if !HAVE_DECL_MALLOC
-extern PTR malloc ();
-#endif
-
-#if !HAVE_DECL_REALLOC
-extern PTR realloc ();
-#endif
-
 #if !HAVE_DECL_STPCPY
 extern char *stpcpy (char *__dest, const char *__src);
-#endif
-
-#if !HAVE_DECL_STRSTR
-extern char *strstr ();
 #endif
 
 #ifdef HAVE_FTELLO
@@ -177,15 +136,22 @@ extern int fseeko64 (FILE *stream, off64_t offset, int whence);
 #endif
 #endif
 
-#if !HAVE_DECL_STRNLEN
-size_t strnlen (const char *, size_t);
-#endif
-
 /* Define offsetof for those systems which lack it */
 
 #ifndef offsetof
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 #endif
+
+#ifndef ENABLE_NLS
+  /* The Solaris version of locale.h always includes libintl.h.  If we have
+     been configured with --disable-nls then ENABLE_NLS will not be defined
+     and the dummy definitions of bindtextdomain (et al) below will conflict
+     with the defintions in libintl.h.  So we define these values to prevent
+     the bogus inclusion of libintl.h.  */
+# define _LIBINTL_H
+# define _LIBGETTEXT_H
+#endif
+#include <locale.h>
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
@@ -228,5 +194,15 @@ size_t strnlen (const char *, size_t);
 # define _(String) (String)
 # define N_(String) (String)
 #endif
+
+#ifndef HAVE_GETUID
+#define getuid() 0
+#endif
+
+#ifndef HAVE_GETGID
+#define getgid() 0
+#endif
+
+#define POISON_BFD_BOOLEAN 1
 
 #endif /* ! defined (BFD_SYSDEP_H) */

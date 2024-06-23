@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl   Copyright (C) 2012-2020 Free Software Foundation, Inc.
+dnl   Copyright (C) 2012-2021 Free Software Foundation, Inc.
 dnl
 dnl This file is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ AC_CONFIG_SRCDIR([gprof.c])
 AC_CONFIG_AUX_DIR(..)
 
 AC_CANONICAL_TARGET([])
-AC_ISC_POSIX
 
 AM_INIT_AUTOMAKE
 
@@ -40,7 +39,9 @@ AC_PROG_INSTALL
 LT_INIT
 ACX_LARGEFILE
 
-AC_CHECK_FUNCS(setmode)
+# These are in addition to what is made available in bfd/.
+AC_CHECK_HEADERS(sys/time.h)
+AC_CHECK_FUNCS(setitimer)
 
 ALL_LINGUAS="bg da de eo es fi fr ga hu id it ja ms nl pt_BR ro ru rw sr sv tr uk vi"
 ZW_GNU_GETTEXT_SISTER_DIR
@@ -75,3 +76,5 @@ AC_SUBST(pdfdir)
 
 AC_CONFIG_FILES([Makefile po/Makefile.in:po/Make-in])
 AC_OUTPUT
+
+GNU_MAKE_JOBSERVER

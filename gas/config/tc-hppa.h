@@ -1,5 +1,5 @@
 /* tc-hppa.h -- Header file for the PA
-   Copyright (C) 1989-2020 Free Software Foundation, Inc.
+   Copyright (C) 1989-2021 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -78,12 +78,6 @@
    statements.  A semicolon is a line separator for most assemblers.
    It's hard to find these lurking semicolons.  Thus...  */
 #define WARN_COMMENTS 1
-#endif
-
-/* FIXME.  Why oh why aren't these defined somewhere globally?  */
-#ifndef FALSE
-#define FALSE   (0)
-#define TRUE    (!FALSE)
 #endif
 
 #define ASEC_NULL (asection *)0

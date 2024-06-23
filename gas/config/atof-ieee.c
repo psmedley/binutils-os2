@@ -1,5 +1,5 @@
 /* atof_ieee.c - turn a Flonum into an IEEE floating point number
-   Copyright (C) 1987-2020 Free Software Foundation, Inc.
+   Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -755,7 +755,7 @@ const char *
 ieee_md_atof (int type,
 	      char *litP,
 	      int *sizeP,
-	      bfd_boolean big_wordian)
+	      bool big_wordian)
 {
   LITTLENUM_TYPE words[MAX_LITTLENUMS];
   LITTLENUM_TYPE *wordP;

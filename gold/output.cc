@@ -1,6 +1,6 @@
 // output.cc -- manage the output file for gold
 
-// Copyright (C) 2006-2020 Free Software Foundation, Inc.
+// Copyright (C) 2006-2021 Free Software Foundation, Inc.
 // Written by Ian Lance Taylor <iant@google.com>.
 
 // This file is part of gold.
@@ -141,12 +141,14 @@ gold_fallocate(int o, off_t offset, off_t len)
 
 #ifdef HAVE_FALLOCATE
   {
+    errno = 0;
     int err = ::fallocate(o, 0, offset, len);
-    if (err != EINVAL && err != ENOSYS && err != EOPNOTSUPP)
-      return err;
+    if (err < 0 && errno != EINVAL && errno != ENOSYS && errno != EOPNOTSUPP)
+      return errno;
   }
 #endif // defined(HAVE_FALLOCATE)
 
+  errno = 0;
   if (::ftruncate(o, offset + len) < 0)
     return errno;
   return 0;
@@ -4113,6 +4115,7 @@ Output_segment::Output_segment(elfcpp::Elf_Word type, elfcpp::Elf_Word flags)
   : vaddr_(0),
     paddr_(0),
     memsz_(0),
+    align_(0),
     max_align_(0),
     min_p_align_(0),
     offset_(0),

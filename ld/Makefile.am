@@ -1,6 +1,6 @@
 ## Process this file with automake to generate Makefile.in
 #
-#   Copyright (C) 2012-2020 Free Software Foundation, Inc.
+#   Copyright (C) 2012-2021 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -134,12 +134,12 @@ noinst_TEXINFOS = ldint.texi
 man_MANS = ld.1
 
 AM_MAKEINFOFLAGS = -I $(srcdir) -I $(BFDDIR)/doc -I ../bfd/doc \
-		   -I $(top_srcdir)/../libiberty
+		   -I $(top_srcdir)/../libiberty --no-split
 TEXI2DVI = texi2dvi -I $(srcdir) -I $(BFDDIR)/doc -I ../bfd/doc \
 		    -I $(top_srcdir)/../libiberty
 
 AM_CPPFLAGS = -I. -I$(srcdir) -I../bfd -I$(BFDDIR) -I$(INCDIR) @zlibinc@ \
-	@INCINTL@ $(HDEFINES) $(CFLAGS) \
+	@INCINTL@ $(HDEFINES) $(CFLAGS) @LARGEFILE_CPPFLAGS@ \
 	-DLOCALEDIR="\"$(datadir)/locale\""
 
 BFDLIB = ../bfd/libbfd.la
@@ -184,7 +184,6 @@ ALL_EMULATION_SOURCES = \
 	earmelfb_nbsd.c \
 	earmnto.c \
 	earmpe.c \
-	earmsymbian.c \
 	eavr1.c \
 	eavr2.c \
 	eavr25.c \
@@ -263,9 +262,6 @@ ALL_EMULATION_SOURCES = \
 	eelf32ppcsim.c \
 	eelf32ppcvxworks.c \
 	eelf32ppcwindiss.c \
-	eelf32lriscv.c \
-	eelf32lriscv_ilp32f.c \
-	eelf32lriscv_ilp32.c \
 	eelf32rl78.c \
 	eelf32rx.c \
 	eelf32rx_linux.c \
@@ -342,9 +338,7 @@ ALL_EMULATION_SOURCES = \
 	epdp11.c \
 	epjelf.c \
 	epjlelf.c \
-	eppclynx.c \
 	eppcmacos.c \
-	eppcpe.c \
 	epruelf.c \
 	escore3_elf.c \
 	escore7_elf.c \
@@ -416,6 +410,12 @@ ALL_64_EMULATION_SOURCES = \
 	eelf32ltsmipn32.c \
 	eelf32ltsmipn32_fbsd.c \
 	eelf32mipswindiss.c \
+	eelf32lriscv.c \
+	eelf32lriscv_ilp32f.c \
+	eelf32lriscv_ilp32.c \
+	eelf32briscv.c \
+	eelf32briscv_ilp32f.c \
+	eelf32briscv_ilp32.c \
 	eelf64_aix.c \
 	eelf64bpf.c \
 	eelf64_ia64.c \
@@ -433,9 +433,13 @@ ALL_64_EMULATION_SOURCES = \
 	eelf64btsmip_fbsd.c \
 	eelf64hppa.c \
 	eelf64lppc.c \
+	eelf64lppc_fbsd.c \
 	eelf64lriscv.c \
 	eelf64lriscv_lp64f.c \
 	eelf64lriscv_lp64.c \
+	eelf64briscv.c \
+	eelf64briscv_lp64f.c \
+	eelf64briscv_lp64.c \
 	eelf64ltsmip.c \
 	eelf64ltsmip_fbsd.c \
 	eelf64mmix.c \
@@ -671,7 +675,6 @@ $(ALL_EMULATION_SOURCES) $(ALL_64_EMULATION_SOURCES): $(GEN_DEPENDS)
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/earmelfb_nbsd.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/earmnto.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/earmpe.Pc@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/earmsymbian.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eavr1.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eavr2.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eavr25.Pc@am__quote@
@@ -753,6 +756,9 @@ $(ALL_EMULATION_SOURCES) $(ALL_64_EMULATION_SOURCES): $(GEN_DEPENDS)
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32lriscv.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32lriscv_ilp32f.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32lriscv_ilp32.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32briscv.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32briscv_ilp32f.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32briscv_ilp32.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32rl78.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32rx.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf32rx_linux.Pc@am__quote@
@@ -829,9 +835,7 @@ $(ALL_EMULATION_SOURCES) $(ALL_64_EMULATION_SOURCES): $(GEN_DEPENDS)
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/epdp11.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/epjelf.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/epjlelf.Pc@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eppclynx.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eppcmacos.Pc@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eppcpe.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/epruelf.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/escore3_elf.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/escore7_elf.Pc@am__quote@
@@ -916,9 +920,13 @@ $(ALL_EMULATION_SOURCES) $(ALL_64_EMULATION_SOURCES): $(GEN_DEPENDS)
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64btsmip_fbsd.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64hppa.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64lppc.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64lppc_fbsd.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64lriscv.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64lriscv_lp64f.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64lriscv_lp64.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64briscv.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64briscv_lp64f.Pc@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64briscv_lp64.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64ltsmip.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64ltsmip_fbsd.Pc@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eelf64mmix.Pc@am__quote@
@@ -960,6 +968,7 @@ TESTBFDLIB = @TESTBFDLIB@
 TESTCTFLIB = @TESTCTFLIB@
 
 check-DEJAGNU: site.exp
+	(cd .libs; test -e ldscripts || test ! -e ld-new || $(LN_S) ../ldscripts .)
 	srcroot=`cd $(srcdir) && pwd`; export srcroot; \
 	r=`pwd`; export r; \
 	LC_ALL=C; export LC_ALL; \
@@ -978,8 +987,11 @@ check-DEJAGNU: site.exp
 	fi
 
 development.exp: $(BFDDIR)/development.sh
-	$(EGREP) "[development|experimental]=" $(BFDDIR)/development.sh  \
+	$(EGREP) "(development|experimental)=" $(BFDDIR)/development.sh  \
 	  | $(AWK) -F= '{ print "set " $$1 " " $$2 }' > $@
+
+enablings.exp:
+	echo "set enable_libctf ${enable_libctf}" >> $@
 #
 #
 # Build a dummy plugin using libtool.
@@ -998,6 +1010,15 @@ libldtestplug3_la_LDFLAGS = -no-undefined -rpath /nowhere
 libldtestplug4_la_SOURCES = testplug4.c
 libldtestplug4_la_CFLAGS= -g -O2
 libldtestplug4_la_LDFLAGS = -no-undefined -rpath /nowhere
+
+bfdplugindir = $(libdir)/bfd-plugins
+bfdplugin_LTLIBRARIES = libdep.la
+libdep_la_SOURCES = libdep_plugin.c
+libdep_la_LDFLAGS = -no-undefined -rpath /nowhere -module -avoid-version
+libdep_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	--tag=disable-static \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(libdep_la_LDFLAGS) $(LDFLAGS) -o $@
 
 # DOCUMENTATION TARGETS
 # Manual configuration file; not usually attached to normal configuration,
@@ -1026,7 +1047,7 @@ MAINTAINERCLEANFILES = configdoc.texi ld.1
 CONFIG_STATUS_DEPENDENCIES = $(srcdir)/configure.host $(srcdir)/configure.tgt \
 	$(BFDDIR)/development.sh
 
-EXTRA_DEJAGNU_SITE_CONFIG = development.exp
+EXTRA_DEJAGNU_SITE_CONFIG = development.exp enablings.exp
 
 MOSTLYCLEANFILES = $(STAGESTUFF) ld1$(EXEEXT) ld2$(EXEEXT) ld3$(EXEEXT) \
 	ldemul-list.h crtbegin.@OBJEXT@ crtend.@OBJEXT@ ld.log ld.sum
@@ -1056,11 +1077,13 @@ install-exec-local: ld-new$(EXEEXT) install-binPROGRAMS
 	  fi; \
 	fi
 
-install-data-local:
+install-data-local: install-bfdpluginLTLIBRARIES
 	$(mkinstalldirs) $(DESTDIR)$(scriptdir)/ldscripts
 	for f in ldscripts/* ; do \
 	  $(INSTALL_DATA) $$f $(DESTDIR)$(scriptdir)/$$f ; \
 	done
+	rm -f $(DESTDIR)$(bfdplugindir)/libdep.la
+	rm -f $(DESTDIR)$(bfdplugindir)/libdep.dll.a
 
 # Stuff that should be included in a distribution.  The diststuff
 # target is run by the taz target in ../Makefile.in.
@@ -1073,7 +1096,13 @@ diststuff: info $(EXTRA_DIST)
 # ld.1 to support parallel build.
 info-recursive: ld.1
 
-DISTCLEANFILES = site.exp development.exp site.bak stringify.sed
+html-local: doc/ld/index.html
+doc/ld/index.html: ld.texi $(ld_TEXINFOS)
+	$(MKDIR_P) doc
+	$(AM_V_at)$(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) \
+	  --split=node -I$(srcdir) $(srcdir)/ld.texi -o doc/ld
+
+DISTCLEANFILES = site.exp development.exp enablings.exp site.bak stringify.sed
 distclean-local:
 	rm -rf ldscripts
 

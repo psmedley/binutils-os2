@@ -1,5 +1,5 @@
 /* atof_generic.c - turn a string of digits into a Flonum
-   Copyright (C) 1987-2020 Free Software Foundation, Inc.
+   Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -20,13 +20,6 @@
 
 #include "as.h"
 #include "safe-ctype.h"
-
-#ifndef FALSE
-#define FALSE (0)
-#endif
-#ifndef TRUE
-#define TRUE  (1)
-#endif
 
 #ifdef TRACE
 static void flonum_print (const FLONUM_TYPE *);
@@ -240,7 +233,7 @@ atof_generic (/* return pointer to just AFTER number we read.  */
 
 	      if ( /* seen_significant_digit || */ c > '0')
 		{
-		  seen_significant_digit = TRUE;
+		  seen_significant_digit = true;
 		}
 	    }
 	  else

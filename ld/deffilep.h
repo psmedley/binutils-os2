@@ -70,7 +70,7 @@ extern int yydebug;
     READ = 276,
     WRITE = 277,
     EXECUTE = 278,
-    SHARED = 279,
+    SHARED_K = 279,
     NONAMEU = 280,
     NONAMEL = 281,
     DIRECTIVE = 282,
@@ -101,7 +101,7 @@ extern int yydebug;
 #define READ 276
 #define WRITE 277
 #define EXECUTE 278
-#define SHARED 279
+#define SHARED_K 279
 #define NONAMEU 280
 #define NONAMEL 281
 #define DIRECTIVE 282

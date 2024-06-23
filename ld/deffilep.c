@@ -69,7 +69,7 @@
 #line 1 "deffilep.y"
  /* deffilep.y - parser for .def files */
 
-/*   Copyright (C) 1995-2020 Free Software Foundation, Inc.
+/*   Copyright (C) 1995-2021 Free Software Foundation, Inc.
 
      This file is part of GNU Binutils.
 
@@ -248,7 +248,7 @@ extern int yydebug;
     READ = 276,
     WRITE = 277,
     EXECUTE = 278,
-    SHARED = 279,
+    SHARED_K = 279,
     NONAMEU = 280,
     NONAMEL = 281,
     DIRECTIVE = 282,
@@ -279,7 +279,7 @@ extern int yydebug;
 #define READ 276
 #define WRITE 277
 #define EXECUTE 278
-#define SHARED 279
+#define SHARED_K 279
 #define NONAMEU 280
 #define NONAMEL 281
 #define DIRECTIVE 282
@@ -699,7 +699,7 @@ static const char *const yytname[] =
   "STACKSIZE_K", "HEAPSIZE", "CODE", "DATAU", "DATAL", "SECTIONS",
   "EXPORTS", "IMPORTS", "VERSIONK", "BASE", "CONSTANTU", "CONSTANTL",
   "PRIVATEU", "PRIVATEL", "ALIGNCOMM", "READ", "WRITE", "EXECUTE",
-  "SHARED", "NONAMEU", "NONAMEL", "DIRECTIVE", "EQUAL", "ID", "DIGITS",
+  "SHARED_K", "NONAMEU", "NONAMEL", "DIRECTIVE", "EQUAL", "ID", "DIGITS",
   "'.'", "','", "'='", "'@'", "$accept", "start", "command", "explist",
   "expline", "exp_opt_list", "exp_opt", "implist", "impline", "seclist",
   "secline", "attr_list", "opt_comma", "opt_number", "attr",
@@ -1798,7 +1798,7 @@ yyreduce:
 
   case 53:
 #line 238 "deffilep.y"
-                        { (yyval.number)=8;}
+                         { (yyval.number)=8;}
 #line 1803 "deffilep.c"
     break;
 
@@ -1912,7 +1912,7 @@ yyreduce:
 
   case 72:
 #line 266 "deffilep.y"
-                   { (yyval.id_const) = "SHARED"; }
+                     { (yyval.id_const) = "SHARED"; }
 #line 1917 "deffilep.c"
     break;
 
@@ -3314,7 +3314,7 @@ tokens[] =
   { "READ", READ },
   { "SECTIONS", SECTIONS },
   { "SEGMENTS", SECTIONS },
-  { "SHARED", SHARED },
+  { "SHARED", SHARED_K },
   { "STACKSIZE", STACKSIZE_K },
   { "VERSION", VERSIONK },
   { "WRITE", WRITE },

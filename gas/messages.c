@@ -1,5 +1,5 @@
 /* messages.c - error reporter -
-   Copyright (C) 1987-2020 Free Software Foundation, Inc.
+   Copyright (C) 1987-2021 Free Software Foundation, Inc.
    This file is part of GAS, the GNU Assembler.
 
    GAS is free software; you can redistribute it and/or modify
@@ -355,22 +355,6 @@ signal_init (void)
 }
 
 /* Support routines.  */
-
-void
-sprint_value (char *buf, valueT val)
-{
-  if (sizeof (val) <= sizeof (long))
-    {
-      sprintf (buf, "%ld", (long) val);
-      return;
-    }
-  if (sizeof (val) <= sizeof (bfd_vma))
-    {
-      sprintf_vma (buf, val);
-      return;
-    }
-  abort ();
-}
 
 #define HEX_MAX_THRESHOLD	1024
 #define HEX_MIN_THRESHOLD	-(HEX_MAX_THRESHOLD)
