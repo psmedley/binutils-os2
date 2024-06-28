@@ -1,5 +1,5 @@
 /* ppc-dis.c -- Disassemble PowerPC instructions
-   Copyright (C) 1994-2019 Free Software Foundation, Inc.
+   Copyright (C) 1994-2020 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support
 
    This file is part of the GNU opcodes library.
@@ -40,7 +40,7 @@ struct dis_private
 {
   /* Stash the result of parsing disassembler_options here.  */
   ppc_cpu_t dialect;
-} private;
+};
 
 #define POWERPC_DIALECT(INFO) \
   (((struct dis_private *) ((INFO)->private_data))->dialect)
@@ -259,7 +259,8 @@ get_powerpc_dialect (struct disassemble_info *info)
 {
   ppc_cpu_t dialect = 0;
 
-  dialect = POWERPC_DIALECT (info);
+  if (info->private_data)
+    dialect = POWERPC_DIALECT (info);
 
   /* Disassemble according to the section headers flags for VLE-mode.  */
   if (dialect & PPC_OPCODE_VLE
@@ -308,7 +309,7 @@ powerpc_init_dialect (struct disassemble_info *info)
   struct dis_private *priv = calloc (sizeof (*priv), 1);
 
   if (priv == NULL)
-    priv = &private;
+    return;
 
   switch (info->mach)
     {
@@ -823,16 +824,16 @@ print_insn_powerpc (bfd_vma memaddr,
 	need_paren
       } op_separator;
       bfd_boolean skip_optional;
-      int spaces;
+      int blanks;
 
       (*info->fprintf_func) (info->stream, "%s", opcode->name);
       /* gdb fprintf_func doesn't return count printed.  */
-      spaces = 8 - strlen (opcode->name);
-      if (spaces <= 0)
-	spaces = 1;
+      blanks = 8 - strlen (opcode->name);
+      if (blanks <= 0)
+	blanks = 1;
 
       /* Now extract and print the operands.  */
-      op_separator = spaces;
+      op_separator = blanks;
       skip_optional = FALSE;
       for (opindex = opcode->operands; *opindex != 0; opindex++)
 	{

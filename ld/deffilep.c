@@ -65,7 +65,7 @@
 #line 1 "deffilep.y" /* yacc.c:339  */
  /* deffilep.y - parser for .def files */
 
-/*   Copyright (C) 1995-2019 Free Software Foundation, Inc.
+/*   Copyright (C) 1995-2020 Free Software Foundation, Inc.
 
      This file is part of GNU Binutils.
 
@@ -88,6 +88,7 @@
 #include "libiberty.h"
 #include "safe-ctype.h"
 #include "bfd.h"
+#include "bfdlink.h"
 #include "ld.h"
 #include "ldmisc.h"
 #include "deffile.h"
@@ -174,7 +175,7 @@ static const char *lex_parse_string = 0;
 static const char *lex_parse_string_end = 0;
 
 
-#line 178 "deffilep.c" /* yacc.c:339  */
+#line 179 "deffilep.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -274,7 +275,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 113 "deffilep.y" /* yacc.c:355  */
+#line 114 "deffilep.y" /* yacc.c:355  */
 
   char *id;
   const char *id_const;
@@ -282,7 +283,7 @@ union YYSTYPE
   bfd_vma vma;
   char *digits;
 
-#line 286 "deffilep.c" /* yacc.c:355  */
+#line 287 "deffilep.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -299,7 +300,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 303 "deffilep.c" /* yacc.c:358  */
+#line 304 "deffilep.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -599,16 +600,16 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   138,   138,   139,   143,   144,   145,   146,   147,   148,
-     149,   150,   151,   152,   153,   154,   155,   156,   160,   162,
-     163,   170,   177,   178,   181,   182,   183,   184,   185,   186,
-     187,   188,   191,   192,   196,   198,   200,   202,   204,   206,
-     211,   212,   216,   217,   221,   222,   226,   227,   229,   230,
-     234,   235,   236,   237,   241,   242,   243,   244,   245,   246,
-     247,   248,   249,   250,   251,   252,   259,   260,   261,   262,
-     263,   264,   265,   266,   267,   268,   271,   272,   278,   284,
-     290,   298,   299,   302,   303,   307,   308,   312,   313,   316,
-     317,   320,   321,   327,   335,   336,   339,   340,   343,   345
+       0,   139,   139,   140,   144,   145,   146,   147,   148,   149,
+     150,   151,   152,   153,   154,   155,   156,   157,   161,   163,
+     164,   171,   178,   179,   182,   183,   184,   185,   186,   187,
+     188,   189,   192,   193,   197,   199,   201,   203,   205,   207,
+     212,   213,   217,   218,   222,   223,   227,   228,   230,   231,
+     235,   236,   237,   238,   242,   243,   244,   245,   246,   247,
+     248,   249,   250,   251,   252,   253,   260,   261,   262,   263,
+     264,   265,   266,   267,   268,   269,   272,   273,   279,   285,
+     291,   299,   300,   303,   304,   308,   309,   313,   314,   317,
+     318,   321,   322,   328,   336,   337,   340,   341,   344,   346
 };
 #endif
 
@@ -1479,535 +1480,535 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 143 "deffilep.y" /* yacc.c:1648  */
+#line 144 "deffilep.y" /* yacc.c:1648  */
     { def_image_name ((yyvsp[-1].id), (yyvsp[0].vma), 0); }
-#line 1485 "deffilep.c" /* yacc.c:1648  */
+#line 1486 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 5:
-#line 144 "deffilep.y" /* yacc.c:1648  */
+#line 145 "deffilep.y" /* yacc.c:1648  */
     { def_image_name ((yyvsp[-1].id), (yyvsp[0].vma), 1); }
-#line 1491 "deffilep.c" /* yacc.c:1648  */
+#line 1492 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 6:
-#line 145 "deffilep.y" /* yacc.c:1648  */
+#line 146 "deffilep.y" /* yacc.c:1648  */
     { def_description ((yyvsp[0].id));}
-#line 1497 "deffilep.c" /* yacc.c:1648  */
+#line 1498 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 7:
-#line 146 "deffilep.y" /* yacc.c:1648  */
+#line 147 "deffilep.y" /* yacc.c:1648  */
     { def_stacksize ((yyvsp[-1].number), (yyvsp[0].number));}
-#line 1503 "deffilep.c" /* yacc.c:1648  */
+#line 1504 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 8:
-#line 147 "deffilep.y" /* yacc.c:1648  */
+#line 148 "deffilep.y" /* yacc.c:1648  */
     { def_heapsize ((yyvsp[-1].number), (yyvsp[0].number));}
-#line 1509 "deffilep.c" /* yacc.c:1648  */
+#line 1510 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 9:
-#line 148 "deffilep.y" /* yacc.c:1648  */
+#line 149 "deffilep.y" /* yacc.c:1648  */
     { def_section ("CODE", (yyvsp[0].number));}
-#line 1515 "deffilep.c" /* yacc.c:1648  */
+#line 1516 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 10:
-#line 149 "deffilep.y" /* yacc.c:1648  */
+#line 150 "deffilep.y" /* yacc.c:1648  */
     { def_section ("DATA", (yyvsp[0].number));}
-#line 1521 "deffilep.c" /* yacc.c:1648  */
+#line 1522 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 14:
-#line 153 "deffilep.y" /* yacc.c:1648  */
+#line 154 "deffilep.y" /* yacc.c:1648  */
     { def_version ((yyvsp[0].number), 0);}
-#line 1527 "deffilep.c" /* yacc.c:1648  */
+#line 1528 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 15:
-#line 154 "deffilep.y" /* yacc.c:1648  */
+#line 155 "deffilep.y" /* yacc.c:1648  */
     { def_version ((yyvsp[-2].number), (yyvsp[0].number));}
-#line 1533 "deffilep.c" /* yacc.c:1648  */
+#line 1534 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 16:
-#line 155 "deffilep.y" /* yacc.c:1648  */
+#line 156 "deffilep.y" /* yacc.c:1648  */
     { def_directive ((yyvsp[0].id));}
-#line 1539 "deffilep.c" /* yacc.c:1648  */
+#line 1540 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 17:
-#line 156 "deffilep.y" /* yacc.c:1648  */
+#line 157 "deffilep.y" /* yacc.c:1648  */
     { def_aligncomm ((yyvsp[-2].id), (yyvsp[0].number));}
-#line 1545 "deffilep.c" /* yacc.c:1648  */
+#line 1546 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 21:
-#line 171 "deffilep.y" /* yacc.c:1648  */
+#line 172 "deffilep.y" /* yacc.c:1648  */
     { def_exports ((yyvsp[-6].id), (yyvsp[-5].id), (yyvsp[-4].number), (yyvsp[-2].number), (yyvsp[0].id)); }
-#line 1551 "deffilep.c" /* yacc.c:1648  */
+#line 1552 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 22:
-#line 177 "deffilep.y" /* yacc.c:1648  */
+#line 178 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = (yyvsp[-2].number) | (yyvsp[0].number); }
-#line 1557 "deffilep.c" /* yacc.c:1648  */
+#line 1558 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 23:
-#line 178 "deffilep.y" /* yacc.c:1648  */
+#line 179 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 0; }
-#line 1563 "deffilep.c" /* yacc.c:1648  */
+#line 1564 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 24:
-#line 181 "deffilep.y" /* yacc.c:1648  */
+#line 182 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 1; }
-#line 1569 "deffilep.c" /* yacc.c:1648  */
+#line 1570 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 25:
-#line 182 "deffilep.y" /* yacc.c:1648  */
+#line 183 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 1; }
-#line 1575 "deffilep.c" /* yacc.c:1648  */
+#line 1576 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 26:
-#line 183 "deffilep.y" /* yacc.c:1648  */
+#line 184 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 2; }
-#line 1581 "deffilep.c" /* yacc.c:1648  */
+#line 1582 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 27:
-#line 184 "deffilep.y" /* yacc.c:1648  */
+#line 185 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 2; }
-#line 1587 "deffilep.c" /* yacc.c:1648  */
+#line 1588 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 28:
-#line 185 "deffilep.y" /* yacc.c:1648  */
+#line 186 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 4; }
-#line 1593 "deffilep.c" /* yacc.c:1648  */
+#line 1594 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 29:
-#line 186 "deffilep.y" /* yacc.c:1648  */
+#line 187 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 4; }
-#line 1599 "deffilep.c" /* yacc.c:1648  */
+#line 1600 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 30:
-#line 187 "deffilep.y" /* yacc.c:1648  */
+#line 188 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 8; }
-#line 1605 "deffilep.c" /* yacc.c:1648  */
+#line 1606 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 31:
-#line 188 "deffilep.y" /* yacc.c:1648  */
+#line 189 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 8; }
-#line 1611 "deffilep.c" /* yacc.c:1648  */
+#line 1612 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 34:
-#line 197 "deffilep.y" /* yacc.c:1648  */
+#line 198 "deffilep.y" /* yacc.c:1648  */
     { def_import ((yyvsp[-7].id), (yyvsp[-5].id), (yyvsp[-3].id), (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1617 "deffilep.c" /* yacc.c:1648  */
+#line 1618 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 35:
-#line 199 "deffilep.y" /* yacc.c:1648  */
+#line 200 "deffilep.y" /* yacc.c:1648  */
     { def_import ((yyvsp[-7].id), (yyvsp[-5].id), (yyvsp[-3].id),  0, (yyvsp[-1].number), (yyvsp[0].id)); }
-#line 1623 "deffilep.c" /* yacc.c:1648  */
+#line 1624 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 36:
-#line 201 "deffilep.y" /* yacc.c:1648  */
+#line 202 "deffilep.y" /* yacc.c:1648  */
     { def_import ((yyvsp[-5].id), (yyvsp[-3].id),	0, (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1629 "deffilep.c" /* yacc.c:1648  */
+#line 1630 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 37:
-#line 203 "deffilep.y" /* yacc.c:1648  */
+#line 204 "deffilep.y" /* yacc.c:1648  */
     { def_import ((yyvsp[-5].id), (yyvsp[-3].id),	0,  0, (yyvsp[-1].number), (yyvsp[0].id)); }
-#line 1635 "deffilep.c" /* yacc.c:1648  */
+#line 1636 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 38:
-#line 205 "deffilep.y" /* yacc.c:1648  */
+#line 206 "deffilep.y" /* yacc.c:1648  */
     { def_import( 0, (yyvsp[-5].id), (yyvsp[-3].id), (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1641 "deffilep.c" /* yacc.c:1648  */
+#line 1642 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 39:
-#line 207 "deffilep.y" /* yacc.c:1648  */
+#line 208 "deffilep.y" /* yacc.c:1648  */
     { def_import ( 0, (yyvsp[-3].id),	0, (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1647 "deffilep.c" /* yacc.c:1648  */
+#line 1648 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 42:
-#line 216 "deffilep.y" /* yacc.c:1648  */
+#line 217 "deffilep.y" /* yacc.c:1648  */
     { def_section ((yyvsp[-1].id), (yyvsp[0].number));}
-#line 1653 "deffilep.c" /* yacc.c:1648  */
+#line 1654 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 43:
-#line 217 "deffilep.y" /* yacc.c:1648  */
+#line 218 "deffilep.y" /* yacc.c:1648  */
     { def_section_alt ((yyvsp[-1].id), (yyvsp[0].id));}
-#line 1659 "deffilep.c" /* yacc.c:1648  */
+#line 1660 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 44:
-#line 221 "deffilep.y" /* yacc.c:1648  */
+#line 222 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = (yyvsp[-2].number) | (yyvsp[0].number); }
-#line 1665 "deffilep.c" /* yacc.c:1648  */
+#line 1666 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 45:
-#line 222 "deffilep.y" /* yacc.c:1648  */
+#line 223 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = (yyvsp[0].number); }
-#line 1671 "deffilep.c" /* yacc.c:1648  */
+#line 1672 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 48:
-#line 229 "deffilep.y" /* yacc.c:1648  */
+#line 230 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number)=(yyvsp[0].number);}
-#line 1677 "deffilep.c" /* yacc.c:1648  */
+#line 1678 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 49:
-#line 230 "deffilep.y" /* yacc.c:1648  */
+#line 231 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number)=-1;}
-#line 1683 "deffilep.c" /* yacc.c:1648  */
+#line 1684 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 50:
-#line 234 "deffilep.y" /* yacc.c:1648  */
+#line 235 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 1;}
-#line 1689 "deffilep.c" /* yacc.c:1648  */
+#line 1690 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 51:
-#line 235 "deffilep.y" /* yacc.c:1648  */
+#line 236 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = 2;}
-#line 1695 "deffilep.c" /* yacc.c:1648  */
+#line 1696 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 52:
-#line 236 "deffilep.y" /* yacc.c:1648  */
+#line 237 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number)=4;}
-#line 1701 "deffilep.c" /* yacc.c:1648  */
+#line 1702 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 53:
-#line 237 "deffilep.y" /* yacc.c:1648  */
+#line 238 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number)=8;}
-#line 1707 "deffilep.c" /* yacc.c:1648  */
+#line 1708 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 54:
-#line 241 "deffilep.y" /* yacc.c:1648  */
+#line 242 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "BASE"; }
-#line 1713 "deffilep.c" /* yacc.c:1648  */
+#line 1714 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 55:
-#line 242 "deffilep.y" /* yacc.c:1648  */
+#line 243 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "CODE"; }
-#line 1719 "deffilep.c" /* yacc.c:1648  */
+#line 1720 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 56:
-#line 243 "deffilep.y" /* yacc.c:1648  */
+#line 244 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "CONSTANT"; }
-#line 1725 "deffilep.c" /* yacc.c:1648  */
+#line 1726 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 57:
-#line 244 "deffilep.y" /* yacc.c:1648  */
+#line 245 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "constant"; }
-#line 1731 "deffilep.c" /* yacc.c:1648  */
+#line 1732 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 58:
-#line 245 "deffilep.y" /* yacc.c:1648  */
+#line 246 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "DATA"; }
-#line 1737 "deffilep.c" /* yacc.c:1648  */
+#line 1738 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 59:
-#line 246 "deffilep.y" /* yacc.c:1648  */
+#line 247 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "data"; }
-#line 1743 "deffilep.c" /* yacc.c:1648  */
+#line 1744 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 60:
-#line 247 "deffilep.y" /* yacc.c:1648  */
+#line 248 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "DESCRIPTION"; }
-#line 1749 "deffilep.c" /* yacc.c:1648  */
+#line 1750 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 61:
-#line 248 "deffilep.y" /* yacc.c:1648  */
+#line 249 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "DIRECTIVE"; }
-#line 1755 "deffilep.c" /* yacc.c:1648  */
+#line 1756 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 62:
-#line 249 "deffilep.y" /* yacc.c:1648  */
+#line 250 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "EXECUTE"; }
-#line 1761 "deffilep.c" /* yacc.c:1648  */
+#line 1762 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 63:
-#line 250 "deffilep.y" /* yacc.c:1648  */
+#line 251 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "EXPORTS"; }
-#line 1767 "deffilep.c" /* yacc.c:1648  */
+#line 1768 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 64:
-#line 251 "deffilep.y" /* yacc.c:1648  */
+#line 252 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "HEAPSIZE"; }
-#line 1773 "deffilep.c" /* yacc.c:1648  */
+#line 1774 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 65:
-#line 252 "deffilep.y" /* yacc.c:1648  */
+#line 253 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "IMPORTS"; }
-#line 1779 "deffilep.c" /* yacc.c:1648  */
+#line 1780 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 66:
-#line 259 "deffilep.y" /* yacc.c:1648  */
+#line 260 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "NAME"; }
-#line 1785 "deffilep.c" /* yacc.c:1648  */
+#line 1786 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 67:
-#line 260 "deffilep.y" /* yacc.c:1648  */
+#line 261 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "NONAME"; }
-#line 1791 "deffilep.c" /* yacc.c:1648  */
+#line 1792 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 68:
-#line 261 "deffilep.y" /* yacc.c:1648  */
+#line 262 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "noname"; }
-#line 1797 "deffilep.c" /* yacc.c:1648  */
+#line 1798 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 69:
-#line 262 "deffilep.y" /* yacc.c:1648  */
+#line 263 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "PRIVATE"; }
-#line 1803 "deffilep.c" /* yacc.c:1648  */
+#line 1804 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 70:
-#line 263 "deffilep.y" /* yacc.c:1648  */
+#line 264 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "private"; }
-#line 1809 "deffilep.c" /* yacc.c:1648  */
+#line 1810 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 71:
-#line 264 "deffilep.y" /* yacc.c:1648  */
+#line 265 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "READ"; }
-#line 1815 "deffilep.c" /* yacc.c:1648  */
+#line 1816 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 72:
-#line 265 "deffilep.y" /* yacc.c:1648  */
+#line 266 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "SHARED"; }
-#line 1821 "deffilep.c" /* yacc.c:1648  */
+#line 1822 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 73:
-#line 266 "deffilep.y" /* yacc.c:1648  */
+#line 267 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "STACKSIZE"; }
-#line 1827 "deffilep.c" /* yacc.c:1648  */
+#line 1828 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 74:
-#line 267 "deffilep.y" /* yacc.c:1648  */
+#line 268 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "VERSION"; }
-#line 1833 "deffilep.c" /* yacc.c:1648  */
+#line 1834 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 75:
-#line 268 "deffilep.y" /* yacc.c:1648  */
+#line 269 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id_const) = "WRITE"; }
-#line 1839 "deffilep.c" /* yacc.c:1648  */
+#line 1840 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 76:
-#line 271 "deffilep.y" /* yacc.c:1648  */
+#line 272 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = (yyvsp[0].id); }
-#line 1845 "deffilep.c" /* yacc.c:1648  */
+#line 1846 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 77:
-#line 273 "deffilep.y" /* yacc.c:1648  */
+#line 274 "deffilep.y" /* yacc.c:1648  */
     {
 	    char *name = xmalloc (strlen ((yyvsp[0].id_const)) + 2);
 	    sprintf (name, ".%s", (yyvsp[0].id_const));
 	    (yyval.id) = name;
 	  }
-#line 1855 "deffilep.c" /* yacc.c:1648  */
+#line 1856 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 78:
-#line 279 "deffilep.y" /* yacc.c:1648  */
+#line 280 "deffilep.y" /* yacc.c:1648  */
     {
 	    char *name = def_pool_alloc (strlen ((yyvsp[0].id)) + 2);
 	    sprintf (name, ".%s", (yyvsp[0].id));
 	    (yyval.id) = name;
 	  }
-#line 1865 "deffilep.c" /* yacc.c:1648  */
+#line 1866 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 79:
-#line 285 "deffilep.y" /* yacc.c:1648  */
+#line 286 "deffilep.y" /* yacc.c:1648  */
     {
 	    char *name = def_pool_alloc (strlen ((yyvsp[-2].id_const)) + 1 + strlen ((yyvsp[0].id)) + 1);
 	    sprintf (name, "%s.%s", (yyvsp[-2].id_const), (yyvsp[0].id));
 	    (yyval.id) = name;
 	  }
-#line 1875 "deffilep.c" /* yacc.c:1648  */
+#line 1876 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 80:
-#line 291 "deffilep.y" /* yacc.c:1648  */
+#line 292 "deffilep.y" /* yacc.c:1648  */
     {
 	    char *name = def_pool_alloc (strlen ((yyvsp[-2].id)) + 1 + strlen ((yyvsp[0].id)) + 1);
 	    sprintf (name, "%s.%s", (yyvsp[-2].id), (yyvsp[0].id));
 	    (yyval.id) = name;
 	  }
-#line 1885 "deffilep.c" /* yacc.c:1648  */
+#line 1886 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 81:
-#line 298 "deffilep.y" /* yacc.c:1648  */
+#line 299 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = (yyvsp[0].id); }
-#line 1891 "deffilep.c" /* yacc.c:1648  */
+#line 1892 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 82:
-#line 299 "deffilep.y" /* yacc.c:1648  */
+#line 300 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = ""; }
-#line 1897 "deffilep.c" /* yacc.c:1648  */
+#line 1898 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 83:
-#line 302 "deffilep.y" /* yacc.c:1648  */
+#line 303 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = (yyvsp[0].id); }
-#line 1903 "deffilep.c" /* yacc.c:1648  */
+#line 1904 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 84:
-#line 303 "deffilep.y" /* yacc.c:1648  */
+#line 304 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = 0; }
-#line 1909 "deffilep.c" /* yacc.c:1648  */
+#line 1910 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 85:
-#line 307 "deffilep.y" /* yacc.c:1648  */
+#line 308 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = (yyvsp[0].number);}
-#line 1915 "deffilep.c" /* yacc.c:1648  */
+#line 1916 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 86:
-#line 308 "deffilep.y" /* yacc.c:1648  */
+#line 309 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = -1;}
-#line 1921 "deffilep.c" /* yacc.c:1648  */
+#line 1922 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 87:
-#line 312 "deffilep.y" /* yacc.c:1648  */
+#line 313 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = (yyvsp[0].id); }
-#line 1927 "deffilep.c" /* yacc.c:1648  */
+#line 1928 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 88:
-#line 313 "deffilep.y" /* yacc.c:1648  */
+#line 314 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) =	0; }
-#line 1933 "deffilep.c" /* yacc.c:1648  */
+#line 1934 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 89:
-#line 316 "deffilep.y" /* yacc.c:1648  */
+#line 317 "deffilep.y" /* yacc.c:1648  */
     { (yyval.vma) = (yyvsp[0].vma);}
-#line 1939 "deffilep.c" /* yacc.c:1648  */
+#line 1940 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 90:
-#line 317 "deffilep.y" /* yacc.c:1648  */
+#line 318 "deffilep.y" /* yacc.c:1648  */
     { (yyval.vma) = (bfd_vma) -1;}
-#line 1945 "deffilep.c" /* yacc.c:1648  */
+#line 1946 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 91:
-#line 320 "deffilep.y" /* yacc.c:1648  */
+#line 321 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = (yyvsp[0].id); }
-#line 1951 "deffilep.c" /* yacc.c:1648  */
+#line 1952 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 92:
-#line 322 "deffilep.y" /* yacc.c:1648  */
+#line 323 "deffilep.y" /* yacc.c:1648  */
     {
 	    char *id = def_pool_alloc (strlen ((yyvsp[0].id)) + 2);
 	    sprintf (id, ".%s", (yyvsp[0].id));
 	    (yyval.id) = id;
 	  }
-#line 1961 "deffilep.c" /* yacc.c:1648  */
+#line 1962 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 93:
-#line 328 "deffilep.y" /* yacc.c:1648  */
+#line 329 "deffilep.y" /* yacc.c:1648  */
     {
 	    char *id = def_pool_alloc (strlen ((yyvsp[-3].id)) + 1 + strlen ((yyvsp[-1].digits)) + strlen ((yyvsp[0].id)) + 1);
 	    sprintf (id, "%s.%s%s", (yyvsp[-3].id), (yyvsp[-1].digits), (yyvsp[0].id));
 	    (yyval.id) = id;
 	  }
-#line 1971 "deffilep.c" /* yacc.c:1648  */
+#line 1972 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 94:
-#line 335 "deffilep.y" /* yacc.c:1648  */
+#line 336 "deffilep.y" /* yacc.c:1648  */
     { (yyval.digits) = (yyvsp[0].digits); }
-#line 1977 "deffilep.c" /* yacc.c:1648  */
+#line 1978 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 95:
-#line 336 "deffilep.y" /* yacc.c:1648  */
+#line 337 "deffilep.y" /* yacc.c:1648  */
     { (yyval.digits) = ""; }
-#line 1983 "deffilep.c" /* yacc.c:1648  */
+#line 1984 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 96:
-#line 339 "deffilep.y" /* yacc.c:1648  */
+#line 340 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = (yyvsp[0].id); }
-#line 1989 "deffilep.c" /* yacc.c:1648  */
+#line 1990 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 97:
-#line 340 "deffilep.y" /* yacc.c:1648  */
+#line 341 "deffilep.y" /* yacc.c:1648  */
     { (yyval.id) = ""; }
-#line 1995 "deffilep.c" /* yacc.c:1648  */
+#line 1996 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 98:
-#line 343 "deffilep.y" /* yacc.c:1648  */
+#line 344 "deffilep.y" /* yacc.c:1648  */
     { (yyval.number) = strtoul ((yyvsp[0].digits), 0, 0); }
-#line 2001 "deffilep.c" /* yacc.c:1648  */
+#line 2002 "deffilep.c" /* yacc.c:1648  */
     break;
 
   case 99:
-#line 345 "deffilep.y" /* yacc.c:1648  */
+#line 346 "deffilep.y" /* yacc.c:1648  */
     { (yyval.vma) = (bfd_vma) strtoull ((yyvsp[0].digits), 0, 0); }
-#line 2007 "deffilep.c" /* yacc.c:1648  */
+#line 2008 "deffilep.c" /* yacc.c:1648  */
     break;
 
 
-#line 2011 "deffilep.c" /* yacc.c:1648  */
+#line 2012 "deffilep.c" /* yacc.c:1648  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2235,7 +2236,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 347 "deffilep.y" /* yacc.c:1907  */
+#line 348 "deffilep.y" /* yacc.c:1907  */
 
 
 /*****************************************************************************

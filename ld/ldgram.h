@@ -314,7 +314,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 60 "ldgram.y" /* yacc.c:1910  */
+#line 61 "ldgram.y" /* yacc.c:1910  */
 
   bfd_vma integer;
   struct big_int

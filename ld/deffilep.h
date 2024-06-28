@@ -110,7 +110,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 113 "deffilep.y" /* yacc.c:1910  */
+#line 114 "deffilep.y" /* yacc.c:1910  */
 
   char *id;
   const char *id_const;

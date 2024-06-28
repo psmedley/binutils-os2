@@ -66,3 +66,5 @@ opcodes/config.in
 opcodes/configure
 /texinfo.tex
 /ylwrap
+*.rej
+*.orig

@@ -1,5 +1,5 @@
 /* Generic symbol-table support for the BFD library.
-   Copyright (C) 1990-2019 Free Software Foundation, Inc.
+   Copyright (C) 1990-2020 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -464,8 +464,8 @@ bfd_set_symtab (bfd *abfd, asymbol **location, unsigned int symcount)
       return FALSE;
     }
 
-  bfd_get_outsymbols (abfd) = location;
-  bfd_get_symcount (abfd) = symcount;
+  abfd->outsymbols = location;
+  abfd->symcount = symcount;
   return TRUE;
 }
 
@@ -906,6 +906,7 @@ struct indexentry
   char *directory_name;
   char *file_name;
   char *function_name;
+  int idx;
 };
 
 /* Compare two indexentry structures.  This is called via qsort.  */
@@ -918,10 +919,9 @@ cmpindexentry (const void *a, const void *b)
 
   if (contestantA->val < contestantB->val)
     return -1;
-  else if (contestantA->val > contestantB->val)
+  if (contestantA->val > contestantB->val)
     return 1;
-  else
-    return 0;
+  return contestantA->idx - contestantB->idx;
 }
 
 /* A pointer to this structure is stored in *pinfo.  */
@@ -1100,19 +1100,21 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
 	      arelent *r;
 	      unsigned long val;
 	      asymbol *sym;
+	      bfd_size_type octets;
 
 	      r = *pr;
 	      /* Ignore R_*_NONE relocs.  */
 	      if (r->howto->dst_mask == 0)
 		continue;
 
+	      octets = r->address * bfd_octets_per_byte (abfd, NULL);
 	      if (r->howto->rightshift != 0
 		  || r->howto->size != 2
 		  || r->howto->bitsize != 32
 		  || r->howto->pc_relative
 		  || r->howto->bitpos != 0
 		  || r->howto->dst_mask != 0xffffffff
-		  || r->address * bfd_octets_per_byte (abfd) + 4 > stabsize)
+		  || octets + 4 > stabsize)
 		{
 		  _bfd_error_handler
 		    (_("unsupported .stab relocation"));
@@ -1122,13 +1124,11 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
 		  return FALSE;
 		}
 
-	      val = bfd_get_32 (abfd, info->stabs
-				+ r->address * bfd_octets_per_byte (abfd));
+	      val = bfd_get_32 (abfd, info->stabs + octets);
 	      val &= r->howto->src_mask;
 	      sym = *r->sym_ptr_ptr;
 	      val += sym->value + sym->section->vma + r->addend;
-	      bfd_put_32 (abfd, (bfd_vma) val, info->stabs
-			  + r->address * bfd_octets_per_byte (abfd));
+	      bfd_put_32 (abfd, (bfd_vma) val, info->stabs + octets);
 	    }
 	}
 
@@ -1220,6 +1220,7 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
 		  info->indextable[i].directory_name = directory_name;
 		  info->indextable[i].file_name = file_name;
 		  info->indextable[i].function_name = NULL;
+		  info->indextable[i].idx = i;
 		  ++i;
 		}
 
@@ -1279,6 +1280,7 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
 	      info->indextable[i].directory_name = directory_name;
 	      info->indextable[i].file_name = file_name;
 	      info->indextable[i].function_name = function_name;
+	      info->indextable[i].idx = i;
 	      ++i;
 	      break;
 	    }
@@ -1292,6 +1294,7 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
 	  info->indextable[i].directory_name = directory_name;
 	  info->indextable[i].file_name = file_name;
 	  info->indextable[i].function_name = NULL;
+	  info->indextable[i].idx = i;
 	  ++i;
 	}
 
@@ -1301,6 +1304,7 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
       info->indextable[i].directory_name = NULL;
       info->indextable[i].file_name = NULL;
       info->indextable[i].function_name = NULL;
+      info->indextable[i].idx = i;
       ++i;
 
       info->indextablesize = i;
@@ -1312,7 +1316,7 @@ _bfd_stab_section_find_nearest_line (bfd *abfd,
 
   /* We are passed a section relative offset.  The offsets in the
      stabs information are absolute.  */
-  offset += bfd_get_section_vma (abfd, section);
+  offset += bfd_section_vma (section);
 
 #ifdef ENABLE_CACHING
   if (info->cached_indexentry != NULL

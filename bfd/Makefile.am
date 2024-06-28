@@ -1,6 +1,6 @@
 ## Process this file with automake to generate Makefile.in
 #
-#   Copyright (C) 2012-2019 Free Software Foundation, Inc.
+#   Copyright (C) 2012-2020 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -102,7 +102,6 @@ ALL_MACHINES = \
 	cpu-bfin.lo \
 	cpu-bpf.lo \
 	cpu-cr16.lo \
-	cpu-cr16c.lo \
 	cpu-cris.lo \
 	cpu-crx.lo \
 	cpu-csky.lo \
@@ -165,7 +164,6 @@ ALL_MACHINES = \
 	cpu-tic4x.lo \
 	cpu-tic54x.lo \
 	cpu-tic6x.lo \
-	cpu-tic80.lo \
 	cpu-tilegx.lo \
 	cpu-tilepro.lo \
 	cpu-v850.lo \
@@ -189,7 +187,6 @@ ALL_MACHINES_CFILES = \
 	cpu-bfin.c \
 	cpu-bpf.c \
 	cpu-cr16.c \
-	cpu-cr16c.c \
 	cpu-cris.c \
 	cpu-crx.c \
 	cpu-csky.c \
@@ -252,7 +249,6 @@ ALL_MACHINES_CFILES = \
 	cpu-tic4x.c \
 	cpu-tic54x.c \
 	cpu-tic6x.c \
-	cpu-tic80.c \
 	cpu-tilegx.c \
 	cpu-tilepro.c \
 	cpu-v850.c \
@@ -284,7 +280,6 @@ BFD32_BACKENDS = \
 	coff-tic30.lo \
 	coff-tic4x.lo \
 	coff-tic54x.lo \
-	coff-tic80.lo \
 	coff-z80.lo \
 	coff-z8k.lo \
 	coffgen.lo \
@@ -308,7 +303,6 @@ BFD32_BACKENDS = \
 	elf32-avr.lo \
 	elf32-bfin.lo \
 	elf32-cr16.lo \
-	elf32-cr16c.lo \
 	elf32-cris.lo \
 	elf32-crx.lo \
 	elf32-csky.lo \
@@ -364,6 +358,7 @@ BFD32_BACKENDS = \
 	elf32-xgate.lo \
 	elf32-xstormy16.lo \
 	elf32-xtensa.lo \
+	elf32-z80.lo \
 	elf32.lo \
 	elflink.lo \
 	elfxx-sparc.lo \
@@ -421,7 +416,6 @@ BFD32_BACKENDS_CFILES = \
 	coff-tic30.c \
 	coff-tic4x.c \
 	coff-tic54x.c \
-	coff-tic80.c \
 	coff-z80.c \
 	coff-z8k.c \
 	coffgen.c \
@@ -445,7 +439,6 @@ BFD32_BACKENDS_CFILES = \
 	elf32-avr.c \
 	elf32-bfin.c \
 	elf32-cr16.c \
-	elf32-cr16c.c \
 	elf32-cris.c \
 	elf32-crx.c \
 	elf32-csky.c \
@@ -501,6 +494,7 @@ BFD32_BACKENDS_CFILES = \
 	elf32-xgate.c \
 	elf32-xstormy16.c \
 	elf32-xtensa.c \
+	elf32-z80.c \
 	elf32.c \
 	elflink.c \
 	elfxx-sparc.c \
@@ -688,19 +682,35 @@ BUILD_CFILES = \
 
 CFILES = $(SOURCE_CFILES) $(BUILD_CFILES)
 
-## This is a list of all .h files which are in the source tree.
+## This is a list of all .h files in the source tree minus those that
+## are processed to produce other .h files
 SOURCE_HFILES = \
-	aout-target.h aoutx.h coffcode.h coffswap.h ecoffswap.h \
-	elf-bfd.h elf-hppa.h elf-linux-core.h elf32-hppa.h \
-	elf64-hppa.h elfcode.h elfcore.h \
+	aout-target.h aoutx.h arc-got.h arc-plt.h \
+	coff-arm.h coff-bfd.h coffcode.h coffswap.h \
+	cpu-aarch64.h cpu-arm.h cpu-h8300.h cpu-m68k.h \
+	ecoff-bfd.h ecoffswap.h \
+	elf32-arm.h elf32-avr.h elf32-bfin.h elf32-cr16.h elf32-csky.h \
+	elf32-dlx.h elf32-hppa.h elf32-m68hc1x.h elf32-m68k.h \
+	elf32-metag.h elf32-nds32.h elf32-nios2.h elf32-ppc.h \
+	elf32-rx.h elf32-score.h elf32-sh-relocs.h elf32-spu.h \
+	elf32-tic6x.h elf32-tilegx.h elf32-tilepro.h elf32-v850.h \
+	elf64-hppa.h elf64-ppc.h elf64-tilegx.h \
+	elf-bfd.h elfcode.h elfcore.h elf-hppa.h elf-linker-x86.h \
+	elf-linux-core.h elf-nacl.h elf-s390.h elf-vxworks.h \
+	elfxx-aarch64.h elfxx-ia64.h elfxx-mips.h elfxx-riscv.h \
+	elfxx-sparc.h elfxx-tilegx.h elfxx-x86.h \
 	genlink.h go32stub.h \
 	libaout.h libbfd.h libcoff.h libecoff.h libhppa.h \
-	libpei.h libxcoff.h mach-o.h \
+	libpei.h libxcoff.h \
+	mach-o.h \
 	netbsd.h ns32k.h \
-	pef.h pef-traceback.h peicode.h som.h version.h \
-	vms.h xsym.h
+	pef.h pef-traceback.h peicode.h plugin.h \
+	som.h sysdep.h \
+	version.h vms.h \
+	wasm-module.h \
+	xcofflink.h xsym.h
 
-## ... and all .h files which are in the build tree.
+## ... and .h files which are in the build tree, minus config.h and bfd.h
 BUILD_HFILES = \
 	bfdver.h elf32-target.h elf64-target.h targmatch.h bfd_stdint.h
 
