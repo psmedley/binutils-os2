@@ -1,5 +1,5 @@
 /* dwarf.c -- display DWARF contents of a BFD binary file
-   Copyright (C) 2005-2020 Free Software Foundation, Inc.
+   Copyright (C) 2005-2021 Free Software Foundation, Inc.
 
    This file is part of GNU Binutils.
 
@@ -67,6 +67,7 @@ typedef struct dwo_info
 {
   dwo_type          type;
   const char *      value;
+  dwarf_vma         cu_offset;
   struct dwo_info * next;
 } dwo_info;
 
@@ -702,7 +703,7 @@ fetch_indirect_string (dwarf_vma offset)
     ret = (const unsigned char *)
       _("<no NUL byte at end of .debug_str section>");
 
-  return ret; 
+  return ret;
 }
 
 static const unsigned char *
@@ -795,7 +796,7 @@ fetch_indexed_string (dwarf_vma idx, struct cu_tu_set *this_set,
     }
 
   index_offset = idx * offset_size;
-      
+
   if (this_set != NULL)
     index_offset += this_set->section_offsets [DW_SECT_STR_OFFSETS];
 
@@ -1859,7 +1860,7 @@ fetch_alt_indirect_string (dwarf_vma offset)
 
       return ret;
     }
-  
+
   warn (_("DW_FORM_GNU_strp_alt offset (%s) too big or no string sections available\n"),
 	dwarf_vmatoa ("x", offset));
   return _("<offset is too big>");
@@ -1892,32 +1893,33 @@ get_AT_name (unsigned long attribute)
 }
 
 static void
-add_dwo_info (const char * field, dwo_type type)
+add_dwo_info (const char * value, dwarf_vma cu_offset, dwo_type type)
 {
   dwo_info * dwinfo = xmalloc (sizeof * dwinfo);
 
-  dwinfo->type = type;
-  dwinfo->value = field;
-  dwinfo->next = first_dwo_info;
+  dwinfo->type   = type;
+  dwinfo->value  = value;
+  dwinfo->cu_offset = cu_offset;
+  dwinfo->next   = first_dwo_info;
   first_dwo_info = dwinfo;
 }
 
 static void
-add_dwo_name (const char * name)
+add_dwo_name (const char * name, dwarf_vma cu_offset)
 {
-  add_dwo_info (name, DWO_NAME);
+  add_dwo_info (name, cu_offset, DWO_NAME);
 }
 
 static void
-add_dwo_dir (const char * dir)
+add_dwo_dir (const char * dir, dwarf_vma cu_offset)
 {
-  add_dwo_info (dir, DWO_DIR);
+  add_dwo_info (dir, cu_offset, DWO_DIR);
 }
 
 static void
-add_dwo_id (const char * id)
+add_dwo_id (const char * id, dwarf_vma cu_offset)
 {
-  add_dwo_info (id, DWO_ID);
+  add_dwo_info (id, cu_offset, DWO_ID);
 }
 
 static void
@@ -2150,7 +2152,7 @@ get_type_abbrev_from_form (unsigned long                 form,
 
   data = (unsigned char *) section->start + uvalue;
   map = find_abbrev_map_by_offset (uvalue);
-  
+
   if (map == NULL)
     {
       warn (_("Unable to find abbreviations for CU offset %#lx\n"), uvalue);
@@ -2175,7 +2177,7 @@ get_type_abbrev_from_form (unsigned long                 form,
   for (entry = map->list->first_abbrev; entry != NULL; entry = entry->next)
     if (entry->number == abbrev_number)
       break;
-  
+
   if (abbrev_num_return != NULL)
     * abbrev_num_return = abbrev_number;
 
@@ -2319,7 +2321,7 @@ display_discr_list (unsigned long          form,
       printf ("[default]");
       return;
     }
-  
+
   switch (form)
     {
     case DW_FORM_block:
@@ -2345,7 +2347,7 @@ display_discr_list (unsigned long          form,
   bfd_boolean is_signed =
     (level > 0 && level <= MAX_CU_NESTING)
     ? level_type_signed [level - 1] : FALSE;
-    
+
   printf ("(");
   while (uvalue)
     {
@@ -2425,6 +2427,17 @@ read_and_display_attr_value (unsigned long           attribute,
     {
       warn (_("Corrupt attribute\n"));
       return data;
+    }
+
+  if (do_wide && ! do_loc)
+    {
+      /* PR 26847: Display the name of the form.  */
+      const char * name = get_FORM_name (form);
+
+      /* For convenience we skip the DW_FORM_ prefix to the name.  */
+      if (name[0] == 'D')
+	name += 8; /* strlen ("DW_FORM_")  */
+      printf ("%c(%s)", delimiter, name);
     }
 
   switch (form)
@@ -2508,7 +2521,13 @@ read_and_display_attr_value (unsigned long           attribute,
 
     case DW_FORM_GNU_ref_alt:
       if (!do_loc)
-	printf ("%c<alt 0x%s>", delimiter, dwarf_vmatoa ("x", uvalue));
+	{
+	  if (do_wide)
+	    /* We have already printed the form name.  */
+	    printf ("%c<0x%s>", delimiter, dwarf_vmatoa ("x", uvalue));
+	  else
+	    printf ("%c<alt 0x%s>", delimiter, dwarf_vmatoa ("x", uvalue));
+	}
       /* FIXME: Follow the reference...  */
       break;
 
@@ -2636,16 +2655,32 @@ read_and_display_attr_value (unsigned long           attribute,
 
     case DW_FORM_strp:
       if (!do_loc)
-	printf (_("%c(indirect string, offset: 0x%s): %s"), delimiter,
-		dwarf_vmatoa ("x", uvalue),
-		fetch_indirect_string (uvalue));
+	{
+	  if (do_wide)
+	    /* We have already displayed the form name.  */
+	    printf (_("%c(offset: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indirect_string (uvalue));
+	  else
+	    printf (_("%c(indirect string, offset: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indirect_string (uvalue));
+	}
       break;
 
     case DW_FORM_line_strp:
       if (!do_loc)
-	printf (_("%c(indirect line string, offset: 0x%s): %s"), delimiter,
-		dwarf_vmatoa ("x", uvalue),
-		fetch_indirect_line_string (uvalue));
+	{
+	  if (do_wide)
+	    /* We have already displayed the form name.  */
+	    printf (_("%c(offset: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indirect_line_string (uvalue));
+	  else
+	    printf (_("%c(indirect line string, offset: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indirect_line_string (uvalue));
+	}
       break;
 
     case DW_FORM_GNU_str_index:
@@ -2654,18 +2689,30 @@ read_and_display_attr_value (unsigned long           attribute,
 	  const char * suffix = strrchr (section->name, '.');
 	  bfd_boolean  dwo = (suffix && strcmp (suffix, ".dwo") == 0) ? TRUE : FALSE;
 
-	  printf (_("%c(indexed string: 0x%s): %s"), delimiter,
-		  dwarf_vmatoa ("x", uvalue),
-		  fetch_indexed_string (uvalue, this_set, offset_size, dwo));
+	  if (do_wide)
+	    /* We have already displayed the form name.  */
+	    printf (_("%c(offset: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indexed_string (uvalue, this_set, offset_size, dwo));
+	  else
+	    printf (_("%c(indexed string: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indexed_string (uvalue, this_set, offset_size, dwo));
 	}
       break;
 
     case DW_FORM_GNU_strp_alt:
       if (!do_loc)
 	{
-	  printf (_("%c(alt indirect string, offset: 0x%s) %s"), delimiter,
-		  dwarf_vmatoa ("x", uvalue),
-		  fetch_alt_indirect_string (uvalue));
+	  if (do_wide)
+	    /* We have already displayed the form name.  */
+	    printf (_("%c(offset: 0x%s) %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_alt_indirect_string (uvalue));
+	  else
+	    printf (_("%c(alt indirect string, offset: 0x%s) %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_alt_indirect_string (uvalue));
 	}
       break;
 
@@ -2680,17 +2727,30 @@ read_and_display_attr_value (unsigned long           attribute,
 	  char buf[64];
 
 	  SAFE_BYTE_GET64 (data, &high_bits, &uvalue, end);
-	  printf ("%csignature: 0x%s", delimiter,
-		  dwarf_vmatoa64 (high_bits, uvalue, buf, sizeof (buf)));
+	  if (do_wide)
+	    /* We have already displayed the form name.  */
+	    printf ("%c: 0x%s", delimiter,
+		    dwarf_vmatoa64 (high_bits, uvalue, buf, sizeof (buf)));
+	  else
+	    printf ("%csignature: 0x%s", delimiter,
+		    dwarf_vmatoa64 (high_bits, uvalue, buf, sizeof (buf)));
 	}
       data += 8;
       break;
 
     case DW_FORM_GNU_addr_index:
       if (!do_loc)
-	printf (_("%c(addr_index: 0x%s): %s"), delimiter,
-		dwarf_vmatoa ("x", uvalue),
-		fetch_indexed_value (uvalue * pointer_size, pointer_size));
+	{
+	  if (do_wide)
+	    /* We have already displayed the form name.  */
+	    printf (_("%c(index: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indexed_value (uvalue * pointer_size, pointer_size));
+	  else
+	    printf (_("%c(addr_index: 0x%s): %s"), delimiter,
+		    dwarf_vmatoa ("x", uvalue),
+		    fetch_indexed_value (uvalue * pointer_size, pointer_size));
+	}
       break;
 
     default:
@@ -2818,16 +2878,16 @@ read_and_display_attr_value (unsigned long           attribute,
 	    switch (form)
 	      {
 	      case DW_FORM_strp:
-		add_dwo_name ((const char *) fetch_indirect_string (uvalue));
+		add_dwo_name ((const char *) fetch_indirect_string (uvalue), cu_offset);
 		break;
 	      case DW_FORM_GNU_strp_alt:
-		add_dwo_name ((const char *) fetch_alt_indirect_string (uvalue));
+		add_dwo_name ((const char *) fetch_alt_indirect_string (uvalue), cu_offset);
 		break;
 	      case DW_FORM_GNU_str_index:
-		add_dwo_name (fetch_indexed_string (uvalue, this_set, offset_size, FALSE));
+		add_dwo_name (fetch_indexed_string (uvalue, this_set, offset_size, FALSE), cu_offset);
 		break;
 	      case DW_FORM_string:
-		add_dwo_name ((const char *) orig_data);
+		add_dwo_name ((const char *) orig_data, cu_offset);
 		break;
 	      default:
 		warn (_("Unsupported form (%s) for attribute %s\n"),
@@ -2835,26 +2895,26 @@ read_and_display_attr_value (unsigned long           attribute,
 		break;
 	      }
 	  break;
-	      
+
 	case DW_AT_comp_dir:
 	  /* FIXME: Also extract a build-id in a CU/TU.  */
 	  if (need_dwo_info)
 	    switch (form)
 	      {
 	      case DW_FORM_strp:
-		add_dwo_dir ((const char *) fetch_indirect_string (uvalue));
+		add_dwo_dir ((const char *) fetch_indirect_string (uvalue), cu_offset);
 		break;
 	      case DW_FORM_GNU_strp_alt:
-		add_dwo_dir (fetch_alt_indirect_string (uvalue));
+		add_dwo_dir (fetch_alt_indirect_string (uvalue), cu_offset);
 		break;
 	      case DW_FORM_line_strp:
-		add_dwo_dir ((const char *) fetch_indirect_line_string (uvalue));
+		add_dwo_dir ((const char *) fetch_indirect_line_string (uvalue), cu_offset);
 		break;
 	      case DW_FORM_GNU_str_index:
-		add_dwo_dir (fetch_indexed_string (uvalue, this_set, offset_size, FALSE));
+		add_dwo_dir (fetch_indexed_string (uvalue, this_set, offset_size, FALSE), cu_offset);
 		break;
 	      case DW_FORM_string:
-		add_dwo_dir ((const char *) orig_data);
+		add_dwo_dir ((const char *) orig_data, cu_offset);
 		break;
 	      default:
 		warn (_("Unsupported form (%s) for attribute %s\n"),
@@ -2862,14 +2922,14 @@ read_and_display_attr_value (unsigned long           attribute,
 		break;
 	      }
 	  break;
-	      
+
 	case DW_AT_GNU_dwo_id:
 	  if (need_dwo_info)
 	    switch (form)
 	      {
 	      case DW_FORM_data8:
 		/* FIXME: Record the length of the ID as well ?  */
-		add_dwo_id ((const char *) (data - 8));
+		add_dwo_id ((const char *) (data - 8), cu_offset);
 		break;
 	      default:
 		warn (_("Unsupported form (%s) for attribute %s\n"),
@@ -2877,7 +2937,7 @@ read_and_display_attr_value (unsigned long           attribute,
 		break;
 	      }
 	  break;
-	      
+
 	default:
 	  break;
 	}
@@ -2897,7 +2957,7 @@ read_and_display_attr_value (unsigned long           attribute,
 	  abbrev_entry *  type_abbrev;
 	  unsigned char * type_data;
 	  unsigned long   type_cu_offset;
-	  
+
 	  type_abbrev = get_type_abbrev_from_form (form, uvalue, cu_offset,
 						   section, NULL, & type_data, & type_cu_offset);
 	  if (type_abbrev != NULL)
@@ -2909,7 +2969,7 @@ read_and_display_attr_value (unsigned long           attribute,
 	  level_type_signed[level] = is_signed;
 	}
       break;
-      
+
     case DW_AT_inline:
       printf ("\t");
       switch (uvalue)
@@ -3161,7 +3221,7 @@ read_and_display_attr_value (unsigned long           attribute,
       printf ("\t");
       display_discr_list (form, uvalue, data, end, level);
       break;
-      
+
     case DW_AT_frame_base:
       have_frame_base = 1;
       /* Fall through.  */
@@ -3350,7 +3410,7 @@ introduce (struct dwarf_section * section, bfd_boolean raw)
 	printf (_("Contents of the %s section:\n\n"), section->name);
     }
 }
-  
+
 /* Process the contents of a .debug_info section.
    If do_loc is TRUE then we are scanning for location lists and dwo tags
    and we do not want to display anything to the user.
@@ -3450,7 +3510,7 @@ process_debug_info (struct dwarf_section *           section,
       load_debug_section_with_follow (str_index_dwo, file);
       load_debug_section_with_follow (debug_addr, file);
     }
-  
+
   load_debug_section_with_follow (abbrev_sec, file);
   if (debug_displays [abbrev_sec].section.start == NULL)
     {
@@ -3466,7 +3526,7 @@ process_debug_info (struct dwarf_section *           section,
   free (cu_abbrev_map);
   cu_abbrev_map = NULL;
   next_free_abbrev_map_entry = 0;
-  
+
   /* In order to be able to resolve DW_FORM_ref_attr forms we need
      to load *all* of the abbrevs for all CUs in this .debug_info
      section.  This does effectively mean that we (partially) read
@@ -3548,7 +3608,7 @@ process_debug_info (struct dwarf_section *           section,
 	     list);
 	  list->start_of_next_abbrevs = next;
 	}
-		       
+
       start = section_begin + cu_offset + compunit.cu_length
 	+ initial_length_size;
       record_abbrev_list_for_cu (cu_offset, start - section_begin, list);
@@ -4139,7 +4199,7 @@ display_formatted_table (unsigned char *                   data,
   dwarf_vma data_count, datai;
   unsigned int namepass, last_entry = 0;
   const char * table_name = is_dir ? N_("Directory Table") : N_("File Name Table");
-  
+
   SAFE_BYTE_GET_AND_INC (format_count, data, 1, end);
   if (do_checks && format_count > 5)
     warn (_("Unexpectedly large number of columns in the %s (%u)\n"),
@@ -4182,7 +4242,7 @@ display_formatted_table (unsigned char *                   data,
 	  format_count);
 
   printf (_("  Entry"));
-  /* Delay displaying name as the last entry for better screen layout.  */ 
+  /* Delay displaying name as the last entry for better screen layout.  */
   for (namepass = 0; namepass < 2; namepass++)
     {
       format = format_start;
@@ -4223,7 +4283,7 @@ display_formatted_table (unsigned char *                   data,
       unsigned char *datapass = data;
 
       printf ("  %d", last_entry++);
-      /* Delay displaying name as the last entry for better screen layout.  */ 
+      /* Delay displaying name as the last entry for better screen layout.  */
       for (namepass = 0; namepass < 2; namepass++)
 	{
 	  format = format_start;
@@ -5336,38 +5396,75 @@ display_debug_lines_decoded (struct dwarf_section *  section,
 		  strncpy (newFileName, fileName, fileNameLength + 1);
 		}
 
+	      /* A row with end_seq set to true has a meaningful address, but
+		 the other information in the same row is not significant.
+		 In such a row, print line as "-", and don't print
+		 view/is_stmt.  */
 	      if (!do_wide || (fileNameLength <= MAX_FILENAME_LENGTH))
 		{
 		  if (linfo.li_max_ops_per_insn == 1)
-		    printf ("%-35s  %11d  %#18" DWARF_VMA_FMT "x",
-			    newFileName, state_machine_regs.line,
-			    state_machine_regs.address);
+		    {
+		      if (xop == -DW_LNE_end_sequence)
+			printf ("%-35s  %11s  %#18" DWARF_VMA_FMT "x",
+				newFileName, "-",
+				state_machine_regs.address);
+		      else
+			printf ("%-35s  %11d  %#18" DWARF_VMA_FMT "x",
+				newFileName, state_machine_regs.line,
+				state_machine_regs.address);
+		    }
 		  else
-		    printf ("%-35s  %11d  %#18" DWARF_VMA_FMT "x[%d]",
-			    newFileName, state_machine_regs.line,
-			    state_machine_regs.address,
-			    state_machine_regs.op_index);
+		    {
+		      if (xop == -DW_LNE_end_sequence)
+			printf ("%-35s  %11s  %#18" DWARF_VMA_FMT "x[%d]",
+				newFileName, "-",
+				state_machine_regs.address,
+				state_machine_regs.op_index);
+		      else
+			printf ("%-35s  %11d  %#18" DWARF_VMA_FMT "x[%d]",
+				newFileName, state_machine_regs.line,
+				state_machine_regs.address,
+				state_machine_regs.op_index);
+		    }
 		}
 	      else
 		{
 		  if (linfo.li_max_ops_per_insn == 1)
-		    printf ("%s  %11d  %#18" DWARF_VMA_FMT "x",
-			    newFileName, state_machine_regs.line,
-			    state_machine_regs.address);
+		    {
+		      if (xop == -DW_LNE_end_sequence)
+			printf ("%s  %11s  %#18" DWARF_VMA_FMT "x",
+				newFileName, "-",
+				state_machine_regs.address);
+		      else
+			printf ("%s  %11d  %#18" DWARF_VMA_FMT "x",
+				newFileName, state_machine_regs.line,
+				state_machine_regs.address);
+		    }			
 		  else
-		    printf ("%s  %11d  %#18" DWARF_VMA_FMT "x[%d]",
-			    newFileName, state_machine_regs.line,
-			    state_machine_regs.address,
-			    state_machine_regs.op_index);
+		    {
+		      if (xop == -DW_LNE_end_sequence)
+			printf ("%s  %11s  %#18" DWARF_VMA_FMT "x[%d]",
+				newFileName, "-",
+				state_machine_regs.address,
+				state_machine_regs.op_index);
+		      else
+			printf ("%s  %11d  %#18" DWARF_VMA_FMT "x[%d]",
+				newFileName, state_machine_regs.line,
+				state_machine_regs.address,
+				state_machine_regs.op_index);
+		    }
 		}
 
-	      if (state_machine_regs.view)
-		printf ("  %6u", state_machine_regs.view);
-	      else
-		printf ("        ");
+	      if (xop != -DW_LNE_end_sequence)
+		{
+		  if (state_machine_regs.view)
+		    printf ("  %6u", state_machine_regs.view);
+		  else
+		    printf ("        ");
 
-	      if (state_machine_regs.is_stmt)
-		printf ("       x");
+		  if (state_machine_regs.is_stmt)
+		    printf ("       x");
+		}
 
 	      putchar ('\n');
 	      state_machine_regs.view++;
@@ -7348,7 +7445,6 @@ display_debug_ranges_list (unsigned char *start, unsigned char *finish,
 	break;
       SAFE_SIGNED_BYTE_GET_AND_INC (end, start, pointer_size, finish);
 
-      
       printf ("    %8.8lx ", offset);
 
       if (begin == 0 && end == 0)
@@ -8091,11 +8187,9 @@ frame_display_row (Frame_Chunk *fc, int *need_col_headers, unsigned int *max_reg
 
   if (*need_col_headers)
     {
-      static const char *sloc = "   LOC";
-
       *need_col_headers = 0;
 
-      printf ("%-*s CFA      ", eh_addr_size * 2, sloc);
+      printf ("%-*s CFA      ", eh_addr_size * 2, "   LOC");
 
       for (r = 0; r < *max_regs; r++)
 	if (fc->col_type[r] != DW_CFA_unreferenced)
@@ -9691,7 +9785,7 @@ display_debug_links (struct dwarf_section *  section,
     The .gun_debugaltlink section is formatted as:
       (c-string)  Filename.
       (binary)    Build-ID.  */
-  
+
   filename =  section->start;
   filelen = strnlen ((const char *) filename, section->size);
   if (filelen == section->size)
@@ -10371,6 +10465,8 @@ process_cu_tu_index (struct dwarf_section *section, int do_display)
   return 1;
 }
 
+static int cu_tu_indexes_read = -1; /* Tri-state variable.  */
+
 /* Load the CU and TU indexes if present.  This will build a list of
    section sets that we can use to associate a .debug_info.dwo section
    with its associated .debug_abbrev.dwo section in a .dwp file.  */
@@ -10378,14 +10474,12 @@ process_cu_tu_index (struct dwarf_section *section, int do_display)
 static bfd_boolean
 load_cu_tu_indexes (void *file)
 {
-  static int cu_tu_indexes_read = -1; /* Tri-state variable.  */
-
   /* If we have already loaded (or tried to load) the CU and TU indexes
      then do not bother to repeat the task.  */
   if (cu_tu_indexes_read == -1)
     {
       cu_tu_indexes_read = TRUE;
-  
+
       if (load_debug_section_with_follow (dwp_cu_index, file))
 	if (! process_cu_tu_index (&debug_displays [dwp_cu_index].section, 0))
 	  cu_tu_indexes_read = FALSE;
@@ -10629,7 +10723,6 @@ parse_gnu_debuglink (struct dwarf_section * section, void * data)
      The CRC value is stored after the filename, aligned up to 4 bytes.  */
   name = (const char *) section->start;
 
-  
   crc_offset = strnlen (name, section->size) + 1;
   crc_offset = (crc_offset + 3) & ~3;
   if (crc_offset + 4 > section->size)
@@ -10679,14 +10772,9 @@ parse_gnu_debugaltlink (struct dwarf_section * section, void * data)
   if (id_len < 0x14)
     return NULL;
 
-  build_id_data = calloc (1, sizeof * build_id_data);
-  if (build_id_data == NULL)
-    return NULL;
-
+  build_id_data = (Build_id_data *) data;
   build_id_data->len = id_len;
   build_id_data->data = section->start + namelen;
-
-  * (Build_id_data **) data = build_id_data;
 
   return name;
 }
@@ -10790,14 +10878,14 @@ load_separate_debug_info (const char *            main_filename,
     {
       warn (_("Corrupt debuglink section: %s\n"),
 	    xlink->name ? xlink->name : xlink->uncompressed_name);
-      return FALSE;
+      return NULL;
     }
-    
+
   /* Attempt to locate the separate file.
      This should duplicate the logic in bfd/opncls.c:find_separate_debug_file().  */
 
   canon_dir = lrealpath (main_filename);
-  
+
   for (canon_dirlen = strlen (canon_dir); canon_dirlen > 0; canon_dirlen--)
     if (IS_DIR_SEPARATOR (canon_dir[canon_dirlen - 1]))
       break;
@@ -10950,7 +11038,7 @@ load_separate_debug_info (const char *            main_filename,
     {
       warn (_("failed to open separate debug file: %s\n"), debug_filename);
       free (debug_filename);
-      return FALSE;
+      return NULL;
     }
 
   /* FIXME: We do not check to see if there are any other separate debug info
@@ -10995,6 +11083,52 @@ load_dwo_file (const char * main_filename, const char * name, const char * dir, 
   return separate_handle;
 }
 
+/* Load a debuglink section and/or a debugaltlink section, if either are present.
+   Recursively check the loaded files for more of these sections.
+   FIXME: Should also check for DWO_* entries in the newlu loaded files.  */
+
+static void
+check_for_and_load_links (void * file, const char * filename)
+{
+  void * handle = NULL;
+
+  if (load_debug_section (gnu_debugaltlink, file))
+    {
+      Build_id_data build_id_data;
+
+      handle = load_separate_debug_info (filename,
+					 & debug_displays[gnu_debugaltlink].section,
+					 parse_gnu_debugaltlink,
+					 check_gnu_debugaltlink,
+					 & build_id_data,
+					 file);
+      if (handle)
+	{
+	  assert (handle == first_separate_info->handle);
+	  check_for_and_load_links (first_separate_info->handle,
+				    first_separate_info->filename);
+	}
+    }
+
+  if (load_debug_section (gnu_debuglink, file))
+    {
+      unsigned long crc32;
+
+      handle = load_separate_debug_info (filename,
+					 & debug_displays[gnu_debuglink].section,
+					 parse_gnu_debuglink,
+					 check_gnu_debuglink,
+					 & crc32,
+					 file);
+      if (handle)
+	{
+	  assert (handle == first_separate_info->handle);
+	  check_for_and_load_links (first_separate_info->handle,
+				    first_separate_info->filename);
+	}
+    }
+}
+
 /* Load the separate debug info file(s) attached to FILE, if any exist.
    Returns TRUE if any were found, FALSE otherwise.
    If TRUE is returned then the linked list starting at first_separate_info
@@ -11014,18 +11148,50 @@ load_separate_debug_files (void * file, const char * filename)
     {
       free_dwo_info ();
 
-      if (process_debug_info (& debug_displays[info].section, file, abbrev, TRUE, FALSE))
+      if (process_debug_info (& debug_displays[info].section, file, abbrev,
+			      TRUE, FALSE))
 	{
 	  bfd_boolean introduced = FALSE;
 	  dwo_info *   dwinfo;
 	  const char * dir = NULL;
 	  const char * id = NULL;
+	  const char * name = NULL;
 
 	  for (dwinfo = first_dwo_info; dwinfo != NULL; dwinfo = dwinfo->next)
 	    {
+	      /* Accumulate NAME, DIR and ID fields.  */
 	      switch (dwinfo->type)
 		{
 		case DWO_NAME:
+		  if (name != NULL)
+		    warn (_("Multiple DWO_NAMEs encountered for the same CU\n"));
+		  name = dwinfo->value;
+		  break;
+
+		case DWO_DIR:
+		  /* There can be multiple DW_AT_comp_dir entries in a CU,
+		     so do not complain.  */
+		  dir = dwinfo->value;
+		  break;
+
+		case DWO_ID:
+		  if (id != NULL)
+		    warn (_("multiple DWO_IDs encountered for the same CU\n"));
+		  id = dwinfo->value;
+		  break;
+
+		default:
+		  error (_("Unexpected DWO INFO type"));
+		  break;
+		}
+
+	      /* If we have reached the end of our list, or we are changing
+		 CUs, then display the information that we have accumulated
+		 so far.  */
+	      if (name != NULL
+		  && (dwinfo->next == NULL
+		      || dwinfo->next->cu_offset != dwinfo->cu_offset))
+		{
 		  if (do_debug_links)
 		    {
 		      if (! introduced)
@@ -11035,30 +11201,19 @@ load_separate_debug_files (void * file, const char * filename)
 			  introduced = TRUE;
 			}
 
-		      printf (_("  Name:      %s\n"), dwinfo->value);
+		      printf (_("  Name:      %s\n"), name);
 		      printf (_("  Directory: %s\n"), dir ? dir : _("<not-found>"));
 		      if (id != NULL)
 			display_data (printf (_("  ID:       ")), (unsigned char *) id, 8);
 		      else
-			printf (_("  ID: <unknown>\n"));
+			printf (_("  ID:        <not specified>\n"));
 		      printf ("\n\n");
 		    }
 
 		  if (do_follow_links)
-		    load_dwo_file (filename, dwinfo->value, dir, id);
-		  break;
+		    load_dwo_file (filename, name, dir, id);
 
-		case DWO_DIR:
-		  dir = dwinfo->value;
-		  break;
-
-		case DWO_ID:
-		  id = dwinfo->value;
-		  break;
-
-		default:
-		  error (_("Unexpected DWO INFO type"));
-		  break;
+		  name = dir = id = NULL;
 		}
 	    }
 	}
@@ -11070,40 +11225,16 @@ load_separate_debug_files (void * file, const char * filename)
     return FALSE;
 
   /* FIXME: We do not check for the presence of both link sections in the same file.  */
-  /* FIXME: We do not check the separate debug info file to see if it too contains debuglinks.  */
   /* FIXME: We do not check for the presence of multiple, same-name debuglink sections.  */
   /* FIXME: We do not check for the presence of a dwo link as well as a debuglink.  */
 
-  if (load_debug_section (gnu_debugaltlink, file))
-    {
-      Build_id_data * build_id_data;
-
-      load_separate_debug_info (filename,
-				& debug_displays[gnu_debugaltlink].section,
-				parse_gnu_debugaltlink,
-				check_gnu_debugaltlink,
-				& build_id_data,
-				file);
-    }
-
-  if (load_debug_section (gnu_debuglink, file))
-    {
-      unsigned long crc32;
-
-      load_separate_debug_info (filename,
-				& debug_displays[gnu_debuglink].section,
-				parse_gnu_debuglink,
-				check_gnu_debuglink,
-				& crc32,
-				file);
-    }
-
+  check_for_and_load_links (file, filename);
   if (first_separate_info != NULL)
     return TRUE;
 
   do_follow_links = 0;
   return FALSE;
-}  
+}
 
 void
 free_debug_memory (void)
@@ -11115,24 +11246,35 @@ free_debug_memory (void)
   free (cu_abbrev_map);
   cu_abbrev_map = NULL;
   next_free_abbrev_map_entry = 0;
-  
+
+  free (shndx_pool);
+  shndx_pool = NULL;
+  shndx_pool_size = 0;
+  shndx_pool_used = 0;
+  free (cu_sets);
+  cu_sets = NULL;
+  cu_count = 0;
+  free (tu_sets);
+  tu_sets = NULL;
+  tu_count = 0;
+
+  memset (level_type_signed, 0, sizeof level_type_signed);
+  cu_tu_indexes_read = -1;
+
   for (i = 0; i < max; i++)
     free_debug_section ((enum dwarf_section_display_enum) i);
 
   if (debug_information != NULL)
     {
-      if (num_debug_info_entries != DEBUG_INFO_UNAVAILABLE)
+      for (i = 0; i < alloc_num_debug_info_entries; i++)
 	{
-	  for (i = 0; i < num_debug_info_entries; i++)
+	  if (debug_information [i].max_loc_offsets)
 	    {
-	      if (!debug_information [i].max_loc_offsets)
-		{
-		  free (debug_information [i].loc_offsets);
-		  free (debug_information [i].have_frame_base);
-		}
-	      if (!debug_information [i].max_range_lists)
-		free (debug_information [i].range_lists);
+	      free (debug_information [i].loc_offsets);
+	      free (debug_information [i].have_frame_base);
 	    }
+	  if (debug_information [i].max_range_lists)
+	    free (debug_information [i].range_lists);
 	}
       free (debug_information);
       debug_information = NULL;
@@ -11150,7 +11292,7 @@ free_debug_memory (void)
       free ((void *) d);
     }
   first_separate_info = NULL;
-  
+
   free_dwo_info ();
 }
 

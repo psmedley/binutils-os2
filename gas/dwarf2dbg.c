@@ -1,5 +1,5 @@
 /* dwarf2dbg.c - DWARF2 debug support
-   Copyright (C) 1999-2020 Free Software Foundation, Inc.
+   Copyright (C) 1999-2021 Free Software Foundation, Inc.
    Contributed by David Mosberger-Tang <davidm@hpl.hp.com>
 
    This file is part of GAS, the GNU Assembler.
@@ -504,6 +504,21 @@ dwarf2_gen_line_info_1 (symbolS *label, struct dwarf2_line_info *loc)
 {
   struct line_subseg *lss;
   struct line_entry *e;
+  flagword need_flags = SEC_LOAD | SEC_CODE;
+
+  /* PR 26850: Do not record LOCs in non-executable or non-loaded
+     sections.  SEC_ALLOC isn't tested for non-ELF because obj-coff.c
+     obj_coff_section is careless in setting SEC_ALLOC.  */
+  if (IS_ELF)
+    need_flags |= SEC_ALLOC;
+  if ((now_seg->flags & need_flags) != need_flags)
+    {
+      /* FIXME: Add code to suppress multiple warnings ?  */
+      if (debug_type != DEBUG_DWARF2)
+	as_warn ("dwarf line number information for %s ignored",
+		 segment_name (now_seg));
+      return;
+    }
 
   e = XNEW (struct line_entry);
   e->next = NULL;
@@ -562,10 +577,10 @@ dwarf2_gen_line_info (addressT ofs, struct dwarf2_line_info *loc)
       /* Use a non-fake name for the line number location,
 	 so that it can be referred to by relocations.  */
       sprintf (name, ".Loc.%u.%u", line, filenum);
-      sym = symbol_new (name, now_seg, ofs, frag_now);
+      sym = symbol_new (name, now_seg, frag_now, ofs);
     }
   else
-    sym = symbol_temp_new (now_seg, ofs, frag_now);
+    sym = symbol_temp_new (now_seg, frag_now, ofs);
   dwarf2_gen_line_info_1 (sym, loc);
 }
 
@@ -1267,8 +1282,8 @@ dwarf2_directive_loc (int dummy ATTRIBUTE_UNUSED)
 		sym = force_reset_view;
 	      else
 		{
-		  sym = symbol_temp_new (absolute_section, value,
-					 &zero_address_frag);
+		  sym = symbol_temp_new (absolute_section, &zero_address_frag,
+					 value);
 		  if (force_reset)
 		    force_reset_view = sym;
 		}
@@ -1984,7 +1999,7 @@ process_entries (segT seg, struct line_entry *e)
     out_inc_line_addr (INT_MAX, frag_ofs - last_frag_ofs);
   else
     {
-      lab = symbol_temp_new (seg, frag_ofs, frag);
+      lab = symbol_temp_new (seg, frag, frag_ofs);
       relax_inc_line_addr (INT_MAX, lab, last_lab);
     }
 }
@@ -2353,11 +2368,10 @@ out_debug_line (segT line_seg)
 
   /* For each section, emit a statement program.  */
   for (s = all_segs; s; s = s->next)
+    /* Paranoia - this check should have already have
+       been handled in dwarf2_gen_line_info_1().  */
     if (SEG_NORMAL (s->seg))
       process_entries (s->seg, s->head->head);
-    else
-      as_warn ("dwarf line number information for %s ignored",
-	       segment_name (s->seg));
 
   if (flag_dwarf_sections)
     /* We have to switch to the special .debug_line_end section
@@ -2400,11 +2414,11 @@ out_debug_ranges (segT ranges_seg, symbolS **ranges_sym)
       symbolS *beg, *end;
 
       frag = first_frag_for_seg (s->seg);
-      beg = symbol_temp_new (s->seg, 0, frag);
+      beg = symbol_temp_new (s->seg, frag, 0);
       s->text_start = beg;
 
       frag = last_frag_for_seg (s->seg);
-      end = symbol_temp_new (s->seg, get_frag_fix (frag, s->seg), frag);
+      end = symbol_temp_new (s->seg, frag, get_frag_fix (frag, s->seg));
       s->text_end = end;
 
       exp.X_op = O_symbol;
@@ -2453,11 +2467,11 @@ out_debug_rnglists (segT ranges_seg, symbolS **ranges_sym)
       out_byte (DW_RLE_start_length);
 
       frag = first_frag_for_seg (s->seg);
-      beg = symbol_temp_new (s->seg, 0, frag);
+      beg = symbol_temp_new (s->seg, frag, 0);
       s->text_start = beg;
 
       frag = last_frag_for_seg (s->seg);
-      end = symbol_temp_new (s->seg, get_frag_fix (frag, s->seg), frag);
+      end = symbol_temp_new (s->seg, frag, get_frag_fix (frag, s->seg));
       s->text_end = end;
 
       exp.X_op = O_symbol;
@@ -2520,11 +2534,11 @@ out_debug_aranges (segT aranges_seg, segT info_seg)
       symbolS *beg, *end;
 
       frag = first_frag_for_seg (s->seg);
-      beg = symbol_temp_new (s->seg, 0, frag);
+      beg = symbol_temp_new (s->seg, frag, 0);
       s->text_start = beg;
 
       frag = last_frag_for_seg (s->seg);
-      end = symbol_temp_new (s->seg, get_frag_fix (frag, s->seg), frag);
+      end = symbol_temp_new (s->seg, frag, get_frag_fix (frag, s->seg));
       s->text_end = end;
 
       exp.X_op = O_symbol;
@@ -2751,7 +2765,6 @@ dwarf2_init (void)
   if (flag_dwarf_cie_version == -1)
     flag_dwarf_cie_version = 1;
 }
-
 
 /* Finish the dwarf2 debug sections.  We emit .debug.line if there
    were any .file/.loc directives, or --gdwarf2 was given, and if the

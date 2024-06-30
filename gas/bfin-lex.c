@@ -792,7 +792,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "./config/bfin-lex.l"
 /* bfin-lex.l  ADI Blackfin lexer
-   Copyright (C) 2005-2020 Free Software Foundation, Inc.
+   Copyright (C) 2005-2021 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -3354,7 +3354,7 @@ static long parse_int (char **end)
   int not_done = 1;
   int shiftvalue = 0;
   char * char_bag;
-  long value = 0;
+  unsigned long value = 0;
   char *arg = *end;
 
   while (*arg && *arg == ' ')

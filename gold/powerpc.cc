@@ -1,6 +1,6 @@
 // powerpc.cc -- powerpc target support for gold.
 
-// Copyright (C) 2008-2020 Free Software Foundation, Inc.
+// Copyright (C) 2008-2021 Free Software Foundation, Inc.
 // Written by David S. Miller <davem@davemloft.net>
 //        and David Edelsohn <edelsohn@gnu.org>
 
@@ -756,10 +756,10 @@ class Target_powerpc : public Sized_target<size, big_endian>
   }
 
   // Accessor
-  const Tocsave_loc
+  const Tocsave_loc*
   tocsave_loc() const
   {
-    return this->tocsave_loc_;
+    return &this->tocsave_loc_;
   }
 
   void
@@ -3946,7 +3946,6 @@ Target_powerpc<size, big_endian>::do_plt_fde_location(const Output_data* plt,
       // See Output_data_glink::do_write() for glink contents.
       if (len == 0)
 	{
-	  gold_assert(parameters->doing_static_link());
 	  // Static linking may need stubs, to support ifunc and long
 	  // branches.  We need to create an output section for
 	  // .eh_frame early in the link process, to have a place to
@@ -11946,8 +11945,8 @@ Target_powerpc<size, big_endian>::Relocate::relocate(
 	  loc.object = relinfo->object;
 	  loc.shndx = relinfo->data_shndx;
 	  loc.offset = rela.get_r_offset();
-	  Tocsave_loc::const_iterator p = target->tocsave_loc().find(loc);
-	  if (p != target->tocsave_loc().end())
+	  const Tocsave_loc *tocsave = target->tocsave_loc();
+	  if (tocsave->find(loc) != tocsave->end())
 	    {
 	      // If we've generated plt calls using this tocsave, then
 	      // the nop needs to be changed to save r2.

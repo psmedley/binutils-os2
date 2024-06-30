@@ -1,5 +1,5 @@
 /* as.c - GAS main program.
-   Copyright (C) 1987-2020 Free Software Foundation, Inc.
+   Copyright (C) 1987-2021 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -362,10 +362,6 @@ Options:\n\
   fprintf (stream, _("\
   --gdwarf-sections       generate per-function section names for DWARF line information\n"));
   fprintf (stream, _("\
-  --hash-size=<value>     set the hash table size close to <value>\n"));
-  fprintf (stream, _("\
-  --help                  show this message and exit\n"));
-  fprintf (stream, _("\
   --target-help           show target specific options\n"));
   fprintf (stream, _("\
   -I DIR                  add DIR to search list for .include directives\n"));
@@ -387,10 +383,6 @@ Options:\n\
   -o OBJFILE              name the object-file output OBJFILE (default a.out)\n"));
   fprintf (stream, _("\
   -R                      fold data section into text section\n"));
-  fprintf (stream, _("\
-  --reduce-memory-overheads \n\
-                          prefer smaller memory use at the cost of longer\n\
-                          assembly times\n"));
   fprintf (stream, _("\
   --statistics            print various measured statistics from execution\n"));
   fprintf (stream, _("\
@@ -710,7 +702,7 @@ parse_args (int * pargc, char *** pargv)
 	case OPTION_VERSION:
 	  /* This output is intended to follow the GNU standards document.  */
 	  printf (_("GNU assembler %s\n"), BFD_VERSION_STRING);
-	  printf (_("Copyright (C) 2020 Free Software Foundation, Inc.\n"));
+	  printf (_("Copyright (C) 2021 Free Software Foundation, Inc.\n"));
 	  printf (_("\
 This program is free software; you may redistribute it under the terms of\n\
 the GNU General Public License version 3 or later.\n\
@@ -1123,22 +1115,10 @@ This program has absolutely no warranty.\n"));
 	  break;
 
 	case OPTION_REDUCE_MEMORY_OVERHEADS:
-	  /* The only change we make at the moment is to reduce
-	     the size of the hash tables that we use.  */
-	  set_gas_hash_table_size (4051);
 	  break;
 
 	case OPTION_HASH_TABLE_SIZE:
-	  {
-	    unsigned long new_size;
-
-            new_size = strtoul (optarg, NULL, 0);
-            if (new_size)
-              set_gas_hash_table_size (new_size);
-            else
-              as_fatal (_("--hash-size needs a numeric argument"));
-	    break;
-	  }
+	  break;
 	}
     }
 
@@ -1426,7 +1406,7 @@ main (int argc, char ** argv)
   dwarf2_init ();
 
   local_symbol_make (".gasversion.", absolute_section,
-		     BFD_VERSION / 10000UL, &predefined_address_frag);
+		     &predefined_address_frag, BFD_VERSION / 10000UL);
 
   /* Now that we have fully initialized, and have created the output
      file, define any symbols requested by --defsym command line
@@ -1436,8 +1416,8 @@ main (int argc, char ** argv)
       symbolS *sym;
       struct defsym_list *next;
 
-      sym = symbol_new (defsyms->name, absolute_section, defsyms->value,
-			&zero_address_frag);
+      sym = symbol_new (defsyms->name, absolute_section,
+			&zero_address_frag, defsyms->value);
       /* Make symbols defined on the command line volatile, so that they
 	 can be redefined inside a source file.  This makes this assembler's
 	 behaviour compatible with earlier versions, but it may not be

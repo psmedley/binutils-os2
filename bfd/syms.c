@@ -1,5 +1,5 @@
 /* Generic symbol-table support for the BFD library.
-   Copyright (C) 1990-2020 Free Software Foundation, Inc.
+   Copyright (C) 1990-2021 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -315,6 +315,9 @@ CODE_FRAGMENT
 .
 .  {* Symbol is an emx import definition.  *}
 .#define BSF_EMX_IMPORT2   0x40000000
+.
+.  {* This section symbol should be included in the symbol table.  *}
+.#define BSF_SECTION_SYM_USED    (1 << 24)
 .
 .  flagword flags;
 .
