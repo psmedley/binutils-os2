@@ -1,5 +1,5 @@
 /* tc-s12z.c -- Assembler code for the Freescale S12Z
-   Copyright (C) 2018-2021 Free Software Foundation, Inc.
+   Copyright (C) 2018-2022 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -3933,7 +3933,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
 
   /* We don't actually support subtracting a symbol.  */
   if (fixP->fx_subsy != (symbolS *) NULL)
-    as_bad_where (fixP->fx_file, fixP->fx_line, _("Expression too complex."));
+    as_bad_subtract (fixP);
 
   /*
     Patch the instruction with the resolved operand.  Elf relocation

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -34,6 +34,10 @@
 /* C LALR(1) parser skeleton written by Richard Stallman, by
    simplifying the original so-called "semantic" parser.  */
 
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
+
 /* All symbols defined below should begin with yy or YY, to avoid
    infringing on user name space.  This should be done even for local
    variables, as they might otherwise be expanded by user macros.
@@ -41,14 +45,11 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* Identify Bison output, and Bison version.  */
+#define YYBISON 30704
 
-/* Identify Bison output.  */
-#define YYBISON 1
-
-/* Bison version.  */
-#define YYBISON_VERSION "3.5"
+/* Bison version string.  */
+#define YYBISON_VERSION "3.7.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -191,7 +192,7 @@ static int    sub_op2;
 #define YYERROR_VERBOSE 1
 
 
-#line 195 "config/rx-parse.c"
+#line 196 "config/rx-parse.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -214,14 +215,6 @@ static int    sub_op2;
 #  endif
 # endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
 #ifndef YY_RX_CONFIG_RX_PARSE_H_INCLUDED
@@ -234,175 +227,184 @@ static int    sub_op2;
 extern int rx_debug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    REG = 258,
-    FLAG = 259,
-    CREG = 260,
-    ACC = 261,
-    DREG = 262,
-    DREGH = 263,
-    DREGL = 264,
-    DCREG = 265,
-    EXPR = 266,
-    UNKNOWN_OPCODE = 267,
-    IS_OPCODE = 268,
-    DOT_S = 269,
-    DOT_B = 270,
-    DOT_W = 271,
-    DOT_L = 272,
-    DOT_A = 273,
-    DOT_UB = 274,
-    DOT_UW = 275,
-    DOT_D = 276,
-    ABS = 277,
-    ADC = 278,
-    ADD = 279,
-    AND_ = 280,
-    BCLR = 281,
-    BCND = 282,
-    BFMOV = 283,
-    BFMOVZ = 284,
-    BMCND = 285,
-    BNOT = 286,
-    BRA = 287,
-    BRK = 288,
-    BSET = 289,
-    BSR = 290,
-    BTST = 291,
-    CLRPSW = 292,
-    CMP = 293,
-    DABS = 294,
-    DADD = 295,
-    DBT = 296,
-    DCMP = 297,
-    DDIV = 298,
-    DIV = 299,
-    DIVU = 300,
-    DMOV = 301,
-    DMUL = 302,
-    DNEG = 303,
-    DPOPM = 304,
-    DPUSHM = 305,
-    DROUND = 306,
-    DSQRT = 307,
-    DSUB = 308,
-    DTOF = 309,
-    DTOI = 310,
-    DTOU = 311,
-    EDIV = 312,
-    EDIVU = 313,
-    EMACA = 314,
-    EMSBA = 315,
-    EMUL = 316,
-    EMULA = 317,
-    EMULU = 318,
-    FADD = 319,
-    FCMP = 320,
-    FDIV = 321,
-    FMUL = 322,
-    FREIT = 323,
-    FSUB = 324,
-    FSQRT = 325,
-    FTOD = 326,
-    FTOI = 327,
-    FTOU = 328,
-    INT = 329,
-    ITOD = 330,
-    ITOF = 331,
-    JMP = 332,
-    JSR = 333,
-    MACHI = 334,
-    MACLH = 335,
-    MACLO = 336,
-    MAX = 337,
-    MIN = 338,
-    MOV = 339,
-    MOVCO = 340,
-    MOVLI = 341,
-    MOVU = 342,
-    MSBHI = 343,
-    MSBLH = 344,
-    MSBLO = 345,
-    MUL = 346,
-    MULHI = 347,
-    MULLH = 348,
-    MULLO = 349,
-    MULU = 350,
-    MVFACHI = 351,
-    MVFACGU = 352,
-    MVFACMI = 353,
-    MVFACLO = 354,
-    MVFC = 355,
-    MVFDC = 356,
-    MVFDR = 357,
-    MVTACGU = 358,
-    MVTACHI = 359,
-    MVTACLO = 360,
-    MVTC = 361,
-    MVTDC = 362,
-    MVTIPL = 363,
-    NEG = 364,
-    NOP = 365,
-    NOT = 366,
-    OR = 367,
-    POP = 368,
-    POPC = 369,
-    POPM = 370,
-    PUSH = 371,
-    PUSHA = 372,
-    PUSHC = 373,
-    PUSHM = 374,
-    RACL = 375,
-    RACW = 376,
-    RDACL = 377,
-    RDACW = 378,
-    REIT = 379,
-    REVL = 380,
-    REVW = 381,
-    RMPA = 382,
-    ROLC = 383,
-    RORC = 384,
-    ROTL = 385,
-    ROTR = 386,
-    ROUND = 387,
-    RSTR = 388,
-    RTE = 389,
-    RTFI = 390,
-    RTS = 391,
-    RTSD = 392,
-    SAT = 393,
-    SATR = 394,
-    SAVE = 395,
-    SBB = 396,
-    SCCND = 397,
-    SCMPU = 398,
-    SETPSW = 399,
-    SHAR = 400,
-    SHLL = 401,
-    SHLR = 402,
-    SMOVB = 403,
-    SMOVF = 404,
-    SMOVU = 405,
-    SSTR = 406,
-    STNZ = 407,
-    STOP = 408,
-    STZ = 409,
-    SUB = 410,
-    SUNTIL = 411,
-    SWHILE = 412,
-    TST = 413,
-    UTOD = 414,
-    UTOF = 415,
-    WAIT = 416,
-    XCHG = 417,
-    XOR = 418
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    REG = 258,                     /* REG  */
+    FLAG = 259,                    /* FLAG  */
+    CREG = 260,                    /* CREG  */
+    ACC = 261,                     /* ACC  */
+    DREG = 262,                    /* DREG  */
+    DREGH = 263,                   /* DREGH  */
+    DREGL = 264,                   /* DREGL  */
+    DCREG = 265,                   /* DCREG  */
+    EXPR = 266,                    /* EXPR  */
+    UNKNOWN_OPCODE = 267,          /* UNKNOWN_OPCODE  */
+    IS_OPCODE = 268,               /* IS_OPCODE  */
+    DOT_S = 269,                   /* DOT_S  */
+    DOT_B = 270,                   /* DOT_B  */
+    DOT_W = 271,                   /* DOT_W  */
+    DOT_L = 272,                   /* DOT_L  */
+    DOT_A = 273,                   /* DOT_A  */
+    DOT_UB = 274,                  /* DOT_UB  */
+    DOT_UW = 275,                  /* DOT_UW  */
+    DOT_D = 276,                   /* DOT_D  */
+    ABS = 277,                     /* ABS  */
+    ADC = 278,                     /* ADC  */
+    ADD = 279,                     /* ADD  */
+    AND_ = 280,                    /* AND_  */
+    BCLR = 281,                    /* BCLR  */
+    BCND = 282,                    /* BCND  */
+    BFMOV = 283,                   /* BFMOV  */
+    BFMOVZ = 284,                  /* BFMOVZ  */
+    BMCND = 285,                   /* BMCND  */
+    BNOT = 286,                    /* BNOT  */
+    BRA = 287,                     /* BRA  */
+    BRK = 288,                     /* BRK  */
+    BSET = 289,                    /* BSET  */
+    BSR = 290,                     /* BSR  */
+    BTST = 291,                    /* BTST  */
+    CLRPSW = 292,                  /* CLRPSW  */
+    CMP = 293,                     /* CMP  */
+    DABS = 294,                    /* DABS  */
+    DADD = 295,                    /* DADD  */
+    DBT = 296,                     /* DBT  */
+    DCMP = 297,                    /* DCMP  */
+    DDIV = 298,                    /* DDIV  */
+    DIV = 299,                     /* DIV  */
+    DIVU = 300,                    /* DIVU  */
+    DMOV = 301,                    /* DMOV  */
+    DMUL = 302,                    /* DMUL  */
+    DNEG = 303,                    /* DNEG  */
+    DPOPM = 304,                   /* DPOPM  */
+    DPUSHM = 305,                  /* DPUSHM  */
+    DROUND = 306,                  /* DROUND  */
+    DSQRT = 307,                   /* DSQRT  */
+    DSUB = 308,                    /* DSUB  */
+    DTOF = 309,                    /* DTOF  */
+    DTOI = 310,                    /* DTOI  */
+    DTOU = 311,                    /* DTOU  */
+    EDIV = 312,                    /* EDIV  */
+    EDIVU = 313,                   /* EDIVU  */
+    EMACA = 314,                   /* EMACA  */
+    EMSBA = 315,                   /* EMSBA  */
+    EMUL = 316,                    /* EMUL  */
+    EMULA = 317,                   /* EMULA  */
+    EMULU = 318,                   /* EMULU  */
+    FADD = 319,                    /* FADD  */
+    FCMP = 320,                    /* FCMP  */
+    FDIV = 321,                    /* FDIV  */
+    FMUL = 322,                    /* FMUL  */
+    FREIT = 323,                   /* FREIT  */
+    FSUB = 324,                    /* FSUB  */
+    FSQRT = 325,                   /* FSQRT  */
+    FTOD = 326,                    /* FTOD  */
+    FTOI = 327,                    /* FTOI  */
+    FTOU = 328,                    /* FTOU  */
+    INT = 329,                     /* INT  */
+    ITOD = 330,                    /* ITOD  */
+    ITOF = 331,                    /* ITOF  */
+    JMP = 332,                     /* JMP  */
+    JSR = 333,                     /* JSR  */
+    MACHI = 334,                   /* MACHI  */
+    MACLH = 335,                   /* MACLH  */
+    MACLO = 336,                   /* MACLO  */
+    MAX = 337,                     /* MAX  */
+    MIN = 338,                     /* MIN  */
+    MOV = 339,                     /* MOV  */
+    MOVCO = 340,                   /* MOVCO  */
+    MOVLI = 341,                   /* MOVLI  */
+    MOVU = 342,                    /* MOVU  */
+    MSBHI = 343,                   /* MSBHI  */
+    MSBLH = 344,                   /* MSBLH  */
+    MSBLO = 345,                   /* MSBLO  */
+    MUL = 346,                     /* MUL  */
+    MULHI = 347,                   /* MULHI  */
+    MULLH = 348,                   /* MULLH  */
+    MULLO = 349,                   /* MULLO  */
+    MULU = 350,                    /* MULU  */
+    MVFACHI = 351,                 /* MVFACHI  */
+    MVFACGU = 352,                 /* MVFACGU  */
+    MVFACMI = 353,                 /* MVFACMI  */
+    MVFACLO = 354,                 /* MVFACLO  */
+    MVFC = 355,                    /* MVFC  */
+    MVFDC = 356,                   /* MVFDC  */
+    MVFDR = 357,                   /* MVFDR  */
+    MVTACGU = 358,                 /* MVTACGU  */
+    MVTACHI = 359,                 /* MVTACHI  */
+    MVTACLO = 360,                 /* MVTACLO  */
+    MVTC = 361,                    /* MVTC  */
+    MVTDC = 362,                   /* MVTDC  */
+    MVTIPL = 363,                  /* MVTIPL  */
+    NEG = 364,                     /* NEG  */
+    NOP = 365,                     /* NOP  */
+    NOT = 366,                     /* NOT  */
+    OR = 367,                      /* OR  */
+    POP = 368,                     /* POP  */
+    POPC = 369,                    /* POPC  */
+    POPM = 370,                    /* POPM  */
+    PUSH = 371,                    /* PUSH  */
+    PUSHA = 372,                   /* PUSHA  */
+    PUSHC = 373,                   /* PUSHC  */
+    PUSHM = 374,                   /* PUSHM  */
+    RACL = 375,                    /* RACL  */
+    RACW = 376,                    /* RACW  */
+    RDACL = 377,                   /* RDACL  */
+    RDACW = 378,                   /* RDACW  */
+    REIT = 379,                    /* REIT  */
+    REVL = 380,                    /* REVL  */
+    REVW = 381,                    /* REVW  */
+    RMPA = 382,                    /* RMPA  */
+    ROLC = 383,                    /* ROLC  */
+    RORC = 384,                    /* RORC  */
+    ROTL = 385,                    /* ROTL  */
+    ROTR = 386,                    /* ROTR  */
+    ROUND = 387,                   /* ROUND  */
+    RSTR = 388,                    /* RSTR  */
+    RTE = 389,                     /* RTE  */
+    RTFI = 390,                    /* RTFI  */
+    RTS = 391,                     /* RTS  */
+    RTSD = 392,                    /* RTSD  */
+    SAT = 393,                     /* SAT  */
+    SATR = 394,                    /* SATR  */
+    SAVE = 395,                    /* SAVE  */
+    SBB = 396,                     /* SBB  */
+    SCCND = 397,                   /* SCCND  */
+    SCMPU = 398,                   /* SCMPU  */
+    SETPSW = 399,                  /* SETPSW  */
+    SHAR = 400,                    /* SHAR  */
+    SHLL = 401,                    /* SHLL  */
+    SHLR = 402,                    /* SHLR  */
+    SMOVB = 403,                   /* SMOVB  */
+    SMOVF = 404,                   /* SMOVF  */
+    SMOVU = 405,                   /* SMOVU  */
+    SSTR = 406,                    /* SSTR  */
+    STNZ = 407,                    /* STNZ  */
+    STOP = 408,                    /* STOP  */
+    STZ = 409,                     /* STZ  */
+    SUB = 410,                     /* SUB  */
+    SUNTIL = 411,                  /* SUNTIL  */
+    SWHILE = 412,                  /* SWHILE  */
+    TST = 413,                     /* TST  */
+    UTOD = 414,                    /* UTOD  */
+    UTOF = 415,                    /* UTOF  */
+    WAIT = 416,                    /* WAIT  */
+    XCHG = 417,                    /* XCHG  */
+    XOR = 418                      /* XOR  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define REG 258
 #define FLAG 259
 #define CREG 260
@@ -574,7 +576,7 @@ union YYSTYPE
   int regno;
   expressionS exp;
 
-#line 578 "config/rx-parse.c"
+#line 580 "config/rx-parse.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -588,6 +590,280 @@ extern YYSTYPE rx_lval;
 int rx_parse (void);
 
 #endif /* !YY_RX_CONFIG_RX_PARSE_H_INCLUDED  */
+/* Symbol kind.  */
+enum yysymbol_kind_t
+{
+  YYSYMBOL_YYEMPTY = -2,
+  YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
+  YYSYMBOL_YYerror = 1,                    /* error  */
+  YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
+  YYSYMBOL_REG = 3,                        /* REG  */
+  YYSYMBOL_FLAG = 4,                       /* FLAG  */
+  YYSYMBOL_CREG = 5,                       /* CREG  */
+  YYSYMBOL_ACC = 6,                        /* ACC  */
+  YYSYMBOL_DREG = 7,                       /* DREG  */
+  YYSYMBOL_DREGH = 8,                      /* DREGH  */
+  YYSYMBOL_DREGL = 9,                      /* DREGL  */
+  YYSYMBOL_DCREG = 10,                     /* DCREG  */
+  YYSYMBOL_EXPR = 11,                      /* EXPR  */
+  YYSYMBOL_UNKNOWN_OPCODE = 12,            /* UNKNOWN_OPCODE  */
+  YYSYMBOL_IS_OPCODE = 13,                 /* IS_OPCODE  */
+  YYSYMBOL_DOT_S = 14,                     /* DOT_S  */
+  YYSYMBOL_DOT_B = 15,                     /* DOT_B  */
+  YYSYMBOL_DOT_W = 16,                     /* DOT_W  */
+  YYSYMBOL_DOT_L = 17,                     /* DOT_L  */
+  YYSYMBOL_DOT_A = 18,                     /* DOT_A  */
+  YYSYMBOL_DOT_UB = 19,                    /* DOT_UB  */
+  YYSYMBOL_DOT_UW = 20,                    /* DOT_UW  */
+  YYSYMBOL_DOT_D = 21,                     /* DOT_D  */
+  YYSYMBOL_ABS = 22,                       /* ABS  */
+  YYSYMBOL_ADC = 23,                       /* ADC  */
+  YYSYMBOL_ADD = 24,                       /* ADD  */
+  YYSYMBOL_AND_ = 25,                      /* AND_  */
+  YYSYMBOL_BCLR = 26,                      /* BCLR  */
+  YYSYMBOL_BCND = 27,                      /* BCND  */
+  YYSYMBOL_BFMOV = 28,                     /* BFMOV  */
+  YYSYMBOL_BFMOVZ = 29,                    /* BFMOVZ  */
+  YYSYMBOL_BMCND = 30,                     /* BMCND  */
+  YYSYMBOL_BNOT = 31,                      /* BNOT  */
+  YYSYMBOL_BRA = 32,                       /* BRA  */
+  YYSYMBOL_BRK = 33,                       /* BRK  */
+  YYSYMBOL_BSET = 34,                      /* BSET  */
+  YYSYMBOL_BSR = 35,                       /* BSR  */
+  YYSYMBOL_BTST = 36,                      /* BTST  */
+  YYSYMBOL_CLRPSW = 37,                    /* CLRPSW  */
+  YYSYMBOL_CMP = 38,                       /* CMP  */
+  YYSYMBOL_DABS = 39,                      /* DABS  */
+  YYSYMBOL_DADD = 40,                      /* DADD  */
+  YYSYMBOL_DBT = 41,                       /* DBT  */
+  YYSYMBOL_DCMP = 42,                      /* DCMP  */
+  YYSYMBOL_DDIV = 43,                      /* DDIV  */
+  YYSYMBOL_DIV = 44,                       /* DIV  */
+  YYSYMBOL_DIVU = 45,                      /* DIVU  */
+  YYSYMBOL_DMOV = 46,                      /* DMOV  */
+  YYSYMBOL_DMUL = 47,                      /* DMUL  */
+  YYSYMBOL_DNEG = 48,                      /* DNEG  */
+  YYSYMBOL_DPOPM = 49,                     /* DPOPM  */
+  YYSYMBOL_DPUSHM = 50,                    /* DPUSHM  */
+  YYSYMBOL_DROUND = 51,                    /* DROUND  */
+  YYSYMBOL_DSQRT = 52,                     /* DSQRT  */
+  YYSYMBOL_DSUB = 53,                      /* DSUB  */
+  YYSYMBOL_DTOF = 54,                      /* DTOF  */
+  YYSYMBOL_DTOI = 55,                      /* DTOI  */
+  YYSYMBOL_DTOU = 56,                      /* DTOU  */
+  YYSYMBOL_EDIV = 57,                      /* EDIV  */
+  YYSYMBOL_EDIVU = 58,                     /* EDIVU  */
+  YYSYMBOL_EMACA = 59,                     /* EMACA  */
+  YYSYMBOL_EMSBA = 60,                     /* EMSBA  */
+  YYSYMBOL_EMUL = 61,                      /* EMUL  */
+  YYSYMBOL_EMULA = 62,                     /* EMULA  */
+  YYSYMBOL_EMULU = 63,                     /* EMULU  */
+  YYSYMBOL_FADD = 64,                      /* FADD  */
+  YYSYMBOL_FCMP = 65,                      /* FCMP  */
+  YYSYMBOL_FDIV = 66,                      /* FDIV  */
+  YYSYMBOL_FMUL = 67,                      /* FMUL  */
+  YYSYMBOL_FREIT = 68,                     /* FREIT  */
+  YYSYMBOL_FSUB = 69,                      /* FSUB  */
+  YYSYMBOL_FSQRT = 70,                     /* FSQRT  */
+  YYSYMBOL_FTOD = 71,                      /* FTOD  */
+  YYSYMBOL_FTOI = 72,                      /* FTOI  */
+  YYSYMBOL_FTOU = 73,                      /* FTOU  */
+  YYSYMBOL_INT = 74,                       /* INT  */
+  YYSYMBOL_ITOD = 75,                      /* ITOD  */
+  YYSYMBOL_ITOF = 76,                      /* ITOF  */
+  YYSYMBOL_JMP = 77,                       /* JMP  */
+  YYSYMBOL_JSR = 78,                       /* JSR  */
+  YYSYMBOL_MACHI = 79,                     /* MACHI  */
+  YYSYMBOL_MACLH = 80,                     /* MACLH  */
+  YYSYMBOL_MACLO = 81,                     /* MACLO  */
+  YYSYMBOL_MAX = 82,                       /* MAX  */
+  YYSYMBOL_MIN = 83,                       /* MIN  */
+  YYSYMBOL_MOV = 84,                       /* MOV  */
+  YYSYMBOL_MOVCO = 85,                     /* MOVCO  */
+  YYSYMBOL_MOVLI = 86,                     /* MOVLI  */
+  YYSYMBOL_MOVU = 87,                      /* MOVU  */
+  YYSYMBOL_MSBHI = 88,                     /* MSBHI  */
+  YYSYMBOL_MSBLH = 89,                     /* MSBLH  */
+  YYSYMBOL_MSBLO = 90,                     /* MSBLO  */
+  YYSYMBOL_MUL = 91,                       /* MUL  */
+  YYSYMBOL_MULHI = 92,                     /* MULHI  */
+  YYSYMBOL_MULLH = 93,                     /* MULLH  */
+  YYSYMBOL_MULLO = 94,                     /* MULLO  */
+  YYSYMBOL_MULU = 95,                      /* MULU  */
+  YYSYMBOL_MVFACHI = 96,                   /* MVFACHI  */
+  YYSYMBOL_MVFACGU = 97,                   /* MVFACGU  */
+  YYSYMBOL_MVFACMI = 98,                   /* MVFACMI  */
+  YYSYMBOL_MVFACLO = 99,                   /* MVFACLO  */
+  YYSYMBOL_MVFC = 100,                     /* MVFC  */
+  YYSYMBOL_MVFDC = 101,                    /* MVFDC  */
+  YYSYMBOL_MVFDR = 102,                    /* MVFDR  */
+  YYSYMBOL_MVTACGU = 103,                  /* MVTACGU  */
+  YYSYMBOL_MVTACHI = 104,                  /* MVTACHI  */
+  YYSYMBOL_MVTACLO = 105,                  /* MVTACLO  */
+  YYSYMBOL_MVTC = 106,                     /* MVTC  */
+  YYSYMBOL_MVTDC = 107,                    /* MVTDC  */
+  YYSYMBOL_MVTIPL = 108,                   /* MVTIPL  */
+  YYSYMBOL_NEG = 109,                      /* NEG  */
+  YYSYMBOL_NOP = 110,                      /* NOP  */
+  YYSYMBOL_NOT = 111,                      /* NOT  */
+  YYSYMBOL_OR = 112,                       /* OR  */
+  YYSYMBOL_POP = 113,                      /* POP  */
+  YYSYMBOL_POPC = 114,                     /* POPC  */
+  YYSYMBOL_POPM = 115,                     /* POPM  */
+  YYSYMBOL_PUSH = 116,                     /* PUSH  */
+  YYSYMBOL_PUSHA = 117,                    /* PUSHA  */
+  YYSYMBOL_PUSHC = 118,                    /* PUSHC  */
+  YYSYMBOL_PUSHM = 119,                    /* PUSHM  */
+  YYSYMBOL_RACL = 120,                     /* RACL  */
+  YYSYMBOL_RACW = 121,                     /* RACW  */
+  YYSYMBOL_RDACL = 122,                    /* RDACL  */
+  YYSYMBOL_RDACW = 123,                    /* RDACW  */
+  YYSYMBOL_REIT = 124,                     /* REIT  */
+  YYSYMBOL_REVL = 125,                     /* REVL  */
+  YYSYMBOL_REVW = 126,                     /* REVW  */
+  YYSYMBOL_RMPA = 127,                     /* RMPA  */
+  YYSYMBOL_ROLC = 128,                     /* ROLC  */
+  YYSYMBOL_RORC = 129,                     /* RORC  */
+  YYSYMBOL_ROTL = 130,                     /* ROTL  */
+  YYSYMBOL_ROTR = 131,                     /* ROTR  */
+  YYSYMBOL_ROUND = 132,                    /* ROUND  */
+  YYSYMBOL_RSTR = 133,                     /* RSTR  */
+  YYSYMBOL_RTE = 134,                      /* RTE  */
+  YYSYMBOL_RTFI = 135,                     /* RTFI  */
+  YYSYMBOL_RTS = 136,                      /* RTS  */
+  YYSYMBOL_RTSD = 137,                     /* RTSD  */
+  YYSYMBOL_SAT = 138,                      /* SAT  */
+  YYSYMBOL_SATR = 139,                     /* SATR  */
+  YYSYMBOL_SAVE = 140,                     /* SAVE  */
+  YYSYMBOL_SBB = 141,                      /* SBB  */
+  YYSYMBOL_SCCND = 142,                    /* SCCND  */
+  YYSYMBOL_SCMPU = 143,                    /* SCMPU  */
+  YYSYMBOL_SETPSW = 144,                   /* SETPSW  */
+  YYSYMBOL_SHAR = 145,                     /* SHAR  */
+  YYSYMBOL_SHLL = 146,                     /* SHLL  */
+  YYSYMBOL_SHLR = 147,                     /* SHLR  */
+  YYSYMBOL_SMOVB = 148,                    /* SMOVB  */
+  YYSYMBOL_SMOVF = 149,                    /* SMOVF  */
+  YYSYMBOL_SMOVU = 150,                    /* SMOVU  */
+  YYSYMBOL_SSTR = 151,                     /* SSTR  */
+  YYSYMBOL_STNZ = 152,                     /* STNZ  */
+  YYSYMBOL_STOP = 153,                     /* STOP  */
+  YYSYMBOL_STZ = 154,                      /* STZ  */
+  YYSYMBOL_SUB = 155,                      /* SUB  */
+  YYSYMBOL_SUNTIL = 156,                   /* SUNTIL  */
+  YYSYMBOL_SWHILE = 157,                   /* SWHILE  */
+  YYSYMBOL_TST = 158,                      /* TST  */
+  YYSYMBOL_UTOD = 159,                     /* UTOD  */
+  YYSYMBOL_UTOF = 160,                     /* UTOF  */
+  YYSYMBOL_WAIT = 161,                     /* WAIT  */
+  YYSYMBOL_XCHG = 162,                     /* XCHG  */
+  YYSYMBOL_XOR = 163,                      /* XOR  */
+  YYSYMBOL_164_ = 164,                     /* '#'  */
+  YYSYMBOL_165_ = 165,                     /* ','  */
+  YYSYMBOL_166_ = 166,                     /* '['  */
+  YYSYMBOL_167_ = 167,                     /* ']'  */
+  YYSYMBOL_168_ = 168,                     /* '-'  */
+  YYSYMBOL_169_ = 169,                     /* '+'  */
+  YYSYMBOL_YYACCEPT = 170,                 /* $accept  */
+  YYSYMBOL_statement = 171,                /* statement  */
+  YYSYMBOL_172_1 = 172,                    /* $@1  */
+  YYSYMBOL_173_2 = 173,                    /* $@2  */
+  YYSYMBOL_174_3 = 174,                    /* $@3  */
+  YYSYMBOL_175_4 = 175,                    /* $@4  */
+  YYSYMBOL_176_5 = 176,                    /* $@5  */
+  YYSYMBOL_177_6 = 177,                    /* $@6  */
+  YYSYMBOL_178_7 = 178,                    /* $@7  */
+  YYSYMBOL_179_8 = 179,                    /* $@8  */
+  YYSYMBOL_180_9 = 180,                    /* $@9  */
+  YYSYMBOL_181_10 = 181,                   /* $@10  */
+  YYSYMBOL_182_11 = 182,                   /* $@11  */
+  YYSYMBOL_183_12 = 183,                   /* $@12  */
+  YYSYMBOL_184_13 = 184,                   /* $@13  */
+  YYSYMBOL_185_14 = 185,                   /* $@14  */
+  YYSYMBOL_186_15 = 186,                   /* $@15  */
+  YYSYMBOL_187_16 = 187,                   /* $@16  */
+  YYSYMBOL_188_17 = 188,                   /* $@17  */
+  YYSYMBOL_189_18 = 189,                   /* $@18  */
+  YYSYMBOL_190_19 = 190,                   /* $@19  */
+  YYSYMBOL_191_20 = 191,                   /* $@20  */
+  YYSYMBOL_192_21 = 192,                   /* $@21  */
+  YYSYMBOL_193_22 = 193,                   /* $@22  */
+  YYSYMBOL_194_23 = 194,                   /* $@23  */
+  YYSYMBOL_195_24 = 195,                   /* $@24  */
+  YYSYMBOL_196_25 = 196,                   /* $@25  */
+  YYSYMBOL_197_26 = 197,                   /* $@26  */
+  YYSYMBOL_198_27 = 198,                   /* $@27  */
+  YYSYMBOL_199_28 = 199,                   /* $@28  */
+  YYSYMBOL_200_29 = 200,                   /* $@29  */
+  YYSYMBOL_201_30 = 201,                   /* $@30  */
+  YYSYMBOL_202_31 = 202,                   /* $@31  */
+  YYSYMBOL_203_32 = 203,                   /* $@32  */
+  YYSYMBOL_204_33 = 204,                   /* $@33  */
+  YYSYMBOL_205_34 = 205,                   /* $@34  */
+  YYSYMBOL_206_35 = 206,                   /* $@35  */
+  YYSYMBOL_207_36 = 207,                   /* $@36  */
+  YYSYMBOL_208_37 = 208,                   /* $@37  */
+  YYSYMBOL_209_38 = 209,                   /* $@38  */
+  YYSYMBOL_210_39 = 210,                   /* $@39  */
+  YYSYMBOL_211_40 = 211,                   /* $@40  */
+  YYSYMBOL_212_41 = 212,                   /* $@41  */
+  YYSYMBOL_213_42 = 213,                   /* $@42  */
+  YYSYMBOL_214_43 = 214,                   /* $@43  */
+  YYSYMBOL_215_44 = 215,                   /* $@44  */
+  YYSYMBOL_216_45 = 216,                   /* $@45  */
+  YYSYMBOL_217_46 = 217,                   /* $@46  */
+  YYSYMBOL_218_47 = 218,                   /* $@47  */
+  YYSYMBOL_219_48 = 219,                   /* $@48  */
+  YYSYMBOL_220_49 = 220,                   /* $@49  */
+  YYSYMBOL_221_50 = 221,                   /* $@50  */
+  YYSYMBOL_222_51 = 222,                   /* $@51  */
+  YYSYMBOL_223_52 = 223,                   /* $@52  */
+  YYSYMBOL_224_53 = 224,                   /* $@53  */
+  YYSYMBOL_225_54 = 225,                   /* $@54  */
+  YYSYMBOL_226_55 = 226,                   /* $@55  */
+  YYSYMBOL_227_56 = 227,                   /* $@56  */
+  YYSYMBOL_228_57 = 228,                   /* $@57  */
+  YYSYMBOL_229_58 = 229,                   /* $@58  */
+  YYSYMBOL_230_59 = 230,                   /* $@59  */
+  YYSYMBOL_231_60 = 231,                   /* $@60  */
+  YYSYMBOL_op_subadd = 232,                /* op_subadd  */
+  YYSYMBOL_op_dp20_rm_l = 233,             /* op_dp20_rm_l  */
+  YYSYMBOL_op_dp20_rm = 234,               /* op_dp20_rm  */
+  YYSYMBOL_op_dp20_i = 235,                /* op_dp20_i  */
+  YYSYMBOL_op_dp20_rim = 236,              /* op_dp20_rim  */
+  YYSYMBOL_op_dp20_rim_l = 237,            /* op_dp20_rim_l  */
+  YYSYMBOL_op_dp20_rr = 238,               /* op_dp20_rr  */
+  YYSYMBOL_op_dp20_r = 239,                /* op_dp20_r  */
+  YYSYMBOL_op_dp20_ri = 240,               /* op_dp20_ri  */
+  YYSYMBOL_241_61 = 241,                   /* $@61  */
+  YYSYMBOL_op_xchg = 242,                  /* op_xchg  */
+  YYSYMBOL_op_shift_rot = 243,             /* op_shift_rot  */
+  YYSYMBOL_op_shift = 244,                 /* op_shift  */
+  YYSYMBOL_float3_op = 245,                /* float3_op  */
+  YYSYMBOL_float2_op = 246,                /* float2_op  */
+  YYSYMBOL_247_62 = 247,                   /* $@62  */
+  YYSYMBOL_float2_op_ni = 248,             /* float2_op_ni  */
+  YYSYMBOL_249_63 = 249,                   /* $@63  */
+  YYSYMBOL_250_64 = 250,                   /* $@64  */
+  YYSYMBOL_mvfa_op = 251,                  /* mvfa_op  */
+  YYSYMBOL_252_65 = 252,                   /* $@65  */
+  YYSYMBOL_op_xor = 253,                   /* op_xor  */
+  YYSYMBOL_op_bfield = 254,                /* op_bfield  */
+  YYSYMBOL_255_66 = 255,                   /* $@66  */
+  YYSYMBOL_op_save_rstr = 256,             /* op_save_rstr  */
+  YYSYMBOL_double2_op = 257,               /* double2_op  */
+  YYSYMBOL_double3_op = 258,               /* double3_op  */
+  YYSYMBOL_disp = 259,                     /* disp  */
+  YYSYMBOL_flag = 260,                     /* flag  */
+  YYSYMBOL_261_67 = 261,                   /* $@67  */
+  YYSYMBOL_memex = 262,                    /* memex  */
+  YYSYMBOL_bwl = 263,                      /* bwl  */
+  YYSYMBOL_bw = 264,                       /* bw  */
+  YYSYMBOL_opt_l = 265,                    /* opt_l  */
+  YYSYMBOL_opt_b = 266                     /* opt_b  */
+};
+typedef enum yysymbol_kind_t yysymbol_kind_t;
+
 
 
 
@@ -687,6 +963,7 @@ typedef int yytype_uint16;
 
 #define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
 
+
 /* Stored state numbers (used for stacks). */
 typedef yytype_int16 yy_state_t;
 
@@ -704,6 +981,7 @@ typedef int yy_state_fast_t;
 #  define YY_(Msgid) Msgid
 # endif
 #endif
+
 
 #ifndef YY_ATTRIBUTE_PURE
 # if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
@@ -762,7 +1040,7 @@ typedef int yy_state_fast_t;
 
 #define YY_ASSERT(E) ((void) (0 && (E)))
 
-#if ! defined yyoverflow || YYERROR_VERBOSE
+#if !defined yyoverflow
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -827,8 +1105,7 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 # endif
-#endif /* ! defined yyoverflow || YYERROR_VERBOSE */
-
+#endif /* !defined yyoverflow */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
@@ -904,14 +1181,16 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  924
 
-#define YYUNDEFTOK  2
+/* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   418
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
-#define YYTRANSLATE(YYX)                                                \
-  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+#define YYTRANSLATE(YYX)                                \
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK                     \
+   ? YY_CAST (yysymbol_kind_t, yytranslate[YYX])        \
+   : YYSYMBOL_YYUNDEF)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex.  */
@@ -1004,48 +1283,62 @@ static const yytype_int16 yyrline[] =
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || 0
+/** Accessing symbol of state STATE.  */
+#define YY_ACCESSING_SYMBOL(State) YY_CAST (yysymbol_kind_t, yystos[State])
+
+#if YYDEBUG || 0
+/* The user-facing name of the symbol whose (internal) number is
+   YYSYMBOL.  No bounds checking.  */
+static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
+
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "REG", "FLAG", "CREG", "ACC", "DREG",
-  "DREGH", "DREGL", "DCREG", "EXPR", "UNKNOWN_OPCODE", "IS_OPCODE",
-  "DOT_S", "DOT_B", "DOT_W", "DOT_L", "DOT_A", "DOT_UB", "DOT_UW", "DOT_D",
-  "ABS", "ADC", "ADD", "AND_", "BCLR", "BCND", "BFMOV", "BFMOVZ", "BMCND",
-  "BNOT", "BRA", "BRK", "BSET", "BSR", "BTST", "CLRPSW", "CMP", "DABS",
-  "DADD", "DBT", "DCMP", "DDIV", "DIV", "DIVU", "DMOV", "DMUL", "DNEG",
-  "DPOPM", "DPUSHM", "DROUND", "DSQRT", "DSUB", "DTOF", "DTOI", "DTOU",
-  "EDIV", "EDIVU", "EMACA", "EMSBA", "EMUL", "EMULA", "EMULU", "FADD",
-  "FCMP", "FDIV", "FMUL", "FREIT", "FSUB", "FSQRT", "FTOD", "FTOI", "FTOU",
-  "INT", "ITOD", "ITOF", "JMP", "JSR", "MACHI", "MACLH", "MACLO", "MAX",
-  "MIN", "MOV", "MOVCO", "MOVLI", "MOVU", "MSBHI", "MSBLH", "MSBLO", "MUL",
-  "MULHI", "MULLH", "MULLO", "MULU", "MVFACHI", "MVFACGU", "MVFACMI",
-  "MVFACLO", "MVFC", "MVFDC", "MVFDR", "MVTACGU", "MVTACHI", "MVTACLO",
-  "MVTC", "MVTDC", "MVTIPL", "NEG", "NOP", "NOT", "OR", "POP", "POPC",
-  "POPM", "PUSH", "PUSHA", "PUSHC", "PUSHM", "RACL", "RACW", "RDACL",
-  "RDACW", "REIT", "REVL", "REVW", "RMPA", "ROLC", "RORC", "ROTL", "ROTR",
-  "ROUND", "RSTR", "RTE", "RTFI", "RTS", "RTSD", "SAT", "SATR", "SAVE",
-  "SBB", "SCCND", "SCMPU", "SETPSW", "SHAR", "SHLL", "SHLR", "SMOVB",
-  "SMOVF", "SMOVU", "SSTR", "STNZ", "STOP", "STZ", "SUB", "SUNTIL",
-  "SWHILE", "TST", "UTOD", "UTOF", "WAIT", "XCHG", "XOR", "'#'", "','",
-  "'['", "']'", "'-'", "'+'", "$accept", "statement", "$@1", "$@2", "$@3",
-  "$@4", "$@5", "$@6", "$@7", "$@8", "$@9", "$@10", "$@11", "$@12", "$@13",
-  "$@14", "$@15", "$@16", "$@17", "$@18", "$@19", "$@20", "$@21", "$@22",
-  "$@23", "$@24", "$@25", "$@26", "$@27", "$@28", "$@29", "$@30", "$@31",
-  "$@32", "$@33", "$@34", "$@35", "$@36", "$@37", "$@38", "$@39", "$@40",
-  "$@41", "$@42", "$@43", "$@44", "$@45", "$@46", "$@47", "$@48", "$@49",
-  "$@50", "$@51", "$@52", "$@53", "$@54", "$@55", "$@56", "$@57", "$@58",
-  "$@59", "$@60", "op_subadd", "op_dp20_rm_l", "op_dp20_rm", "op_dp20_i",
-  "op_dp20_rim", "op_dp20_rim_l", "op_dp20_rr", "op_dp20_r", "op_dp20_ri",
-  "$@61", "op_xchg", "op_shift_rot", "op_shift", "float3_op", "float2_op",
-  "$@62", "float2_op_ni", "$@63", "$@64", "mvfa_op", "$@65", "op_xor",
-  "op_bfield", "$@66", "op_save_rstr", "double2_op", "double3_op", "disp",
-  "flag", "$@67", "memex", "bwl", "bw", "opt_l", "opt_b", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "REG", "FLAG", "CREG",
+  "ACC", "DREG", "DREGH", "DREGL", "DCREG", "EXPR", "UNKNOWN_OPCODE",
+  "IS_OPCODE", "DOT_S", "DOT_B", "DOT_W", "DOT_L", "DOT_A", "DOT_UB",
+  "DOT_UW", "DOT_D", "ABS", "ADC", "ADD", "AND_", "BCLR", "BCND", "BFMOV",
+  "BFMOVZ", "BMCND", "BNOT", "BRA", "BRK", "BSET", "BSR", "BTST", "CLRPSW",
+  "CMP", "DABS", "DADD", "DBT", "DCMP", "DDIV", "DIV", "DIVU", "DMOV",
+  "DMUL", "DNEG", "DPOPM", "DPUSHM", "DROUND", "DSQRT", "DSUB", "DTOF",
+  "DTOI", "DTOU", "EDIV", "EDIVU", "EMACA", "EMSBA", "EMUL", "EMULA",
+  "EMULU", "FADD", "FCMP", "FDIV", "FMUL", "FREIT", "FSUB", "FSQRT",
+  "FTOD", "FTOI", "FTOU", "INT", "ITOD", "ITOF", "JMP", "JSR", "MACHI",
+  "MACLH", "MACLO", "MAX", "MIN", "MOV", "MOVCO", "MOVLI", "MOVU", "MSBHI",
+  "MSBLH", "MSBLO", "MUL", "MULHI", "MULLH", "MULLO", "MULU", "MVFACHI",
+  "MVFACGU", "MVFACMI", "MVFACLO", "MVFC", "MVFDC", "MVFDR", "MVTACGU",
+  "MVTACHI", "MVTACLO", "MVTC", "MVTDC", "MVTIPL", "NEG", "NOP", "NOT",
+  "OR", "POP", "POPC", "POPM", "PUSH", "PUSHA", "PUSHC", "PUSHM", "RACL",
+  "RACW", "RDACL", "RDACW", "REIT", "REVL", "REVW", "RMPA", "ROLC", "RORC",
+  "ROTL", "ROTR", "ROUND", "RSTR", "RTE", "RTFI", "RTS", "RTSD", "SAT",
+  "SATR", "SAVE", "SBB", "SCCND", "SCMPU", "SETPSW", "SHAR", "SHLL",
+  "SHLR", "SMOVB", "SMOVF", "SMOVU", "SSTR", "STNZ", "STOP", "STZ", "SUB",
+  "SUNTIL", "SWHILE", "TST", "UTOD", "UTOF", "WAIT", "XCHG", "XOR", "'#'",
+  "','", "'['", "']'", "'-'", "'+'", "$accept", "statement", "$@1", "$@2",
+  "$@3", "$@4", "$@5", "$@6", "$@7", "$@8", "$@9", "$@10", "$@11", "$@12",
+  "$@13", "$@14", "$@15", "$@16", "$@17", "$@18", "$@19", "$@20", "$@21",
+  "$@22", "$@23", "$@24", "$@25", "$@26", "$@27", "$@28", "$@29", "$@30",
+  "$@31", "$@32", "$@33", "$@34", "$@35", "$@36", "$@37", "$@38", "$@39",
+  "$@40", "$@41", "$@42", "$@43", "$@44", "$@45", "$@46", "$@47", "$@48",
+  "$@49", "$@50", "$@51", "$@52", "$@53", "$@54", "$@55", "$@56", "$@57",
+  "$@58", "$@59", "$@60", "op_subadd", "op_dp20_rm_l", "op_dp20_rm",
+  "op_dp20_i", "op_dp20_rim", "op_dp20_rim_l", "op_dp20_rr", "op_dp20_r",
+  "op_dp20_ri", "$@61", "op_xchg", "op_shift_rot", "op_shift", "float3_op",
+  "float2_op", "$@62", "float2_op_ni", "$@63", "$@64", "mvfa_op", "$@65",
+  "op_xor", "op_bfield", "$@66", "op_save_rstr", "double2_op",
+  "double3_op", "disp", "flag", "$@67", "memex", "bwl", "bw", "opt_l",
+  "opt_b", YY_NULLPTR
 };
+
+static const char *
+yysymbol_name (yysymbol_kind_t yysymbol)
+{
+  return yytname[yysymbol];
+}
 #endif
 
-# ifdef YYPRINT
+#ifdef YYPRINT
 /* YYTOKNUM[NUM] -- (External) token number corresponding to the
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
@@ -1068,7 +1361,7 @@ static const yytype_int16 yytoknum[] =
      405,   406,   407,   408,   409,   410,   411,   412,   413,   414,
      415,   416,   417,   418,    35,    44,    91,    93,    45,    43
 };
-# endif
+#endif
 
 #define YYPACT_NINF (-728)
 
@@ -1696,10 +1989,10 @@ static const yytype_int8 yyr2[] =
 };
 
 
+enum { YYENOMEM = -2 };
+
 #define yyerrok         (yyerrstatus = 0)
 #define yyclearin       (yychar = YYEMPTY)
-#define YYEMPTY         (-2)
-#define YYEOF           0
 
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
@@ -1725,10 +2018,9 @@ static const yytype_int8 yyr2[] =
       }                                                           \
   while (0)
 
-/* Error token number */
-#define YYTERROR        1
-#define YYERRCODE       256
-
+/* Backward compatibility with an undocumented macro.
+   Use YYerror or YYUNDEF. */
+#define YYERRCODE YYUNDEF
 
 
 /* Enable debugging if requested.  */
@@ -1746,18 +2038,18 @@ do {                                            \
 } while (0)
 
 /* This macro is provided for backward compatibility. */
-#ifndef YY_LOCATION_PRINT
-# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-#endif
+# ifndef YY_LOCATION_PRINT
+#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+# endif
 
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
+# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
 do {                                                                      \
   if (yydebug)                                                            \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value); \
+                  Kind, Value); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -1768,18 +2060,19 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo,
+                       yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
 {
   FILE *yyoutput = yyo;
   YYUSE (yyoutput);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
-  if (yytype < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
+  if (yykind < YYNTOKENS)
+    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
 # endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
+  YYUSE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1789,12 +2082,13 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 `---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo,
+                 yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
 {
   YYFPRINTF (yyo, "%s %s (",
-             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
+             yykind < YYNTOKENS ? "token" : "nterm", yysymbol_name (yykind));
 
-  yy_symbol_value_print (yyo, yytype, yyvaluep);
+  yy_symbol_value_print (yyo, yykind, yyvaluep);
   YYFPRINTF (yyo, ")");
 }
 
@@ -1827,7 +2121,8 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp,
+                 int yyrule)
 {
   int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -1839,9 +2134,8 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
-                       yystos[yyssp[yyi + 1 - yynrhs]],
-                       &yyvsp[(yyi + 1) - (yynrhs)]
-                                              );
+                       YY_ACCESSING_SYMBOL (+yyssp[yyi + 1 - yynrhs]),
+                       &yyvsp[(yyi + 1) - (yynrhs)]);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -1856,8 +2150,8 @@ do {                                    \
    multiple parsers can coexist.  */
 int yydebug;
 #else /* !YYDEBUG */
-# define YYDPRINTF(Args)
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
+# define YYDPRINTF(Args) ((void) 0)
+# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
@@ -1880,265 +2174,38 @@ int yydebug;
 #endif
 
 
-#if YYERROR_VERBOSE
 
-# ifndef yystrlen
-#  if defined __GLIBC__ && defined _STRING_H
-#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
-#  else
-/* Return the length of YYSTR.  */
-static YYPTRDIFF_T
-yystrlen (const char *yystr)
-{
-  YYPTRDIFF_T yylen;
-  for (yylen = 0; yystr[yylen]; yylen++)
-    continue;
-  return yylen;
-}
-#  endif
-# endif
 
-# ifndef yystpcpy
-#  if defined __GLIBC__ && defined _STRING_H && defined _GNU_SOURCE
-#   define yystpcpy stpcpy
-#  else
-/* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
-   YYDEST.  */
-static char *
-yystpcpy (char *yydest, const char *yysrc)
-{
-  char *yyd = yydest;
-  const char *yys = yysrc;
 
-  while ((*yyd++ = *yys++) != '\0')
-    continue;
-
-  return yyd - 1;
-}
-#  endif
-# endif
-
-# ifndef yytnamerr
-/* Copy to YYRES the contents of YYSTR after stripping away unnecessary
-   quotes and backslashes, so that it's suitable for yyerror.  The
-   heuristic is that double-quoting is unnecessary unless the string
-   contains an apostrophe, a comma, or backslash (other than
-   backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
-   null, do not copy; instead, return the length of what the result
-   would have been.  */
-static YYPTRDIFF_T
-yytnamerr (char *yyres, const char *yystr)
-{
-  if (*yystr == '"')
-    {
-      YYPTRDIFF_T yyn = 0;
-      char const *yyp = yystr;
-
-      for (;;)
-        switch (*++yyp)
-          {
-          case '\'':
-          case ',':
-            goto do_not_strip_quotes;
-
-          case '\\':
-            if (*++yyp != '\\')
-              goto do_not_strip_quotes;
-            else
-              goto append;
-
-          append:
-          default:
-            if (yyres)
-              yyres[yyn] = *yyp;
-            yyn++;
-            break;
-
-          case '"':
-            if (yyres)
-              yyres[yyn] = '\0';
-            return yyn;
-          }
-    do_not_strip_quotes: ;
-    }
-
-  if (yyres)
-    return yystpcpy (yyres, yystr) - yyres;
-  else
-    return yystrlen (yystr);
-}
-# endif
-
-/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
-   about the unexpected token YYTOKEN for the state stack whose top is
-   YYSSP.
-
-   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
-   not large enough to hold the message.  In that case, also set
-   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
-   required number of bytes is too large to store.  */
-static int
-yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
-                yy_state_t *yyssp, int yytoken)
-{
-  enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-  /* Internationalized format string. */
-  const char *yyformat = YY_NULLPTR;
-  /* Arguments of yyformat: reported tokens (one for the "unexpected",
-     one per "expected"). */
-  char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Actual size of YYARG. */
-  int yycount = 0;
-  /* Cumulated lengths of YYARG.  */
-  YYPTRDIFF_T yysize = 0;
-
-  /* There are many possibilities here to consider:
-     - If this state is a consistent state with a default action, then
-       the only way this function was invoked is if the default action
-       is an error action.  In that case, don't check for expected
-       tokens because there are none.
-     - The only way there can be no lookahead present (in yychar) is if
-       this state is a consistent state with a default action.  Thus,
-       detecting the absence of a lookahead is sufficient to determine
-       that there is no unexpected or expected token to report.  In that
-       case, just report a simple "syntax error".
-     - Don't assume there isn't a lookahead just because this state is a
-       consistent state with a default action.  There might have been a
-       previous inconsistent state, consistent state with a non-default
-       action, or user semantic action that manipulated yychar.
-     - Of course, the expected token list depends on states to have
-       correct lookahead information, and it depends on the parser not
-       to perform extra reductions after fetching a lookahead from the
-       scanner and before detecting a syntax error.  Thus, state merging
-       (from LALR or IELR) and default reductions corrupt the expected
-       token list.  However, the list is correct for canonical LR with
-       one exception: it will still contain any token that will not be
-       accepted due to an error action in a later state.
-  */
-  if (yytoken != YYEMPTY)
-    {
-      int yyn = yypact[*yyssp];
-      YYPTRDIFF_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
-      yysize = yysize0;
-      yyarg[yycount++] = yytname[yytoken];
-      if (!yypact_value_is_default (yyn))
-        {
-          /* Start YYX at -YYN if negative to avoid negative indexes in
-             YYCHECK.  In other words, skip the first -YYN actions for
-             this state because they are default actions.  */
-          int yyxbegin = yyn < 0 ? -yyn : 0;
-          /* Stay within bounds of both yycheck and yytname.  */
-          int yychecklim = YYLAST - yyn + 1;
-          int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
-          int yyx;
-
-          for (yyx = yyxbegin; yyx < yyxend; ++yyx)
-            if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
-                && !yytable_value_is_error (yytable[yyx + yyn]))
-              {
-                if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                  {
-                    yycount = 1;
-                    yysize = yysize0;
-                    break;
-                  }
-                yyarg[yycount++] = yytname[yyx];
-                {
-                  YYPTRDIFF_T yysize1
-                    = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
-                    yysize = yysize1;
-                  else
-                    return 2;
-                }
-              }
-        }
-    }
-
-  switch (yycount)
-    {
-# define YYCASE_(N, S)                      \
-      case N:                               \
-        yyformat = S;                       \
-      break
-    default: /* Avoid compiler warnings. */
-      YYCASE_(0, YY_("syntax error"));
-      YYCASE_(1, YY_("syntax error, unexpected %s"));
-      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
-# undef YYCASE_
-    }
-
-  {
-    /* Don't count the "%s"s in the final size, but reserve room for
-       the terminator.  */
-    YYPTRDIFF_T yysize1 = yysize + (yystrlen (yyformat) - 2 * yycount) + 1;
-    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
-      yysize = yysize1;
-    else
-      return 2;
-  }
-
-  if (*yymsg_alloc < yysize)
-    {
-      *yymsg_alloc = 2 * yysize;
-      if (! (yysize <= *yymsg_alloc
-             && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
-        *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
-      return 1;
-    }
-
-  /* Avoid sprintf, as that infringes on the user's name space.
-     Don't have undefined behavior even if the translation
-     produced a string with the wrong number of "%s"s.  */
-  {
-    char *yyp = *yymsg;
-    int yyi = 0;
-    while ((*yyp = *yyformat) != '\0')
-      if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
-        {
-          yyp += yytnamerr (yyp, yyarg[yyi++]);
-          yyformat += 2;
-        }
-      else
-        {
-          ++yyp;
-          ++yyformat;
-        }
-  }
-  return 0;
-}
-#endif /* YYERROR_VERBOSE */
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
+yydestruct (const char *yymsg,
+            yysymbol_kind_t yykind, YYSTYPE *yyvaluep)
 {
   YYUSE (yyvaluep);
   if (!yymsg)
     yymsg = "Deleting";
-  YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+  YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
+  YYUSE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-
-
-/* The lookahead symbol.  */
+/* Lookahead token kind.  */
 int yychar;
 
 /* The semantic value of the lookahead symbol.  */
 YYSTYPE yylval;
 /* Number of syntax errors so far.  */
 int yynerrs;
+
+
 
 
 /*----------.
@@ -2148,43 +2215,36 @@ int yynerrs;
 int
 yyparse (void)
 {
-    yy_state_fast_t yystate;
+    yy_state_fast_t yystate = 0;
     /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus;
+    int yyerrstatus = 0;
 
-    /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
-
-       Refer to the stacks through separate pointers, to allow yyoverflow
+    /* Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
-    /* The state stack.  */
+    /* Their size.  */
+    YYPTRDIFF_T yystacksize = YYINITDEPTH;
+
+    /* The state stack: array, bottom, top.  */
     yy_state_t yyssa[YYINITDEPTH];
-    yy_state_t *yyss;
-    yy_state_t *yyssp;
+    yy_state_t *yyss = yyssa;
+    yy_state_t *yyssp = yyss;
 
-    /* The semantic value stack.  */
+    /* The semantic value stack: array, bottom, top.  */
     YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs;
-    YYSTYPE *yyvsp;
-
-    YYPTRDIFF_T yystacksize;
+    YYSTYPE *yyvs = yyvsa;
+    YYSTYPE *yyvsp = yyvs;
 
   int yyn;
+  /* The return value of yyparse.  */
   int yyresult;
-  /* Lookahead token as an internal (translated) token number.  */
-  int yytoken = 0;
+  /* Lookahead symbol kind.  */
+  yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
 
-#if YYERROR_VERBOSE
-  /* Buffer for error messages, and its allocated size.  */
-  char yymsgbuf[128];
-  char *yymsg = yymsgbuf;
-  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
-#endif
+
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
@@ -2192,15 +2252,8 @@ yyparse (void)
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  yyssp = yyss = yyssa;
-  yyvsp = yyvs = yyvsa;
-  yystacksize = YYINITDEPTH;
-
   YYDPRINTF ((stderr, "Starting parse\n"));
 
-  yystate = 0;
-  yyerrstatus = 0;
-  yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
   goto yysetstate;
 
@@ -2223,6 +2276,7 @@ yysetstate:
   YY_IGNORE_USELESS_CAST_BEGIN
   *yyssp = YY_CAST (yy_state_t, yystate);
   YY_IGNORE_USELESS_CAST_END
+  YY_STACK_PRINT (yyss, yyssp);
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
@@ -2268,7 +2322,7 @@ yysetstate:
           goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-# undef YYSTACK_RELOCATE
+#  undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
@@ -2307,17 +2361,28 @@ yybackup:
 
   /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+  /* YYCHAR is either empty, or end-of-input, or a valid lookahead.  */
   if (yychar == YYEMPTY)
     {
-      YYDPRINTF ((stderr, "Reading a token: "));
+      YYDPRINTF ((stderr, "Reading a token\n"));
       yychar = yylex ();
     }
 
   if (yychar <= YYEOF)
     {
-      yychar = yytoken = YYEOF;
+      yychar = YYEOF;
+      yytoken = YYSYMBOL_YYEOF;
       YYDPRINTF ((stderr, "Now at end of input.\n"));
+    }
+  else if (yychar == YYerror)
+    {
+      /* The scanner already issued an error message, process directly
+         to error recovery.  But do not keep the error token as
+         lookahead, it is too special and may lead us to an endless
+         loop in error recovery. */
+      yychar = YYUNDEF;
+      yytoken = YYSYMBOL_YYerror;
+      goto yyerrlab1;
     }
   else
     {
@@ -2387,37 +2452,37 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2:
+  case 2: /* statement: UNKNOWN_OPCODE  */
 #line 185 "./config/rx-parse.y"
           { as_bad (_("Unknown opcode: %s"), rx_init_start); }
-#line 2394 "config/rx-parse.c"
+#line 2459 "config/rx-parse.c"
     break;
 
-  case 3:
+  case 3: /* statement: BRK  */
 #line 190 "./config/rx-parse.y"
           { B1 (0x00); }
-#line 2400 "config/rx-parse.c"
+#line 2465 "config/rx-parse.c"
     break;
 
-  case 4:
+  case 4: /* statement: DBT  */
 #line 193 "./config/rx-parse.y"
           { B1 (0x01); }
-#line 2406 "config/rx-parse.c"
+#line 2471 "config/rx-parse.c"
     break;
 
-  case 5:
+  case 5: /* statement: RTS  */
 #line 196 "./config/rx-parse.y"
           { B1 (0x02); }
-#line 2412 "config/rx-parse.c"
+#line 2477 "config/rx-parse.c"
     break;
 
-  case 6:
+  case 6: /* statement: NOP  */
 #line 199 "./config/rx-parse.y"
           { B1 (0x03); }
-#line 2418 "config/rx-parse.c"
+#line 2483 "config/rx-parse.c"
     break;
 
-  case 7:
+  case 7: /* statement: BRA EXPR  */
 #line 204 "./config/rx-parse.y"
           { if (rx_disp3op ((yyvsp[0].exp)))
 	      { B1 (0x08); rx_disp3 ((yyvsp[0].exp), 5); }
@@ -2432,22 +2497,22 @@ yyreduce:
 		rx_linkrelax_branch ();
 		/* We'll convert this to a longer one later if needed.  */
 		B1 (0x08); rx_disp3 ((yyvsp[0].exp), 5); } }
-#line 2436 "config/rx-parse.c"
+#line 2501 "config/rx-parse.c"
     break;
 
-  case 8:
+  case 8: /* statement: BRA DOT_A EXPR  */
 #line 219 "./config/rx-parse.y"
           { B1 (0x04); PC3 ((yyvsp[0].exp)); }
-#line 2442 "config/rx-parse.c"
+#line 2507 "config/rx-parse.c"
     break;
 
-  case 9:
+  case 9: /* statement: BRA DOT_S EXPR  */
 #line 222 "./config/rx-parse.y"
           { B1 (0x08); rx_disp3 ((yyvsp[0].exp), 5); }
-#line 2448 "config/rx-parse.c"
+#line 2513 "config/rx-parse.c"
     break;
 
-  case 10:
+  case 10: /* statement: BSR EXPR  */
 #line 227 "./config/rx-parse.y"
           { if (rx_intop ((yyvsp[0].exp), 16, 16))
 	      { B1 (0x39); PC2 ((yyvsp[0].exp)); }
@@ -2457,58 +2522,58 @@ yyreduce:
 	      { rx_relax (RX_RELAX_BRANCH, 0);
 		rx_linkrelax_branch ();
 		B1 (0x39); PC2 ((yyvsp[0].exp)); } }
-#line 2461 "config/rx-parse.c"
+#line 2526 "config/rx-parse.c"
     break;
 
-  case 11:
+  case 11: /* statement: BSR DOT_A EXPR  */
 #line 236 "./config/rx-parse.y"
           { B1 (0x05), PC3 ((yyvsp[0].exp)); }
-#line 2467 "config/rx-parse.c"
+#line 2532 "config/rx-parse.c"
     break;
 
-  case 12:
+  case 12: /* statement: BCND DOT_S EXPR  */
 #line 241 "./config/rx-parse.y"
           { if ((yyvsp[-2].regno) == COND_EQ || (yyvsp[-2].regno) == COND_NE)
 	      { B1 ((yyvsp[-2].regno) == COND_EQ ? 0x10 : 0x18); rx_disp3 ((yyvsp[0].exp), 5); }
 	    else
 	      as_bad (_("Only BEQ and BNE may have .S")); }
-#line 2476 "config/rx-parse.c"
+#line 2541 "config/rx-parse.c"
     break;
 
-  case 13:
+  case 13: /* statement: BCND DOT_B EXPR  */
 #line 249 "./config/rx-parse.y"
           { B1 (0x20); F ((yyvsp[-2].regno), 4, 4); PC1 ((yyvsp[0].exp)); }
-#line 2482 "config/rx-parse.c"
+#line 2547 "config/rx-parse.c"
     break;
 
-  case 14:
+  case 14: /* statement: BRA DOT_B EXPR  */
 #line 252 "./config/rx-parse.y"
           { B1 (0x2e), PC1 ((yyvsp[0].exp)); }
-#line 2488 "config/rx-parse.c"
+#line 2553 "config/rx-parse.c"
     break;
 
-  case 15:
+  case 15: /* statement: BRA DOT_W EXPR  */
 #line 257 "./config/rx-parse.y"
           { B1 (0x38), PC2 ((yyvsp[0].exp)); }
-#line 2494 "config/rx-parse.c"
+#line 2559 "config/rx-parse.c"
     break;
 
-  case 16:
+  case 16: /* statement: BSR DOT_W EXPR  */
 #line 259 "./config/rx-parse.y"
           { B1 (0x39), PC2 ((yyvsp[0].exp)); }
-#line 2500 "config/rx-parse.c"
+#line 2565 "config/rx-parse.c"
     break;
 
-  case 17:
+  case 17: /* statement: BCND DOT_W EXPR  */
 #line 261 "./config/rx-parse.y"
           { if ((yyvsp[-2].regno) == COND_EQ || (yyvsp[-2].regno) == COND_NE)
 	      { B1 ((yyvsp[-2].regno) == COND_EQ ? 0x3a : 0x3b); PC2 ((yyvsp[0].exp)); }
 	    else
 	      as_bad (_("Only BEQ and BNE may have .W")); }
-#line 2509 "config/rx-parse.c"
+#line 2574 "config/rx-parse.c"
     break;
 
-  case 18:
+  case 18: /* statement: BCND EXPR  */
 #line 266 "./config/rx-parse.y"
           { if ((yyvsp[-1].regno) == COND_EQ || (yyvsp[-1].regno) == COND_NE)
 	      {
@@ -2524,115 +2589,115 @@ yyreduce:
 		rx_linkrelax_branch ();
 	        B1 (0x20); F ((yyvsp[-1].regno), 4, 4); PC1 ((yyvsp[0].exp));
 	      } }
-#line 2528 "config/rx-parse.c"
+#line 2593 "config/rx-parse.c"
     break;
 
-  case 19:
+  case 19: /* statement: MOV DOT_B '#' EXPR ',' '[' REG ']'  */
 #line 284 "./config/rx-parse.y"
           { B2 (0xf8, 0x04); F ((yyvsp[-1].regno), 8, 4); IMMB ((yyvsp[-4].exp), 12);}
-#line 2534 "config/rx-parse.c"
+#line 2599 "config/rx-parse.c"
     break;
 
-  case 20:
+  case 20: /* statement: MOV DOT_W '#' EXPR ',' '[' REG ']'  */
 #line 287 "./config/rx-parse.y"
           { B2 (0xf8, 0x01); F ((yyvsp[-1].regno), 8, 4); IMMW ((yyvsp[-4].exp), 12);}
-#line 2540 "config/rx-parse.c"
+#line 2605 "config/rx-parse.c"
     break;
 
-  case 21:
+  case 21: /* statement: MOV DOT_L '#' EXPR ',' '[' REG ']'  */
 #line 290 "./config/rx-parse.y"
           { B2 (0xf8, 0x02); F ((yyvsp[-1].regno), 8, 4); IMM ((yyvsp[-4].exp), 12);}
-#line 2546 "config/rx-parse.c"
+#line 2611 "config/rx-parse.c"
     break;
 
-  case 22:
+  case 22: /* statement: MOV DOT_B '#' EXPR ',' disp '[' REG ']'  */
 #line 294 "./config/rx-parse.y"
           { if ((yyvsp[-1].regno) <= 7 && rx_uintop ((yyvsp[-5].exp), 8) && rx_disp5op0 (&(yyvsp[-3].exp), BSIZE))
 	      { B2 (0x3c, 0); rx_field5s2 ((yyvsp[-3].exp)); F ((yyvsp[-1].regno), 9, 3); O1 ((yyvsp[-5].exp)); }
 	    else
 	      { B2 (0xf8, 0x04); F ((yyvsp[-1].regno), 8, 4); DSP ((yyvsp[-3].exp), 6, BSIZE); O1 ((yyvsp[-5].exp));
 	      if ((yyvsp[-5].exp).X_op != O_constant && (yyvsp[-5].exp).X_op != O_big) rx_linkrelax_imm (12); } }
-#line 2556 "config/rx-parse.c"
+#line 2621 "config/rx-parse.c"
     break;
 
-  case 23:
+  case 23: /* statement: MOV DOT_W '#' EXPR ',' disp '[' REG ']'  */
 #line 301 "./config/rx-parse.y"
           { if ((yyvsp[-1].regno) <= 7 && rx_uintop ((yyvsp[-5].exp), 8) && rx_disp5op0 (&(yyvsp[-3].exp), WSIZE))
 	      { B2 (0x3d, 0); rx_field5s2 ((yyvsp[-3].exp)); F ((yyvsp[-1].regno), 9, 3); O1 ((yyvsp[-5].exp)); }
 	    else
 	      { B2 (0xf8, 0x01); F ((yyvsp[-1].regno), 8, 4); DSP ((yyvsp[-3].exp), 6, WSIZE); IMMW ((yyvsp[-5].exp), 12); } }
-#line 2565 "config/rx-parse.c"
+#line 2630 "config/rx-parse.c"
     break;
 
-  case 24:
+  case 24: /* statement: MOV DOT_L '#' EXPR ',' disp '[' REG ']'  */
 #line 307 "./config/rx-parse.y"
           { if ((yyvsp[-1].regno) <= 7 && rx_uintop ((yyvsp[-5].exp), 8) && rx_disp5op0 (&(yyvsp[-3].exp), LSIZE))
 	      { B2 (0x3e, 0); rx_field5s2 ((yyvsp[-3].exp)); F ((yyvsp[-1].regno), 9, 3); O1 ((yyvsp[-5].exp)); }
 	    else
 	      { B2 (0xf8, 0x02); F ((yyvsp[-1].regno), 8, 4); DSP ((yyvsp[-3].exp), 6, LSIZE); IMM ((yyvsp[-5].exp), 12); } }
-#line 2574 "config/rx-parse.c"
+#line 2639 "config/rx-parse.c"
     break;
 
-  case 25:
+  case 25: /* statement: RTSD '#' EXPR ',' REG '-' REG  */
 #line 315 "./config/rx-parse.y"
           { B2 (0x3f, 0); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); rtsd_immediate ((yyvsp[-4].exp));
 	    if ((yyvsp[-2].regno) == 0)
 	      rx_error (_("RTSD cannot pop R0"));
 	    if ((yyvsp[-2].regno) > (yyvsp[0].regno))
 	      rx_error (_("RTSD first reg must be <= second reg")); }
-#line 2584 "config/rx-parse.c"
+#line 2649 "config/rx-parse.c"
     break;
 
-  case 26:
+  case 26: /* statement: CMP REG ',' REG  */
 #line 324 "./config/rx-parse.y"
           { B2 (0x47, 0); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 2590 "config/rx-parse.c"
+#line 2655 "config/rx-parse.c"
     break;
 
-  case 27:
+  case 27: /* statement: CMP disp '[' REG ']' DOT_UB ',' REG  */
 #line 329 "./config/rx-parse.y"
           { B2 (0x44, 0); F ((yyvsp[-4].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); DSP ((yyvsp[-6].exp), 6, BSIZE); }
-#line 2596 "config/rx-parse.c"
+#line 2661 "config/rx-parse.c"
     break;
 
-  case 28:
+  case 28: /* statement: CMP disp '[' REG ']' memex ',' REG  */
 #line 332 "./config/rx-parse.y"
           { B3 (MEMEX, 0x04, 0); F ((yyvsp[-2].regno), 8, 2);  F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, sizemap[(yyvsp[-2].regno)]); }
-#line 2602 "config/rx-parse.c"
+#line 2667 "config/rx-parse.c"
     break;
 
-  case 29:
+  case 29: /* statement: MOVU bw REG ',' REG  */
 #line 337 "./config/rx-parse.y"
           { B2 (0x5b, 0x00); F ((yyvsp[-3].regno), 5, 1); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 2608 "config/rx-parse.c"
+#line 2673 "config/rx-parse.c"
     break;
 
-  case 30:
+  case 30: /* statement: MOVU bw '[' REG ']' ',' REG  */
 #line 342 "./config/rx-parse.y"
           { B2 (0x58, 0x00); F ((yyvsp[-5].regno), 5, 1); F ((yyvsp[-3].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 2614 "config/rx-parse.c"
+#line 2679 "config/rx-parse.c"
     break;
 
-  case 31:
+  case 31: /* statement: MOVU bw EXPR '[' REG ']' ',' REG  */
 #line 345 "./config/rx-parse.y"
           { if ((yyvsp[-3].regno) <= 7 && (yyvsp[0].regno) <= 7 && rx_disp5op (&(yyvsp[-5].exp), (yyvsp[-6].regno)))
 	      { B2 (0xb0, 0); F ((yyvsp[-6].regno), 4, 1); F ((yyvsp[-3].regno), 9, 3); F ((yyvsp[0].regno), 13, 3); rx_field5s ((yyvsp[-5].exp)); }
 	    else
 	      { B2 (0x58, 0x00); F ((yyvsp[-6].regno), 5, 1); F ((yyvsp[-3].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); DSP ((yyvsp[-5].exp), 6, (yyvsp[-6].regno)); } }
-#line 2623 "config/rx-parse.c"
+#line 2688 "config/rx-parse.c"
     break;
 
-  case 32:
+  case 32: /* statement: SUB '#' EXPR ',' REG  */
 #line 353 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x60, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      /* This is really an add, but we negate the immediate.  */
 	      { B2 (0x70, 0); F ((yyvsp[0].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); NIMM ((yyvsp[-2].exp), 6); } }
-#line 2633 "config/rx-parse.c"
+#line 2698 "config/rx-parse.c"
     break;
 
-  case 33:
+  case 33: /* statement: CMP '#' EXPR ',' REG  */
 #line 360 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x61, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
@@ -2640,46 +2705,46 @@ yyreduce:
 	      { B2 (0x75, 0x50); F ((yyvsp[0].regno), 12, 4); UO1 ((yyvsp[-2].exp)); }
 	    else
 	      { B2 (0x74, 0x00); F ((yyvsp[0].regno), 12, 4); IMM ((yyvsp[-2].exp), 6); } }
-#line 2644 "config/rx-parse.c"
+#line 2709 "config/rx-parse.c"
     break;
 
-  case 34:
+  case 34: /* statement: ADD '#' EXPR ',' REG  */
 #line 368 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x62, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      { B2 (0x70, 0); F ((yyvsp[0].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); IMM ((yyvsp[-2].exp), 6); } }
-#line 2653 "config/rx-parse.c"
+#line 2718 "config/rx-parse.c"
     break;
 
-  case 35:
+  case 35: /* statement: MUL '#' EXPR ',' REG  */
 #line 374 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x63, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      { B2 (0x74, 0x10); F ((yyvsp[0].regno), 12, 4); IMM ((yyvsp[-2].exp), 6); } }
-#line 2662 "config/rx-parse.c"
+#line 2727 "config/rx-parse.c"
     break;
 
-  case 36:
+  case 36: /* statement: AND_ '#' EXPR ',' REG  */
 #line 380 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x64, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      { B2 (0x74, 0x20); F ((yyvsp[0].regno), 12, 4); IMM ((yyvsp[-2].exp), 6); } }
-#line 2671 "config/rx-parse.c"
+#line 2736 "config/rx-parse.c"
     break;
 
-  case 37:
+  case 37: /* statement: OR '#' EXPR ',' REG  */
 #line 386 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x65, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      { B2 (0x74, 0x30); F ((yyvsp[0].regno), 12, 4); IMM ((yyvsp[-2].exp), 6); } }
-#line 2680 "config/rx-parse.c"
+#line 2745 "config/rx-parse.c"
     break;
 
-  case 38:
+  case 38: /* statement: MOV DOT_L '#' EXPR ',' REG  */
 #line 392 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x66, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
@@ -2687,10 +2752,10 @@ yyreduce:
 	      { B2 (0x75, 0x40); F ((yyvsp[0].regno), 12, 4); UO1 ((yyvsp[-2].exp)); }
 	    else
 	      { B2 (0xfb, 0x02); F ((yyvsp[0].regno), 8, 4); IMM ((yyvsp[-2].exp), 12); } }
-#line 2691 "config/rx-parse.c"
+#line 2756 "config/rx-parse.c"
     break;
 
-  case 39:
+  case 39: /* statement: MOV '#' EXPR ',' REG  */
 #line 400 "./config/rx-parse.y"
           { if (rx_uintop ((yyvsp[-2].exp), 4))
 	      { B2 (0x66, 0); FE ((yyvsp[-2].exp), 8, 4); F ((yyvsp[0].regno), 12, 4); }
@@ -2698,34 +2763,34 @@ yyreduce:
 	      { B2 (0x75, 0x40); F ((yyvsp[0].regno), 12, 4); UO1 ((yyvsp[-2].exp)); }
 	    else
 	      { B2 (0xfb, 0x02); F ((yyvsp[0].regno), 8, 4); IMM ((yyvsp[-2].exp), 12); } }
-#line 2702 "config/rx-parse.c"
+#line 2767 "config/rx-parse.c"
     break;
 
-  case 40:
+  case 40: /* statement: RTSD '#' EXPR  */
 #line 410 "./config/rx-parse.y"
           { B1 (0x67); rtsd_immediate ((yyvsp[0].exp)); }
-#line 2708 "config/rx-parse.c"
+#line 2773 "config/rx-parse.c"
     break;
 
-  case 41:
+  case 41: /* $@1: %empty  */
 #line 414 "./config/rx-parse.y"
                { sub_op = 0; }
-#line 2714 "config/rx-parse.c"
+#line 2779 "config/rx-parse.c"
     break;
 
-  case 43:
+  case 43: /* $@2: %empty  */
 #line 415 "./config/rx-parse.y"
                { sub_op = 1; }
-#line 2720 "config/rx-parse.c"
+#line 2785 "config/rx-parse.c"
     break;
 
-  case 45:
+  case 45: /* $@3: %empty  */
 #line 416 "./config/rx-parse.y"
                { sub_op = 2; }
-#line 2726 "config/rx-parse.c"
+#line 2791 "config/rx-parse.c"
     break;
 
-  case 47:
+  case 47: /* statement: PUSHM REG '-' REG  */
 #line 421 "./config/rx-parse.y"
           {
 	    if ((yyvsp[-2].regno) == (yyvsp[0].regno))
@@ -2736,10 +2801,10 @@ yyreduce:
 	      rx_error (_("PUSHM cannot push R0"));
 	    if ((yyvsp[-2].regno) > (yyvsp[0].regno))
 	      rx_error (_("PUSHM first reg must be <= second reg")); }
-#line 2740 "config/rx-parse.c"
+#line 2805 "config/rx-parse.c"
     break;
 
-  case 48:
+  case 48: /* statement: POPM REG '-' REG  */
 #line 434 "./config/rx-parse.y"
           {
 	    if ((yyvsp[-2].regno) == (yyvsp[0].regno))
@@ -2750,70 +2815,70 @@ yyreduce:
 	      rx_error (_("POPM cannot pop R0"));
 	    if ((yyvsp[-2].regno) > (yyvsp[0].regno))
 	      rx_error (_("POPM first reg must be <= second reg")); }
-#line 2754 "config/rx-parse.c"
+#line 2819 "config/rx-parse.c"
     break;
 
-  case 49:
+  case 49: /* statement: ADD '#' EXPR ',' REG ',' REG  */
 #line 447 "./config/rx-parse.y"
           { B2 (0x70, 0x00); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); IMM ((yyvsp[-4].exp), 6); }
-#line 2760 "config/rx-parse.c"
+#line 2825 "config/rx-parse.c"
     break;
 
-  case 50:
+  case 50: /* statement: INT '#' EXPR  */
 #line 452 "./config/rx-parse.y"
           { B2(0x75, 0x60), UO1 ((yyvsp[0].exp)); }
-#line 2766 "config/rx-parse.c"
+#line 2831 "config/rx-parse.c"
     break;
 
-  case 51:
+  case 51: /* statement: BSET '#' EXPR ',' REG  */
 #line 457 "./config/rx-parse.y"
           { B2 (0x78, 0); FE ((yyvsp[-2].exp), 7, 5); F ((yyvsp[0].regno), 12, 4); }
-#line 2772 "config/rx-parse.c"
+#line 2837 "config/rx-parse.c"
     break;
 
-  case 52:
+  case 52: /* statement: BCLR '#' EXPR ',' REG  */
 #line 459 "./config/rx-parse.y"
           { B2 (0x7a, 0); FE ((yyvsp[-2].exp), 7, 5); F ((yyvsp[0].regno), 12, 4); }
-#line 2778 "config/rx-parse.c"
+#line 2843 "config/rx-parse.c"
     break;
 
-  case 53:
+  case 53: /* statement: BTST '#' EXPR ',' REG  */
 #line 464 "./config/rx-parse.y"
           { B2 (0x7c, 0x00); FE ((yyvsp[-2].exp), 7, 5); F ((yyvsp[0].regno), 12, 4); }
-#line 2784 "config/rx-parse.c"
+#line 2849 "config/rx-parse.c"
     break;
 
-  case 54:
+  case 54: /* statement: SAT REG  */
 #line 469 "./config/rx-parse.y"
           { B2 (0x7e, 0x30); F ((yyvsp[0].regno), 12, 4); }
-#line 2790 "config/rx-parse.c"
+#line 2855 "config/rx-parse.c"
     break;
 
-  case 55:
+  case 55: /* statement: RORC REG  */
 #line 471 "./config/rx-parse.y"
           { B2 (0x7e, 0x40); F ((yyvsp[0].regno), 12, 4); }
-#line 2796 "config/rx-parse.c"
+#line 2861 "config/rx-parse.c"
     break;
 
-  case 56:
+  case 56: /* statement: ROLC REG  */
 #line 473 "./config/rx-parse.y"
           { B2 (0x7e, 0x50); F ((yyvsp[0].regno), 12, 4); }
-#line 2802 "config/rx-parse.c"
+#line 2867 "config/rx-parse.c"
     break;
 
-  case 57:
+  case 57: /* statement: PUSH bwl REG  */
 #line 478 "./config/rx-parse.y"
           { B2 (0x7e, 0x80); F ((yyvsp[-1].regno), 10, 2); F ((yyvsp[0].regno), 12, 4); }
-#line 2808 "config/rx-parse.c"
+#line 2873 "config/rx-parse.c"
     break;
 
-  case 58:
+  case 58: /* statement: POP REG  */
 #line 483 "./config/rx-parse.y"
           { B2 (0x7e, 0xb0); F ((yyvsp[0].regno), 12, 4); }
-#line 2814 "config/rx-parse.c"
+#line 2879 "config/rx-parse.c"
     break;
 
-  case 59:
+  case 59: /* statement: PUSHC CREG  */
 #line 488 "./config/rx-parse.y"
           { if ((yyvsp[0].regno) == 13)
 	      { rx_check_v2 (); }
@@ -2821,10 +2886,10 @@ yyreduce:
 	      { B2 (0x7e, 0xc0); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      as_bad (_("PUSHC can only push the first 16 control registers")); }
-#line 2825 "config/rx-parse.c"
+#line 2890 "config/rx-parse.c"
     break;
 
-  case 60:
+  case 60: /* statement: POPC CREG  */
 #line 498 "./config/rx-parse.y"
           { if ((yyvsp[0].regno) == 13)
 	    { rx_check_v2 (); }
@@ -2832,552 +2897,552 @@ yyreduce:
 	      { B2 (0x7e, 0xe0); F ((yyvsp[0].regno), 12, 4); }
 	    else
 	      as_bad (_("POPC can only pop the first 16 control registers")); }
-#line 2836 "config/rx-parse.c"
+#line 2901 "config/rx-parse.c"
     break;
 
-  case 61:
+  case 61: /* statement: SETPSW flag  */
 #line 508 "./config/rx-parse.y"
           { B2 (0x7f, 0xa0); F ((yyvsp[0].regno), 12, 4); }
-#line 2842 "config/rx-parse.c"
+#line 2907 "config/rx-parse.c"
     break;
 
-  case 62:
+  case 62: /* statement: CLRPSW flag  */
 #line 510 "./config/rx-parse.y"
           { B2 (0x7f, 0xb0); F ((yyvsp[0].regno), 12, 4); }
-#line 2848 "config/rx-parse.c"
+#line 2913 "config/rx-parse.c"
     break;
 
-  case 63:
+  case 63: /* statement: JMP REG  */
 #line 515 "./config/rx-parse.y"
           { B2 (0x7f, 0x00); F ((yyvsp[0].regno), 12, 4); }
-#line 2854 "config/rx-parse.c"
+#line 2919 "config/rx-parse.c"
     break;
 
-  case 64:
+  case 64: /* statement: JSR REG  */
 #line 517 "./config/rx-parse.y"
           { B2 (0x7f, 0x10); F ((yyvsp[0].regno), 12, 4); }
-#line 2860 "config/rx-parse.c"
+#line 2925 "config/rx-parse.c"
     break;
 
-  case 65:
+  case 65: /* statement: BRA opt_l REG  */
 #line 519 "./config/rx-parse.y"
           { B2 (0x7f, 0x40); F ((yyvsp[0].regno), 12, 4); }
-#line 2866 "config/rx-parse.c"
+#line 2931 "config/rx-parse.c"
     break;
 
-  case 66:
+  case 66: /* statement: BSR opt_l REG  */
 #line 521 "./config/rx-parse.y"
           { B2 (0x7f, 0x50); F ((yyvsp[0].regno), 12, 4); }
-#line 2872 "config/rx-parse.c"
+#line 2937 "config/rx-parse.c"
     break;
 
-  case 67:
+  case 67: /* statement: SCMPU  */
 #line 526 "./config/rx-parse.y"
           { B2 (0x7f, 0x83); rx_note_string_insn_use (); }
-#line 2878 "config/rx-parse.c"
+#line 2943 "config/rx-parse.c"
     break;
 
-  case 68:
+  case 68: /* statement: SMOVU  */
 #line 528 "./config/rx-parse.y"
           { B2 (0x7f, 0x87); rx_note_string_insn_use (); }
-#line 2884 "config/rx-parse.c"
+#line 2949 "config/rx-parse.c"
     break;
 
-  case 69:
+  case 69: /* statement: SMOVB  */
 #line 530 "./config/rx-parse.y"
           { B2 (0x7f, 0x8b); rx_note_string_insn_use (); }
-#line 2890 "config/rx-parse.c"
+#line 2955 "config/rx-parse.c"
     break;
 
-  case 70:
+  case 70: /* statement: SMOVF  */
 #line 532 "./config/rx-parse.y"
           { B2 (0x7f, 0x8f); rx_note_string_insn_use (); }
-#line 2896 "config/rx-parse.c"
+#line 2961 "config/rx-parse.c"
     break;
 
-  case 71:
+  case 71: /* statement: SUNTIL bwl  */
 #line 537 "./config/rx-parse.y"
           { B2 (0x7f, 0x80); F ((yyvsp[0].regno), 14, 2); rx_note_string_insn_use (); }
-#line 2902 "config/rx-parse.c"
+#line 2967 "config/rx-parse.c"
     break;
 
-  case 72:
+  case 72: /* statement: SWHILE bwl  */
 #line 539 "./config/rx-parse.y"
           { B2 (0x7f, 0x84); F ((yyvsp[0].regno), 14, 2); rx_note_string_insn_use (); }
-#line 2908 "config/rx-parse.c"
+#line 2973 "config/rx-parse.c"
     break;
 
-  case 73:
+  case 73: /* statement: SSTR bwl  */
 #line 541 "./config/rx-parse.y"
           { B2 (0x7f, 0x88); F ((yyvsp[0].regno), 14, 2); }
-#line 2914 "config/rx-parse.c"
+#line 2979 "config/rx-parse.c"
     break;
 
-  case 74:
+  case 74: /* statement: RMPA bwl  */
 #line 546 "./config/rx-parse.y"
           { B2 (0x7f, 0x8c); F ((yyvsp[0].regno), 14, 2); rx_note_string_insn_use (); }
-#line 2920 "config/rx-parse.c"
+#line 2985 "config/rx-parse.c"
     break;
 
-  case 75:
+  case 75: /* statement: RTFI  */
 #line 551 "./config/rx-parse.y"
           { B2 (0x7f, 0x94); }
-#line 2926 "config/rx-parse.c"
+#line 2991 "config/rx-parse.c"
     break;
 
-  case 76:
+  case 76: /* statement: RTE  */
 #line 553 "./config/rx-parse.y"
           { B2 (0x7f, 0x95); }
-#line 2932 "config/rx-parse.c"
+#line 2997 "config/rx-parse.c"
     break;
 
-  case 77:
+  case 77: /* statement: WAIT  */
 #line 555 "./config/rx-parse.y"
           { B2 (0x7f, 0x96); }
-#line 2938 "config/rx-parse.c"
+#line 3003 "config/rx-parse.c"
     break;
 
-  case 78:
+  case 78: /* statement: SATR  */
 #line 557 "./config/rx-parse.y"
           { B2 (0x7f, 0x93); }
-#line 2944 "config/rx-parse.c"
+#line 3009 "config/rx-parse.c"
     break;
 
-  case 79:
+  case 79: /* statement: MVTIPL '#' EXPR  */
 #line 562 "./config/rx-parse.y"
           { B3 (0x75, 0x70, 0x00); FE ((yyvsp[0].exp), 20, 4); }
-#line 2950 "config/rx-parse.c"
+#line 3015 "config/rx-parse.c"
     break;
 
-  case 80:
+  case 80: /* statement: MOV bwl REG ',' EXPR '[' REG ']'  */
 #line 568 "./config/rx-parse.y"
           { if ((yyvsp[-5].regno) <= 7 && (yyvsp[-1].regno) <= 7 && rx_disp5op (&(yyvsp[-3].exp), (yyvsp[-6].regno)))
 	      { B2 (0x80, 0); F ((yyvsp[-6].regno), 2, 2); F ((yyvsp[-1].regno), 9, 3); F ((yyvsp[-5].regno), 13, 3); rx_field5s ((yyvsp[-3].exp)); }
 	    else
 	      { B2 (0xc3, 0x00); F ((yyvsp[-6].regno), 2, 2); F ((yyvsp[-1].regno), 8, 4); F ((yyvsp[-5].regno), 12, 4); DSP ((yyvsp[-3].exp), 4, (yyvsp[-6].regno)); }}
-#line 2959 "config/rx-parse.c"
+#line 3024 "config/rx-parse.c"
     break;
 
-  case 81:
+  case 81: /* statement: MOV bwl EXPR '[' REG ']' ',' REG  */
 #line 576 "./config/rx-parse.y"
           { if ((yyvsp[-3].regno) <= 7 && (yyvsp[0].regno) <= 7 && rx_disp5op (&(yyvsp[-5].exp), (yyvsp[-6].regno)))
 	      { B2 (0x88, 0); F ((yyvsp[-6].regno), 2, 2); F ((yyvsp[-3].regno), 9, 3); F ((yyvsp[0].regno), 13, 3); rx_field5s ((yyvsp[-5].exp)); }
 	    else
 	      { B2 (0xcc, 0x00); F ((yyvsp[-6].regno), 2, 2); F ((yyvsp[-3].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); DSP ((yyvsp[-5].exp), 6, (yyvsp[-6].regno)); } }
-#line 2968 "config/rx-parse.c"
+#line 3033 "config/rx-parse.c"
     break;
 
-  case 82:
+  case 82: /* statement: MOV bwl REG ',' '[' REG ']'  */
 #line 590 "./config/rx-parse.y"
           { B2 (0xc3, 0x00); F ((yyvsp[-5].regno), 2, 2); F ((yyvsp[-1].regno), 8, 4); F ((yyvsp[-4].regno), 12, 4); }
-#line 2974 "config/rx-parse.c"
+#line 3039 "config/rx-parse.c"
     break;
 
-  case 83:
+  case 83: /* statement: MOV bwl '[' REG ']' ',' disp '[' REG ']'  */
 #line 595 "./config/rx-parse.y"
           { B2 (0xc0, 0); F ((yyvsp[-8].regno), 2, 2); F ((yyvsp[-6].regno), 8, 4); F ((yyvsp[-1].regno), 12, 4); DSP ((yyvsp[-3].exp), 4, (yyvsp[-8].regno)); }
-#line 2980 "config/rx-parse.c"
+#line 3045 "config/rx-parse.c"
     break;
 
-  case 84:
+  case 84: /* statement: MOV bwl EXPR '[' REG ']' ',' disp '[' REG ']'  */
 #line 600 "./config/rx-parse.y"
           { B2 (0xc0, 0x00); F ((yyvsp[-9].regno), 2, 2); F ((yyvsp[-6].regno), 8, 4); F ((yyvsp[-1].regno), 12, 4); DSP ((yyvsp[-8].exp), 6, (yyvsp[-9].regno)); DSP ((yyvsp[-3].exp), 4, (yyvsp[-9].regno)); }
-#line 2986 "config/rx-parse.c"
+#line 3051 "config/rx-parse.c"
     break;
 
-  case 85:
+  case 85: /* statement: MOV bwl REG ',' REG  */
 #line 605 "./config/rx-parse.y"
           { B2 (0xcf, 0x00); F ((yyvsp[-3].regno), 2, 2); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 2992 "config/rx-parse.c"
+#line 3057 "config/rx-parse.c"
     break;
 
-  case 86:
+  case 86: /* statement: MOV bwl '[' REG ']' ',' REG  */
 #line 610 "./config/rx-parse.y"
           { B2 (0xcc, 0x00); F ((yyvsp[-5].regno), 2, 2); F ((yyvsp[-3].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 2998 "config/rx-parse.c"
+#line 3063 "config/rx-parse.c"
     break;
 
-  case 87:
+  case 87: /* statement: BSET '#' EXPR ',' disp '[' REG ']' DOT_B  */
 #line 615 "./config/rx-parse.y"
           { B2 (0xf0, 0x00); F ((yyvsp[-2].regno), 8, 4); FE ((yyvsp[-6].exp), 13, 3); DSP ((yyvsp[-4].exp), 6, BSIZE); }
-#line 3004 "config/rx-parse.c"
+#line 3069 "config/rx-parse.c"
     break;
 
-  case 88:
+  case 88: /* statement: BCLR '#' EXPR ',' disp '[' REG ']' DOT_B  */
 #line 617 "./config/rx-parse.y"
           { B2 (0xf0, 0x08); F ((yyvsp[-2].regno), 8, 4); FE ((yyvsp[-6].exp), 13, 3); DSP ((yyvsp[-4].exp), 6, BSIZE); }
-#line 3010 "config/rx-parse.c"
+#line 3075 "config/rx-parse.c"
     break;
 
-  case 89:
+  case 89: /* statement: BTST '#' EXPR ',' disp '[' REG ']' DOT_B  */
 #line 619 "./config/rx-parse.y"
           { B2 (0xf4, 0x00); F ((yyvsp[-2].regno), 8, 4); FE ((yyvsp[-6].exp), 13, 3); DSP ((yyvsp[-4].exp), 6, BSIZE); }
-#line 3016 "config/rx-parse.c"
+#line 3081 "config/rx-parse.c"
     break;
 
-  case 90:
+  case 90: /* statement: PUSH bwl disp '[' REG ']'  */
 #line 624 "./config/rx-parse.y"
           { B2 (0xf4, 0x08); F ((yyvsp[-4].regno), 14, 2); F ((yyvsp[-1].regno), 8, 4); DSP ((yyvsp[-3].exp), 6, (yyvsp[-4].regno)); }
-#line 3022 "config/rx-parse.c"
+#line 3087 "config/rx-parse.c"
     break;
 
-  case 91:
+  case 91: /* $@4: %empty  */
 #line 628 "./config/rx-parse.y"
                 { sub_op = 0; }
-#line 3028 "config/rx-parse.c"
+#line 3093 "config/rx-parse.c"
     break;
 
-  case 93:
+  case 93: /* $@5: %empty  */
 #line 629 "./config/rx-parse.y"
                 { sub_op = 1; sub_op2 = 1; }
-#line 3034 "config/rx-parse.c"
+#line 3099 "config/rx-parse.c"
     break;
 
-  case 95:
+  case 95: /* $@6: %empty  */
 #line 630 "./config/rx-parse.y"
                 { sub_op = 2; }
-#line 3040 "config/rx-parse.c"
+#line 3105 "config/rx-parse.c"
     break;
 
-  case 97:
+  case 97: /* $@7: %empty  */
 #line 631 "./config/rx-parse.y"
                 { sub_op = 3; sub_op2 = 2; }
-#line 3046 "config/rx-parse.c"
+#line 3111 "config/rx-parse.c"
     break;
 
-  case 99:
+  case 99: /* $@8: %empty  */
 #line 632 "./config/rx-parse.y"
                 { sub_op = 4; }
-#line 3052 "config/rx-parse.c"
+#line 3117 "config/rx-parse.c"
     break;
 
-  case 101:
+  case 101: /* $@9: %empty  */
 #line 633 "./config/rx-parse.y"
                 { sub_op = 5; }
-#line 3058 "config/rx-parse.c"
+#line 3123 "config/rx-parse.c"
     break;
 
-  case 103:
+  case 103: /* $@10: %empty  */
 #line 634 "./config/rx-parse.y"
                 { sub_op = 6; }
-#line 3064 "config/rx-parse.c"
+#line 3129 "config/rx-parse.c"
     break;
 
-  case 105:
+  case 105: /* $@11: %empty  */
 #line 635 "./config/rx-parse.y"
                 { sub_op = 7; }
-#line 3070 "config/rx-parse.c"
+#line 3135 "config/rx-parse.c"
     break;
 
-  case 107:
+  case 107: /* $@12: %empty  */
 #line 636 "./config/rx-parse.y"
                 { sub_op = 8; }
-#line 3076 "config/rx-parse.c"
+#line 3141 "config/rx-parse.c"
     break;
 
-  case 109:
+  case 109: /* $@13: %empty  */
 #line 637 "./config/rx-parse.y"
                 { sub_op = 9; }
-#line 3082 "config/rx-parse.c"
+#line 3147 "config/rx-parse.c"
     break;
 
-  case 111:
+  case 111: /* $@14: %empty  */
 #line 638 "./config/rx-parse.y"
                 { sub_op = 12; }
-#line 3088 "config/rx-parse.c"
+#line 3153 "config/rx-parse.c"
     break;
 
-  case 113:
+  case 113: /* $@15: %empty  */
 #line 639 "./config/rx-parse.y"
                 { sub_op = 13; }
-#line 3094 "config/rx-parse.c"
+#line 3159 "config/rx-parse.c"
     break;
 
-  case 115:
+  case 115: /* $@16: %empty  */
 #line 640 "./config/rx-parse.y"
                 { sub_op = 14; sub_op2 = 0; }
-#line 3100 "config/rx-parse.c"
+#line 3165 "config/rx-parse.c"
     break;
 
-  case 117:
+  case 117: /* $@17: %empty  */
 #line 641 "./config/rx-parse.y"
                 { sub_op = 14; sub_op2 = 0; }
-#line 3106 "config/rx-parse.c"
+#line 3171 "config/rx-parse.c"
     break;
 
-  case 119:
+  case 119: /* $@18: %empty  */
 #line 642 "./config/rx-parse.y"
                 { sub_op = 15; sub_op2 = 1; }
-#line 3112 "config/rx-parse.c"
+#line 3177 "config/rx-parse.c"
     break;
 
-  case 121:
+  case 121: /* $@19: %empty  */
 #line 646 "./config/rx-parse.y"
                 { sub_op = 6; }
-#line 3118 "config/rx-parse.c"
+#line 3183 "config/rx-parse.c"
     break;
 
-  case 123:
+  case 123: /* $@20: %empty  */
 #line 647 "./config/rx-parse.y"
                 { sub_op = 7; }
-#line 3124 "config/rx-parse.c"
+#line 3189 "config/rx-parse.c"
     break;
 
-  case 125:
+  case 125: /* $@21: %empty  */
 #line 648 "./config/rx-parse.y"
                 { sub_op = 16; }
-#line 3130 "config/rx-parse.c"
+#line 3195 "config/rx-parse.c"
     break;
 
-  case 127:
+  case 127: /* $@22: %empty  */
 #line 649 "./config/rx-parse.y"
                 { sub_op = 17; }
-#line 3136 "config/rx-parse.c"
+#line 3201 "config/rx-parse.c"
     break;
 
-  case 129:
+  case 129: /* $@23: %empty  */
 #line 650 "./config/rx-parse.y"
                 { sub_op = 21; }
-#line 3142 "config/rx-parse.c"
+#line 3207 "config/rx-parse.c"
     break;
 
-  case 131:
+  case 131: /* statement: BSET REG ',' REG  */
 #line 655 "./config/rx-parse.y"
           { id24 (1, 0x63, 0x00); F ((yyvsp[0].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); }
-#line 3148 "config/rx-parse.c"
+#line 3213 "config/rx-parse.c"
     break;
 
-  case 132:
+  case 132: /* statement: BCLR REG ',' REG  */
 #line 657 "./config/rx-parse.y"
           { id24 (1, 0x67, 0x00); F ((yyvsp[0].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); }
-#line 3154 "config/rx-parse.c"
+#line 3219 "config/rx-parse.c"
     break;
 
-  case 133:
+  case 133: /* statement: BTST REG ',' REG  */
 #line 659 "./config/rx-parse.y"
           { id24 (1, 0x6b, 0x00); F ((yyvsp[0].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); }
-#line 3160 "config/rx-parse.c"
+#line 3225 "config/rx-parse.c"
     break;
 
-  case 134:
+  case 134: /* statement: BNOT REG ',' REG  */
 #line 661 "./config/rx-parse.y"
           { id24 (1, 0x6f, 0x00); F ((yyvsp[0].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); }
-#line 3166 "config/rx-parse.c"
+#line 3231 "config/rx-parse.c"
     break;
 
-  case 135:
+  case 135: /* statement: BSET REG ',' disp '[' REG ']' opt_b  */
 #line 664 "./config/rx-parse.y"
           { id24 (1, 0x60, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[-6].regno), 20, 4); DSP ((yyvsp[-4].exp), 14, BSIZE); }
-#line 3172 "config/rx-parse.c"
+#line 3237 "config/rx-parse.c"
     break;
 
-  case 136:
+  case 136: /* statement: BCLR REG ',' disp '[' REG ']' opt_b  */
 #line 666 "./config/rx-parse.y"
           { id24 (1, 0x64, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[-6].regno), 20, 4); DSP ((yyvsp[-4].exp), 14, BSIZE); }
-#line 3178 "config/rx-parse.c"
+#line 3243 "config/rx-parse.c"
     break;
 
-  case 137:
+  case 137: /* statement: BTST REG ',' disp '[' REG ']' opt_b  */
 #line 668 "./config/rx-parse.y"
           { id24 (1, 0x68, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[-6].regno), 20, 4); DSP ((yyvsp[-4].exp), 14, BSIZE); }
-#line 3184 "config/rx-parse.c"
+#line 3249 "config/rx-parse.c"
     break;
 
-  case 138:
+  case 138: /* statement: BNOT REG ',' disp '[' REG ']' opt_b  */
 #line 670 "./config/rx-parse.y"
           { id24 (1, 0x6c, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[-6].regno), 20, 4); DSP ((yyvsp[-4].exp), 14, BSIZE); }
-#line 3190 "config/rx-parse.c"
+#line 3255 "config/rx-parse.c"
     break;
 
-  case 139:
+  case 139: /* $@24: %empty  */
 #line 674 "./config/rx-parse.y"
                 { sub_op = 0; }
-#line 3196 "config/rx-parse.c"
+#line 3261 "config/rx-parse.c"
     break;
 
-  case 141:
+  case 141: /* $@25: %empty  */
 #line 675 "./config/rx-parse.y"
                 { sub_op = 1; }
-#line 3202 "config/rx-parse.c"
+#line 3267 "config/rx-parse.c"
     break;
 
-  case 143:
+  case 143: /* $@26: %empty  */
 #line 676 "./config/rx-parse.y"
                 { sub_op = 2; }
-#line 3208 "config/rx-parse.c"
+#line 3273 "config/rx-parse.c"
     break;
 
-  case 145:
+  case 145: /* $@27: %empty  */
 #line 677 "./config/rx-parse.y"
                 { sub_op = 3; }
-#line 3214 "config/rx-parse.c"
+#line 3279 "config/rx-parse.c"
     break;
 
-  case 147:
+  case 147: /* $@28: %empty  */
 #line 678 "./config/rx-parse.y"
                 { sub_op = 4; }
-#line 3220 "config/rx-parse.c"
+#line 3285 "config/rx-parse.c"
     break;
 
-  case 149:
+  case 149: /* $@29: %empty  */
 #line 679 "./config/rx-parse.y"
                 { sub_op = 8; }
-#line 3226 "config/rx-parse.c"
+#line 3291 "config/rx-parse.c"
     break;
 
-  case 151:
+  case 151: /* $@30: %empty  */
 #line 680 "./config/rx-parse.y"
                 { sub_op = 5; }
-#line 3232 "config/rx-parse.c"
+#line 3297 "config/rx-parse.c"
     break;
 
-  case 153:
+  case 153: /* $@31: %empty  */
 #line 681 "./config/rx-parse.y"
                 { sub_op = 9; }
-#line 3238 "config/rx-parse.c"
+#line 3303 "config/rx-parse.c"
     break;
 
-  case 155:
+  case 155: /* $@32: %empty  */
 #line 682 "./config/rx-parse.y"
                 { sub_op = 6; }
-#line 3244 "config/rx-parse.c"
+#line 3309 "config/rx-parse.c"
     break;
 
-  case 157:
+  case 157: /* statement: SCCND DOT_L REG  */
 #line 690 "./config/rx-parse.y"
           { id24 (1, 0xdb, 0x00); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 16, 4); }
-#line 3250 "config/rx-parse.c"
+#line 3315 "config/rx-parse.c"
     break;
 
-  case 158:
+  case 158: /* statement: SCCND bwl disp '[' REG ']'  */
 #line 692 "./config/rx-parse.y"
           { id24 (1, 0xd0, 0x00); F ((yyvsp[-5].regno), 20, 4); F ((yyvsp[-4].regno), 12, 2); F ((yyvsp[-1].regno), 16, 4); DSP ((yyvsp[-3].exp), 14, (yyvsp[-4].regno)); }
-#line 3256 "config/rx-parse.c"
+#line 3321 "config/rx-parse.c"
     break;
 
-  case 159:
+  case 159: /* statement: BMCND '#' EXPR ',' disp '[' REG ']' opt_b  */
 #line 697 "./config/rx-parse.y"
           { id24 (1, 0xe0, 0x00); F ((yyvsp[-8].regno), 20, 4); FE ((yyvsp[-6].exp), 11, 3);
 	      F ((yyvsp[-2].regno), 16, 4); DSP ((yyvsp[-4].exp), 14, BSIZE); }
-#line 3263 "config/rx-parse.c"
+#line 3328 "config/rx-parse.c"
     break;
 
-  case 160:
+  case 160: /* statement: BNOT '#' EXPR ',' disp '[' REG ']' opt_b  */
 #line 703 "./config/rx-parse.y"
           { id24 (1, 0xe0, 0x0f); FE ((yyvsp[-6].exp), 11, 3); F ((yyvsp[-2].regno), 16, 4);
 	      DSP ((yyvsp[-4].exp), 14, BSIZE); }
-#line 3270 "config/rx-parse.c"
+#line 3335 "config/rx-parse.c"
     break;
 
-  case 161:
+  case 161: /* statement: MULHI REG ',' REG  */
 #line 709 "./config/rx-parse.y"
           { id24 (2, 0x00, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3276 "config/rx-parse.c"
+#line 3341 "config/rx-parse.c"
     break;
 
-  case 162:
+  case 162: /* statement: MULHI REG ',' REG ',' ACC  */
 #line 711 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x00, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3282 "config/rx-parse.c"
+#line 3347 "config/rx-parse.c"
     break;
 
-  case 163:
+  case 163: /* statement: MULLO REG ',' REG  */
 #line 713 "./config/rx-parse.y"
           { id24 (2, 0x01, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3288 "config/rx-parse.c"
+#line 3353 "config/rx-parse.c"
     break;
 
-  case 164:
+  case 164: /* statement: MULLO REG ',' REG ',' ACC  */
 #line 715 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x01, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3294 "config/rx-parse.c"
+#line 3359 "config/rx-parse.c"
     break;
 
-  case 165:
+  case 165: /* statement: MACHI REG ',' REG  */
 #line 717 "./config/rx-parse.y"
           { id24 (2, 0x04, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3300 "config/rx-parse.c"
+#line 3365 "config/rx-parse.c"
     break;
 
-  case 166:
+  case 166: /* statement: MACHI REG ',' REG ',' ACC  */
 #line 719 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x04, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3306 "config/rx-parse.c"
+#line 3371 "config/rx-parse.c"
     break;
 
-  case 167:
+  case 167: /* statement: MACLO REG ',' REG  */
 #line 721 "./config/rx-parse.y"
           { id24 (2, 0x05, 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3312 "config/rx-parse.c"
+#line 3377 "config/rx-parse.c"
     break;
 
-  case 168:
+  case 168: /* statement: MACLO REG ',' REG ',' ACC  */
 #line 723 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x05, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3318 "config/rx-parse.c"
+#line 3383 "config/rx-parse.c"
     break;
 
-  case 169:
+  case 169: /* statement: MVTACHI REG  */
 #line 729 "./config/rx-parse.y"
           { id24 (2, 0x17, 0x00); F ((yyvsp[0].regno), 20, 4); }
-#line 3324 "config/rx-parse.c"
+#line 3389 "config/rx-parse.c"
     break;
 
-  case 170:
+  case 170: /* statement: MVTACHI REG ',' ACC  */
 #line 731 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x17, 0x00); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 16, 1); }
-#line 3330 "config/rx-parse.c"
+#line 3395 "config/rx-parse.c"
     break;
 
-  case 171:
+  case 171: /* statement: MVTACLO REG  */
 #line 733 "./config/rx-parse.y"
           { id24 (2, 0x17, 0x10); F ((yyvsp[0].regno), 20, 4); }
-#line 3336 "config/rx-parse.c"
+#line 3401 "config/rx-parse.c"
     break;
 
-  case 172:
+  case 172: /* statement: MVTACLO REG ',' ACC  */
 #line 735 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x17, 0x10); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 16, 1); }
-#line 3342 "config/rx-parse.c"
+#line 3407 "config/rx-parse.c"
     break;
 
-  case 173:
+  case 173: /* statement: MVFACHI REG  */
 #line 737 "./config/rx-parse.y"
           { id24 (2, 0x1f, 0x00); F ((yyvsp[0].regno), 20, 4); }
-#line 3348 "config/rx-parse.c"
+#line 3413 "config/rx-parse.c"
     break;
 
-  case 174:
+  case 174: /* $@33: %empty  */
 #line 738 "./config/rx-parse.y"
                   { sub_op = 0; }
-#line 3354 "config/rx-parse.c"
+#line 3419 "config/rx-parse.c"
     break;
 
-  case 176:
+  case 176: /* statement: MVFACMI REG  */
 #line 740 "./config/rx-parse.y"
           { id24 (2, 0x1f, 0x20); F ((yyvsp[0].regno), 20, 4); }
-#line 3360 "config/rx-parse.c"
+#line 3425 "config/rx-parse.c"
     break;
 
-  case 177:
+  case 177: /* $@34: %empty  */
 #line 741 "./config/rx-parse.y"
                   { sub_op = 2; }
-#line 3366 "config/rx-parse.c"
+#line 3431 "config/rx-parse.c"
     break;
 
-  case 179:
+  case 179: /* statement: MVFACLO REG  */
 #line 743 "./config/rx-parse.y"
           { id24 (2, 0x1f, 0x10); F ((yyvsp[0].regno), 20, 4); }
-#line 3372 "config/rx-parse.c"
+#line 3437 "config/rx-parse.c"
     break;
 
-  case 180:
+  case 180: /* $@35: %empty  */
 #line 744 "./config/rx-parse.y"
                   { sub_op = 1; }
-#line 3378 "config/rx-parse.c"
+#line 3443 "config/rx-parse.c"
     break;
 
-  case 182:
+  case 182: /* statement: RACW '#' EXPR  */
 #line 746 "./config/rx-parse.y"
           { id24 (2, 0x18, 0x00);
 	    if (rx_uintop ((yyvsp[0].exp), 4) && exp_val((yyvsp[0].exp)) == 1)
@@ -3386,10 +3451,10 @@ yyreduce:
 	      F (1, 19, 1);
 	    else
 	      as_bad (_("RACW expects #1 or #2"));}
-#line 3390 "config/rx-parse.c"
+#line 3455 "config/rx-parse.c"
     break;
 
-  case 183:
+  case 183: /* statement: RACW '#' EXPR ',' ACC  */
 #line 754 "./config/rx-parse.y"
             { rx_check_v2 (); id24 (2, 0x18, 0x00); F ((yyvsp[0].regno), 16, 1);
 	    if (rx_uintop ((yyvsp[-2].exp), 4) && exp_val((yyvsp[-2].exp)) == 1)
@@ -3398,246 +3463,246 @@ yyreduce:
 	      F (1, 19, 1);
 	    else
 	      as_bad (_("RACW expects #1 or #2"));}
-#line 3402 "config/rx-parse.c"
+#line 3467 "config/rx-parse.c"
     break;
 
-  case 184:
+  case 184: /* statement: MOV bwl REG ',' '[' REG '+' ']'  */
 #line 765 "./config/rx-parse.y"
           { id24 (2, 0x20, 0); F ((yyvsp[-6].regno), 14, 2); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[-5].regno), 20, 4); }
-#line 3408 "config/rx-parse.c"
+#line 3473 "config/rx-parse.c"
     break;
 
-  case 185:
+  case 185: /* statement: MOV bwl REG ',' '[' '-' REG ']'  */
 #line 767 "./config/rx-parse.y"
           { id24 (2, 0x24, 0); F ((yyvsp[-6].regno), 14, 2); F ((yyvsp[-1].regno), 16, 4); F ((yyvsp[-5].regno), 20, 4); }
-#line 3414 "config/rx-parse.c"
+#line 3479 "config/rx-parse.c"
     break;
 
-  case 186:
+  case 186: /* statement: MOV bwl '[' REG '+' ']' ',' REG  */
 #line 772 "./config/rx-parse.y"
           { id24 (2, 0x28, 0); F ((yyvsp[-6].regno), 14, 2); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3420 "config/rx-parse.c"
+#line 3485 "config/rx-parse.c"
     break;
 
-  case 187:
+  case 187: /* statement: MOV bwl '[' '-' REG ']' ',' REG  */
 #line 774 "./config/rx-parse.y"
           { id24 (2, 0x2c, 0); F ((yyvsp[-6].regno), 14, 2); F ((yyvsp[-3].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3426 "config/rx-parse.c"
+#line 3491 "config/rx-parse.c"
     break;
 
-  case 188:
+  case 188: /* statement: MOVU bw '[' REG '+' ']' ',' REG  */
 #line 779 "./config/rx-parse.y"
           { id24 (2, 0x38, 0); F ((yyvsp[-6].regno), 15, 1); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3432 "config/rx-parse.c"
+#line 3497 "config/rx-parse.c"
     break;
 
-  case 189:
+  case 189: /* statement: MOVU bw '[' '-' REG ']' ',' REG  */
 #line 781 "./config/rx-parse.y"
           { id24 (2, 0x3c, 0); F ((yyvsp[-6].regno), 15, 1); F ((yyvsp[-3].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3438 "config/rx-parse.c"
+#line 3503 "config/rx-parse.c"
     break;
 
-  case 190:
+  case 190: /* $@36: %empty  */
 #line 785 "./config/rx-parse.y"
                { sub_op = 6; }
-#line 3444 "config/rx-parse.c"
+#line 3509 "config/rx-parse.c"
     break;
 
-  case 192:
+  case 192: /* $@37: %empty  */
 #line 786 "./config/rx-parse.y"
                { sub_op = 4; }
-#line 3450 "config/rx-parse.c"
+#line 3515 "config/rx-parse.c"
     break;
 
-  case 194:
+  case 194: /* $@38: %empty  */
 #line 787 "./config/rx-parse.y"
                { sub_op = 5; }
-#line 3456 "config/rx-parse.c"
+#line 3521 "config/rx-parse.c"
     break;
 
-  case 196:
+  case 196: /* $@39: %empty  */
 #line 788 "./config/rx-parse.y"
                { sub_op = 7; }
-#line 3462 "config/rx-parse.c"
+#line 3527 "config/rx-parse.c"
     break;
 
-  case 198:
+  case 198: /* statement: MVTC REG ',' CREG  */
 #line 793 "./config/rx-parse.y"
           { if ((yyvsp[0].regno) == 13)
 	      rx_check_v2 ();
 	  id24 (2, 0x68, 0x00); F ((yyvsp[0].regno) % 16, 20, 4); F ((yyvsp[0].regno) / 16, 15, 1);
 	    F ((yyvsp[-2].regno), 16, 4); }
-#line 3471 "config/rx-parse.c"
+#line 3536 "config/rx-parse.c"
     break;
 
-  case 199:
+  case 199: /* statement: MVFC CREG ',' REG  */
 #line 801 "./config/rx-parse.y"
           { if ((yyvsp[-2].regno) == 13)
 	    rx_check_v2 ();
 	  id24 (2, 0x6a, 0); F ((yyvsp[-2].regno), 15, 5); F ((yyvsp[0].regno), 20, 4); }
-#line 3479 "config/rx-parse.c"
+#line 3544 "config/rx-parse.c"
     break;
 
-  case 200:
+  case 200: /* statement: ROTL '#' EXPR ',' REG  */
 #line 808 "./config/rx-parse.y"
           { id24 (2, 0x6e, 0); FE ((yyvsp[-2].exp), 15, 5); F ((yyvsp[0].regno), 20, 4); }
-#line 3485 "config/rx-parse.c"
+#line 3550 "config/rx-parse.c"
     break;
 
-  case 201:
+  case 201: /* statement: ROTR '#' EXPR ',' REG  */
 #line 810 "./config/rx-parse.y"
           { id24 (2, 0x6c, 0); FE ((yyvsp[-2].exp), 15, 5); F ((yyvsp[0].regno), 20, 4); }
-#line 3491 "config/rx-parse.c"
+#line 3556 "config/rx-parse.c"
     break;
 
-  case 202:
+  case 202: /* statement: MVTC '#' EXPR ',' CREG  */
 #line 815 "./config/rx-parse.y"
           { if ((yyvsp[0].regno) == 13)
 	      rx_check_v2 ();
 	    id24 (2, 0x73, 0x00); F ((yyvsp[0].regno), 19, 5); IMM ((yyvsp[-2].exp), 12); }
-#line 3499 "config/rx-parse.c"
+#line 3564 "config/rx-parse.c"
     break;
 
-  case 203:
+  case 203: /* statement: BMCND '#' EXPR ',' REG  */
 #line 822 "./config/rx-parse.y"
           { id24 (2, 0xe0, 0x00); F ((yyvsp[-4].regno), 16, 4); FE ((yyvsp[-2].exp), 11, 5);
 	      F ((yyvsp[0].regno), 20, 4); }
-#line 3506 "config/rx-parse.c"
+#line 3571 "config/rx-parse.c"
     break;
 
-  case 204:
+  case 204: /* statement: BNOT '#' EXPR ',' REG  */
 #line 828 "./config/rx-parse.y"
           { id24 (2, 0xe0, 0xf0); FE ((yyvsp[-2].exp), 11, 5); F ((yyvsp[0].regno), 20, 4); }
-#line 3512 "config/rx-parse.c"
+#line 3577 "config/rx-parse.c"
     break;
 
-  case 205:
+  case 205: /* statement: MOV bwl REG ',' '[' REG ',' REG ']'  */
 #line 833 "./config/rx-parse.y"
           { id24 (3, 0x00, 0); F ((yyvsp[-7].regno), 10, 2); F ((yyvsp[-3].regno), 12, 4); F ((yyvsp[-1].regno), 16, 4); F ((yyvsp[-6].regno), 20, 4); }
-#line 3518 "config/rx-parse.c"
+#line 3583 "config/rx-parse.c"
     break;
 
-  case 206:
+  case 206: /* statement: MOV bwl '[' REG ',' REG ']' ',' REG  */
 #line 836 "./config/rx-parse.y"
           { id24 (3, 0x40, 0); F ((yyvsp[-7].regno), 10, 2); F ((yyvsp[-5].regno), 12, 4); F ((yyvsp[-3].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3524 "config/rx-parse.c"
+#line 3589 "config/rx-parse.c"
     break;
 
-  case 207:
+  case 207: /* statement: MOVU bw '[' REG ',' REG ']' ',' REG  */
 #line 839 "./config/rx-parse.y"
           { id24 (3, 0xc0, 0); F ((yyvsp[-7].regno), 10, 2); F ((yyvsp[-5].regno), 12, 4); F ((yyvsp[-3].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3530 "config/rx-parse.c"
+#line 3595 "config/rx-parse.c"
     break;
 
-  case 208:
+  case 208: /* $@40: %empty  */
 #line 843 "./config/rx-parse.y"
               { sub_op = 0; }
-#line 3536 "config/rx-parse.c"
+#line 3601 "config/rx-parse.c"
     break;
 
-  case 210:
+  case 210: /* $@41: %empty  */
 #line 844 "./config/rx-parse.y"
               { sub_op = 2; }
-#line 3542 "config/rx-parse.c"
+#line 3607 "config/rx-parse.c"
     break;
 
-  case 212:
+  case 212: /* $@42: %empty  */
 #line 845 "./config/rx-parse.y"
               { sub_op = 3; }
-#line 3548 "config/rx-parse.c"
+#line 3613 "config/rx-parse.c"
     break;
 
-  case 214:
+  case 214: /* $@43: %empty  */
 #line 846 "./config/rx-parse.y"
                { sub_op = 4; }
-#line 3554 "config/rx-parse.c"
+#line 3619 "config/rx-parse.c"
     break;
 
-  case 216:
+  case 216: /* $@44: %empty  */
 #line 847 "./config/rx-parse.y"
               { sub_op = 5; }
-#line 3560 "config/rx-parse.c"
+#line 3625 "config/rx-parse.c"
     break;
 
-  case 218:
+  case 218: /* statement: SBB '#' EXPR ',' REG  */
 #line 853 "./config/rx-parse.y"
           { id24 (2, 0x70, 0x20); F ((yyvsp[0].regno), 20, 4); NBIMM ((yyvsp[-2].exp), 12); }
-#line 3566 "config/rx-parse.c"
+#line 3631 "config/rx-parse.c"
     break;
 
-  case 219:
+  case 219: /* statement: MOVCO REG ',' '[' REG ']'  */
 #line 858 "./config/rx-parse.y"
           { rx_check_v2 (); B3 (0xfd, 0x27, 0x00); F ((yyvsp[-1].regno), 16, 4); F ((yyvsp[-4].regno), 20, 4); }
-#line 3572 "config/rx-parse.c"
+#line 3637 "config/rx-parse.c"
     break;
 
-  case 220:
+  case 220: /* statement: MOVLI '[' REG ']' ',' REG  */
 #line 863 "./config/rx-parse.y"
           { rx_check_v2 (); B3 (0xfd, 0x2f, 0x00); F ((yyvsp[-3].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3578 "config/rx-parse.c"
+#line 3643 "config/rx-parse.c"
     break;
 
-  case 221:
+  case 221: /* statement: EMACA REG ',' REG ',' ACC  */
 #line 868 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x07, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3584 "config/rx-parse.c"
+#line 3649 "config/rx-parse.c"
     break;
 
-  case 222:
+  case 222: /* statement: EMSBA REG ',' REG ',' ACC  */
 #line 870 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x47, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3590 "config/rx-parse.c"
+#line 3655 "config/rx-parse.c"
     break;
 
-  case 223:
+  case 223: /* statement: EMULA REG ',' REG ',' ACC  */
 #line 872 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x03, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3596 "config/rx-parse.c"
+#line 3661 "config/rx-parse.c"
     break;
 
-  case 224:
+  case 224: /* statement: MACLH REG ',' REG ',' ACC  */
 #line 874 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x06, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3602 "config/rx-parse.c"
+#line 3667 "config/rx-parse.c"
     break;
 
-  case 225:
+  case 225: /* statement: MSBHI REG ',' REG ',' ACC  */
 #line 876 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x44, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3608 "config/rx-parse.c"
+#line 3673 "config/rx-parse.c"
     break;
 
-  case 226:
+  case 226: /* statement: MSBLH REG ',' REG ',' ACC  */
 #line 878 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x46, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3614 "config/rx-parse.c"
+#line 3679 "config/rx-parse.c"
     break;
 
-  case 227:
+  case 227: /* statement: MSBLO REG ',' REG ',' ACC  */
 #line 880 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x45, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3620 "config/rx-parse.c"
+#line 3685 "config/rx-parse.c"
     break;
 
-  case 228:
+  case 228: /* statement: MULLH REG ',' REG ',' ACC  */
 #line 882 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x02, 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 1); }
-#line 3626 "config/rx-parse.c"
+#line 3691 "config/rx-parse.c"
     break;
 
-  case 229:
+  case 229: /* $@45: %empty  */
 #line 883 "./config/rx-parse.y"
                   { sub_op = 3; }
-#line 3632 "config/rx-parse.c"
+#line 3697 "config/rx-parse.c"
     break;
 
-  case 231:
+  case 231: /* statement: MVTACGU REG ',' ACC  */
 #line 885 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (2, 0x17, 0x30); F ((yyvsp[0].regno), 16, 1); F ((yyvsp[-2].regno), 20, 4); }
-#line 3638 "config/rx-parse.c"
+#line 3703 "config/rx-parse.c"
     break;
 
-  case 232:
+  case 232: /* statement: RACL '#' EXPR ',' ACC  */
 #line 887 "./config/rx-parse.y"
         { rx_check_v2 (); id24 (2, 0x19, 0x00); F ((yyvsp[0].regno), 16, 1);
 	    if (rx_uintop ((yyvsp[-2].exp), 4) && (yyvsp[-2].exp).X_add_number == 1)
@@ -3646,10 +3711,10 @@ yyreduce:
 	      F (1, 19, 1);
 	    else
 	      as_bad (_("RACL expects #1 or #2"));}
-#line 3650 "config/rx-parse.c"
+#line 3715 "config/rx-parse.c"
     break;
 
-  case 233:
+  case 233: /* statement: RDACL '#' EXPR ',' ACC  */
 #line 895 "./config/rx-parse.y"
         { rx_check_v2 (); id24 (2, 0x19, 0x40); F ((yyvsp[0].regno), 16, 1);
 	    if (rx_uintop ((yyvsp[-2].exp), 4) && (yyvsp[-2].exp).X_add_number == 1)
@@ -3658,10 +3723,10 @@ yyreduce:
 	      F (1, 19, 1);
 	    else
 	      as_bad (_("RDACL expects #1 or #2"));}
-#line 3662 "config/rx-parse.c"
+#line 3727 "config/rx-parse.c"
     break;
 
-  case 234:
+  case 234: /* statement: RDACW '#' EXPR ',' ACC  */
 #line 903 "./config/rx-parse.y"
         { rx_check_v2 (); id24 (2, 0x18, 0x40); F ((yyvsp[0].regno), 16, 1);
 	    if (rx_uintop ((yyvsp[-2].exp), 4) && (yyvsp[-2].exp).X_add_number == 1)
@@ -3670,458 +3735,458 @@ yyreduce:
 	      F (1, 19, 1);
 	    else
 	      as_bad (_("RDACW expects #1 or #2"));}
-#line 3674 "config/rx-parse.c"
+#line 3739 "config/rx-parse.c"
     break;
 
-  case 235:
+  case 235: /* $@46: %empty  */
 #line 912 "./config/rx-parse.y"
                 { rx_check_v3(); sub_op = 1; }
-#line 3680 "config/rx-parse.c"
+#line 3745 "config/rx-parse.c"
     break;
 
-  case 237:
+  case 237: /* $@47: %empty  */
 #line 913 "./config/rx-parse.y"
                  { rx_check_v3(); sub_op = 0; }
-#line 3686 "config/rx-parse.c"
+#line 3751 "config/rx-parse.c"
     break;
 
-  case 239:
+  case 239: /* $@48: %empty  */
 #line 916 "./config/rx-parse.y"
                { rx_check_v3(); sub_op = 1; }
-#line 3692 "config/rx-parse.c"
+#line 3757 "config/rx-parse.c"
     break;
 
-  case 241:
+  case 241: /* $@49: %empty  */
 #line 917 "./config/rx-parse.y"
                { rx_check_v3(); sub_op = 0; }
-#line 3698 "config/rx-parse.c"
+#line 3763 "config/rx-parse.c"
     break;
 
-  case 243:
+  case 243: /* $@50: %empty  */
 #line 920 "./config/rx-parse.y"
                { rx_check_dfpu(); sub_op = 0x0c; sub_op2 = 0x01; }
-#line 3704 "config/rx-parse.c"
+#line 3769 "config/rx-parse.c"
     break;
 
-  case 245:
+  case 245: /* $@51: %empty  */
 #line 921 "./config/rx-parse.y"
                { rx_check_dfpu(); sub_op = 0x0c; sub_op2 = 0x02; }
-#line 3710 "config/rx-parse.c"
+#line 3775 "config/rx-parse.c"
     break;
 
-  case 247:
+  case 247: /* $@52: %empty  */
 #line 922 "./config/rx-parse.y"
                  { rx_check_dfpu(); sub_op = 0x0d; sub_op2 = 0x0d; }
-#line 3716 "config/rx-parse.c"
+#line 3781 "config/rx-parse.c"
     break;
 
-  case 249:
+  case 249: /* $@53: %empty  */
 #line 923 "./config/rx-parse.y"
                 { rx_check_dfpu(); sub_op = 0x0d; sub_op2 = 0x00; }
-#line 3722 "config/rx-parse.c"
+#line 3787 "config/rx-parse.c"
     break;
 
-  case 251:
+  case 251: /* $@54: %empty  */
 #line 924 "./config/rx-parse.y"
                { rx_check_dfpu(); sub_op = 0x0d; sub_op2 = 0x0c; }
-#line 3728 "config/rx-parse.c"
+#line 3793 "config/rx-parse.c"
     break;
 
-  case 253:
+  case 253: /* $@55: %empty  */
 #line 925 "./config/rx-parse.y"
                { rx_check_dfpu(); sub_op = 0x0d; sub_op2 = 0x08;}
-#line 3734 "config/rx-parse.c"
-    break;
-
-  case 255:
-#line 926 "./config/rx-parse.y"
-               { rx_check_dfpu(); sub_op = 0x0d; sub_op2 = 0x09; }
-#line 3740 "config/rx-parse.c"
-    break;
-
-  case 257:
-#line 927 "./config/rx-parse.y"
-               { rx_check_dfpu(); sub_op = 0x00; }
-#line 3746 "config/rx-parse.c"
-    break;
-
-  case 259:
-#line 928 "./config/rx-parse.y"
-               { rx_check_dfpu(); sub_op = 0x05; }
-#line 3752 "config/rx-parse.c"
-    break;
-
-  case 261:
-#line 929 "./config/rx-parse.y"
-               { rx_check_dfpu(); sub_op = 0x02; }
-#line 3758 "config/rx-parse.c"
-    break;
-
-  case 263:
-#line 930 "./config/rx-parse.y"
-               { rx_check_dfpu(); sub_op = 0x01; }
-#line 3764 "config/rx-parse.c"
-    break;
-
-  case 265:
-#line 931 "./config/rx-parse.y"
-                             { rx_check_dfpu();
-	    B4(0x76, 0x90, 0x08, 0x00); F((yyvsp[-3].regno), 24, 4); F((yyvsp[-2].regno), 28, 4); F((yyvsp[0].regno), 16, 4); }
-#line 3771 "config/rx-parse.c"
-    break;
-
-  case 266:
-#line 934 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x03); F((yyvsp[-2].regno), 20, 4); F((yyvsp[0].regno), 24, 4); }
-#line 3778 "config/rx-parse.c"
-    break;
-
-  case 267:
-#line 937 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x02); F((yyvsp[-2].regno), 20, 4); F((yyvsp[0].regno), 24, 4); }
-#line 3785 "config/rx-parse.c"
-    break;
-
-  case 268:
-#line 940 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x00); F((yyvsp[-2].regno), 20, 4); F((yyvsp[0].regno), 24, 4); }
-#line 3792 "config/rx-parse.c"
-    break;
-
-  case 269:
-#line 943 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x75, 0x80, 0x02); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
 #line 3799 "config/rx-parse.c"
     break;
 
-  case 270:
+  case 255: /* $@56: %empty  */
+#line 926 "./config/rx-parse.y"
+               { rx_check_dfpu(); sub_op = 0x0d; sub_op2 = 0x09; }
+#line 3805 "config/rx-parse.c"
+    break;
+
+  case 257: /* $@57: %empty  */
+#line 927 "./config/rx-parse.y"
+               { rx_check_dfpu(); sub_op = 0x00; }
+#line 3811 "config/rx-parse.c"
+    break;
+
+  case 259: /* $@58: %empty  */
+#line 928 "./config/rx-parse.y"
+               { rx_check_dfpu(); sub_op = 0x05; }
+#line 3817 "config/rx-parse.c"
+    break;
+
+  case 261: /* $@59: %empty  */
+#line 929 "./config/rx-parse.y"
+               { rx_check_dfpu(); sub_op = 0x02; }
+#line 3823 "config/rx-parse.c"
+    break;
+
+  case 263: /* $@60: %empty  */
+#line 930 "./config/rx-parse.y"
+               { rx_check_dfpu(); sub_op = 0x01; }
+#line 3829 "config/rx-parse.c"
+    break;
+
+  case 265: /* statement: DCMP DREG ',' DREG  */
+#line 931 "./config/rx-parse.y"
+                             { rx_check_dfpu();
+	    B4(0x76, 0x90, 0x08, 0x00); F((yyvsp[-3].regno), 24, 4); F((yyvsp[-2].regno), 28, 4); F((yyvsp[0].regno), 16, 4); }
+#line 3836 "config/rx-parse.c"
+    break;
+
+  case 266: /* statement: DMOV DOT_D REG ',' DREGH  */
+#line 934 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x03); F((yyvsp[-2].regno), 20, 4); F((yyvsp[0].regno), 24, 4); }
+#line 3843 "config/rx-parse.c"
+    break;
+
+  case 267: /* statement: DMOV DOT_L REG ',' DREGH  */
+#line 937 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x02); F((yyvsp[-2].regno), 20, 4); F((yyvsp[0].regno), 24, 4); }
+#line 3850 "config/rx-parse.c"
+    break;
+
+  case 268: /* statement: DMOV DOT_L REG ',' DREGL  */
+#line 940 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x00); F((yyvsp[-2].regno), 20, 4); F((yyvsp[0].regno), 24, 4); }
+#line 3857 "config/rx-parse.c"
+    break;
+
+  case 269: /* statement: DMOV DOT_L DREGH ',' REG  */
+#line 943 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x75, 0x80, 0x02); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
+#line 3864 "config/rx-parse.c"
+    break;
+
+  case 270: /* statement: DMOV DOT_L DREGL ',' REG  */
 #line 946 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B4(0xfd, 0x75, 0x80, 0x00); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
-#line 3806 "config/rx-parse.c"
+#line 3871 "config/rx-parse.c"
     break;
 
-  case 271:
+  case 271: /* statement: DMOV DOT_D DREG ',' DREG  */
 #line 949 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B4(0x76, 0x90, 0x0c, 0x00); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno), 24, 4); }
-#line 3813 "config/rx-parse.c"
+#line 3878 "config/rx-parse.c"
     break;
 
-  case 272:
+  case 272: /* statement: DMOV DOT_D DREG ',' '[' REG ']'  */
 #line 952 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B4(0xfc, 0x78, 0x08, 0x00); F((yyvsp[-1].regno), 16, 4); F((yyvsp[-4].regno), 24, 4); }
-#line 3820 "config/rx-parse.c"
+#line 3885 "config/rx-parse.c"
     break;
 
-  case 273:
+  case 273: /* statement: DMOV DOT_D DREG ',' disp '[' REG ']'  */
 #line 955 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0xfc, 0x78, 0x08); F((yyvsp[-1].regno), 16, 4); DSP((yyvsp[-3].exp), 14, DSIZE);
 	  POST((yyvsp[-5].regno) << 4); }
-#line 3828 "config/rx-parse.c"
+#line 3893 "config/rx-parse.c"
     break;
 
-  case 274:
+  case 274: /* statement: DMOV DOT_D '[' REG ']' ',' DREG  */
 #line 959 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B4(0xfc, 0xc8, 0x08, 0x00); F((yyvsp[-3].regno), 16, 4); F((yyvsp[0].regno), 24, 4); }
-#line 3835 "config/rx-parse.c"
+#line 3900 "config/rx-parse.c"
     break;
 
-  case 275:
+  case 275: /* statement: DMOV DOT_D disp '[' REG ']' ',' DREG  */
 #line 962 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0xfc, 0xc8, 0x08); F((yyvsp[-3].regno), 16, 4); DSP((yyvsp[-5].exp), 14, DSIZE);
 	  POST((yyvsp[0].regno) << 4); }
-#line 3843 "config/rx-parse.c"
+#line 3908 "config/rx-parse.c"
     break;
 
-  case 276:
+  case 276: /* statement: DMOV DOT_D '#' EXPR ',' DREGH  */
 #line 966 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0xf9, 0x03, 0x03); F((yyvsp[0].regno), 16, 4); IMM((yyvsp[-2].exp), -1); }
-#line 3850 "config/rx-parse.c"
+#line 3915 "config/rx-parse.c"
     break;
 
-  case 277:
+  case 277: /* statement: DMOV DOT_L '#' EXPR ',' DREGH  */
 #line 969 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0xf9, 0x03, 0x02); F((yyvsp[0].regno), 16, 4); IMM((yyvsp[-2].exp), -1); }
-#line 3857 "config/rx-parse.c"
+#line 3922 "config/rx-parse.c"
     break;
 
-  case 278:
+  case 278: /* statement: DMOV DOT_L '#' EXPR ',' DREGL  */
 #line 972 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0xf9, 0x03, 0x00); F((yyvsp[0].regno), 16, 4); IMM((yyvsp[-2].exp), -1); }
-#line 3864 "config/rx-parse.c"
+#line 3929 "config/rx-parse.c"
     break;
 
-  case 279:
+  case 279: /* statement: DPOPM DOT_D DREG '-' DREG  */
 #line 975 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0x75, 0xb8, 0x00); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno) - (yyvsp[-2].regno), 20, 4); }
-#line 3871 "config/rx-parse.c"
+#line 3936 "config/rx-parse.c"
     break;
 
-  case 280:
+  case 280: /* statement: DPOPM DOT_L DCREG '-' DCREG  */
 #line 978 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0x75, 0xa8, 0x00); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno) - (yyvsp[-2].regno), 20, 4); }
-#line 3878 "config/rx-parse.c"
+#line 3943 "config/rx-parse.c"
     break;
 
-  case 281:
+  case 281: /* statement: DPUSHM DOT_D DREG '-' DREG  */
 #line 981 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0x75, 0xb0, 0x00); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno) - (yyvsp[-2].regno), 20, 4); }
-#line 3885 "config/rx-parse.c"
+#line 3950 "config/rx-parse.c"
     break;
 
-  case 282:
+  case 282: /* statement: DPUSHM DOT_L DCREG '-' DCREG  */
 #line 984 "./config/rx-parse.y"
         { rx_check_dfpu();
 	  B3(0x75, 0xa0, 0x00); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno) - (yyvsp[-2].regno), 20, 4); }
-#line 3892 "config/rx-parse.c"
-    break;
-
-  case 283:
-#line 987 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x75, 0x80, 0x04); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
-#line 3899 "config/rx-parse.c"
-    break;
-
-  case 284:
-#line 990 "./config/rx-parse.y"
-        { rx_check_dfpu(); B3(0x75, 0x90, 0x1b); }
-#line 3905 "config/rx-parse.c"
-    break;
-
-  case 285:
-#line 992 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x04); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
-#line 3912 "config/rx-parse.c"
-    break;
-
-  case 286:
-#line 995 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x0a); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
-#line 3919 "config/rx-parse.c"
-    break;
-
-  case 287:
-#line 998 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x09); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
-#line 3926 "config/rx-parse.c"
-    break;
-
-  case 288:
-#line 1001 "./config/rx-parse.y"
-        { rx_check_dfpu();
-	  B4(0xfd, 0x77, 0x80, 0x0d); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
-#line 3933 "config/rx-parse.c"
-    break;
-
-  case 289:
-#line 1012 "./config/rx-parse.y"
-          { B2 (0x43 + (sub_op<<2), 0); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 3939 "config/rx-parse.c"
-    break;
-
-  case 290:
-#line 1014 "./config/rx-parse.y"
-          { B2 (0x40 + (sub_op<<2), 0); F ((yyvsp[-4].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); DSP ((yyvsp[-6].exp), 6, BSIZE); }
-#line 3945 "config/rx-parse.c"
-    break;
-
-  case 291:
-#line 1016 "./config/rx-parse.y"
-          { B3 (MEMEX, sub_op<<2, 0); F ((yyvsp[-2].regno), 8, 2); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, sizemap[(yyvsp[-2].regno)]); }
-#line 3951 "config/rx-parse.c"
-    break;
-
-  case 292:
-#line 1018 "./config/rx-parse.y"
-          { id24 (4, sub_op<<4, 0), F ((yyvsp[0].regno), 12, 4), F ((yyvsp[-4].regno), 16, 4), F ((yyvsp[-2].regno), 20, 4); }
 #line 3957 "config/rx-parse.c"
     break;
 
-  case 293:
-#line 1025 "./config/rx-parse.y"
-          { id24 (1, 0x03 + (sub_op<<2), 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3963 "config/rx-parse.c"
+  case 283: /* statement: MVFDC DCREG ',' REG  */
+#line 987 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x75, 0x80, 0x04); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
+#line 3964 "config/rx-parse.c"
     break;
 
-  case 294:
-#line 1027 "./config/rx-parse.y"
-          { B4 (MEMEX, 0xa0, 0x00 + sub_op, 0x00);
-	  F ((yyvsp[-4].regno), 24, 4); F ((yyvsp[0].regno), 28, 4); DSP ((yyvsp[-6].exp), 14, LSIZE); }
+  case 284: /* statement: MVFDR  */
+#line 990 "./config/rx-parse.y"
+        { rx_check_dfpu(); B3(0x75, 0x90, 0x1b); }
 #line 3970 "config/rx-parse.c"
     break;
 
-  case 295:
+  case 285: /* statement: MVTDC REG ',' DCREG  */
+#line 992 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x04); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
+#line 3977 "config/rx-parse.c"
+    break;
+
+  case 286: /* statement: FTOD REG ',' DREG  */
+#line 995 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x0a); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
+#line 3984 "config/rx-parse.c"
+    break;
+
+  case 287: /* statement: ITOD REG ',' DREG  */
+#line 998 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x09); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
+#line 3991 "config/rx-parse.c"
+    break;
+
+  case 288: /* statement: UTOD REG ',' DREG  */
+#line 1001 "./config/rx-parse.y"
+        { rx_check_dfpu();
+	  B4(0xfd, 0x77, 0x80, 0x0d); F((yyvsp[-2].regno), 24, 4); F((yyvsp[0].regno), 20, 4); }
+#line 3998 "config/rx-parse.c"
+    break;
+
+  case 289: /* op_subadd: REG ',' REG  */
+#line 1012 "./config/rx-parse.y"
+          { B2 (0x43 + (sub_op<<2), 0); F ((yyvsp[-2].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); }
+#line 4004 "config/rx-parse.c"
+    break;
+
+  case 290: /* op_subadd: disp '[' REG ']' DOT_UB ',' REG  */
+#line 1014 "./config/rx-parse.y"
+          { B2 (0x40 + (sub_op<<2), 0); F ((yyvsp[-4].regno), 8, 4); F ((yyvsp[0].regno), 12, 4); DSP ((yyvsp[-6].exp), 6, BSIZE); }
+#line 4010 "config/rx-parse.c"
+    break;
+
+  case 291: /* op_subadd: disp '[' REG ']' memex ',' REG  */
+#line 1016 "./config/rx-parse.y"
+          { B3 (MEMEX, sub_op<<2, 0); F ((yyvsp[-2].regno), 8, 2); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, sizemap[(yyvsp[-2].regno)]); }
+#line 4016 "config/rx-parse.c"
+    break;
+
+  case 292: /* op_subadd: REG ',' REG ',' REG  */
+#line 1018 "./config/rx-parse.y"
+          { id24 (4, sub_op<<4, 0), F ((yyvsp[0].regno), 12, 4), F ((yyvsp[-4].regno), 16, 4), F ((yyvsp[-2].regno), 20, 4); }
+#line 4022 "config/rx-parse.c"
+    break;
+
+  case 293: /* op_dp20_rm_l: REG ',' REG  */
+#line 1025 "./config/rx-parse.y"
+          { id24 (1, 0x03 + (sub_op<<2), 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
+#line 4028 "config/rx-parse.c"
+    break;
+
+  case 294: /* op_dp20_rm_l: disp '[' REG ']' opt_l ',' REG  */
+#line 1027 "./config/rx-parse.y"
+          { B4 (MEMEX, 0xa0, 0x00 + sub_op, 0x00);
+	  F ((yyvsp[-4].regno), 24, 4); F ((yyvsp[0].regno), 28, 4); DSP ((yyvsp[-6].exp), 14, LSIZE); }
+#line 4035 "config/rx-parse.c"
+    break;
+
+  case 295: /* op_dp20_rm: REG ',' REG  */
 #line 1035 "./config/rx-parse.y"
           { id24 (1, 0x03 + (sub_op<<2), 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 3976 "config/rx-parse.c"
+#line 4041 "config/rx-parse.c"
     break;
 
-  case 296:
+  case 296: /* op_dp20_rm: disp '[' REG ']' DOT_UB ',' REG  */
 #line 1037 "./config/rx-parse.y"
           { id24 (1, 0x00 + (sub_op<<2), 0x00); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, BSIZE); }
-#line 3982 "config/rx-parse.c"
+#line 4047 "config/rx-parse.c"
     break;
 
-  case 297:
+  case 297: /* op_dp20_rm: disp '[' REG ']' memex ',' REG  */
 #line 1039 "./config/rx-parse.y"
           { B4 (MEMEX, 0x20 + ((yyvsp[-2].regno) << 6), 0x00 + sub_op, 0x00);
 	  F ((yyvsp[-4].regno), 24, 4); F ((yyvsp[0].regno), 28, 4); DSP ((yyvsp[-6].exp), 14, sizemap[(yyvsp[-2].regno)]); }
-#line 3989 "config/rx-parse.c"
+#line 4054 "config/rx-parse.c"
     break;
 
-  case 298:
+  case 298: /* op_dp20_i: '#' EXPR ',' REG  */
 #line 1045 "./config/rx-parse.y"
           { id24 (2, 0x70, sub_op<<4); F ((yyvsp[0].regno), 20, 4); IMM ((yyvsp[-2].exp), 12); }
-#line 3995 "config/rx-parse.c"
+#line 4060 "config/rx-parse.c"
     break;
 
-  case 303:
+  case 303: /* op_dp20_rr: REG ',' REG  */
 #line 1060 "./config/rx-parse.y"
           { id24 (1, 0x03 + (sub_op<<2), 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4001 "config/rx-parse.c"
+#line 4066 "config/rx-parse.c"
     break;
 
-  case 304:
+  case 304: /* op_dp20_rr: REG  */
 #line 1062 "./config/rx-parse.y"
           { B2 (0x7e, sub_op2 << 4); F ((yyvsp[0].regno), 12, 4); }
-#line 4007 "config/rx-parse.c"
+#line 4072 "config/rx-parse.c"
     break;
 
-  case 305:
+  case 305: /* op_dp20_r: REG ',' REG  */
 #line 1067 "./config/rx-parse.y"
           { id24 (1, 0x4b + (sub_op2<<2), 0x00); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4013 "config/rx-parse.c"
+#line 4078 "config/rx-parse.c"
     break;
 
-  case 306:
+  case 306: /* $@61: %empty  */
 #line 1071 "./config/rx-parse.y"
           { rx_check_v2 (); }
-#line 4019 "config/rx-parse.c"
+#line 4084 "config/rx-parse.c"
     break;
 
-  case 309:
+  case 309: /* op_xchg: REG ',' REG  */
 #line 1079 "./config/rx-parse.y"
           { id24 (1, 0x03 + (sub_op<<2), 0); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4025 "config/rx-parse.c"
+#line 4090 "config/rx-parse.c"
     break;
 
-  case 310:
+  case 310: /* op_xchg: disp '[' REG ']' DOT_UB ',' REG  */
 #line 1081 "./config/rx-parse.y"
           { id24 (1, 0x00 + (sub_op<<2), 0); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, BSIZE); }
-#line 4031 "config/rx-parse.c"
+#line 4096 "config/rx-parse.c"
     break;
 
-  case 311:
+  case 311: /* op_xchg: disp '[' REG ']' memex ',' REG  */
 #line 1083 "./config/rx-parse.y"
           { B4 (MEMEX, 0x20, 0x00 + sub_op, 0); F ((yyvsp[-2].regno), 8, 2); F ((yyvsp[-4].regno), 24, 4); F ((yyvsp[0].regno), 28, 4);
 	    DSP ((yyvsp[-6].exp), 14, sizemap[(yyvsp[-2].regno)]); }
-#line 4038 "config/rx-parse.c"
+#line 4103 "config/rx-parse.c"
     break;
 
-  case 312:
+  case 312: /* op_shift_rot: REG ',' REG  */
 #line 1090 "./config/rx-parse.y"
           { id24 (2, 0x60 + sub_op, 0); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4044 "config/rx-parse.c"
+#line 4109 "config/rx-parse.c"
     break;
 
-  case 313:
+  case 313: /* op_shift: '#' EXPR ',' REG  */
 #line 1094 "./config/rx-parse.y"
           { B2 (0x68 + (sub_op<<1), 0); FE ((yyvsp[-2].exp), 7, 5); F ((yyvsp[0].regno), 12, 4); }
-#line 4050 "config/rx-parse.c"
+#line 4115 "config/rx-parse.c"
     break;
 
-  case 314:
+  case 314: /* op_shift: '#' EXPR ',' REG ',' REG  */
 #line 1096 "./config/rx-parse.y"
           { id24 (2, 0x80 + (sub_op << 5), 0); FE ((yyvsp[-4].exp), 11, 5); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4056 "config/rx-parse.c"
+#line 4121 "config/rx-parse.c"
     break;
 
-  case 316:
+  case 316: /* float3_op: '#' EXPR ',' REG  */
 #line 1102 "./config/rx-parse.y"
           { rx_check_float_support (); id24 (2, 0x72, sub_op << 4); F ((yyvsp[0].regno), 20, 4); O4 ((yyvsp[-2].exp)); }
-#line 4062 "config/rx-parse.c"
+#line 4127 "config/rx-parse.c"
     break;
 
-  case 317:
+  case 317: /* float3_op: REG ',' REG  */
 #line 1104 "./config/rx-parse.y"
           { rx_check_float_support (); id24 (1, 0x83 + (sub_op << 2), 0); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4068 "config/rx-parse.c"
+#line 4133 "config/rx-parse.c"
     break;
 
-  case 318:
+  case 318: /* float3_op: disp '[' REG ']' opt_l ',' REG  */
 #line 1106 "./config/rx-parse.y"
           { rx_check_float_support (); id24 (1, 0x80 + (sub_op << 2), 0); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, LSIZE); }
-#line 4074 "config/rx-parse.c"
+#line 4139 "config/rx-parse.c"
     break;
 
-  case 319:
+  case 319: /* float3_op: REG ',' REG ',' REG  */
 #line 1108 "./config/rx-parse.y"
           { rx_check_v2 (); id24 (4, 0x80 + (sub_op << 4), 0 ); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[-2].regno), 20, 4); F ((yyvsp[0].regno), 12, 4); }
-#line 4080 "config/rx-parse.c"
+#line 4145 "config/rx-parse.c"
     break;
 
-  case 320:
+  case 320: /* $@62: %empty  */
 #line 1112 "./config/rx-parse.y"
           { rx_check_float_support (); }
-#line 4086 "config/rx-parse.c"
+#line 4151 "config/rx-parse.c"
     break;
 
-  case 321:
+  case 321: /* float2_op: $@62 '#' EXPR ',' REG  */
 #line 1114 "./config/rx-parse.y"
           { id24 (2, 0x72, sub_op << 4); F ((yyvsp[0].regno), 20, 4); O4 ((yyvsp[-2].exp)); }
-#line 4092 "config/rx-parse.c"
+#line 4157 "config/rx-parse.c"
     break;
 
-  case 323:
+  case 323: /* $@63: %empty  */
 #line 1119 "./config/rx-parse.y"
           { rx_check_float_support (); }
-#line 4098 "config/rx-parse.c"
+#line 4163 "config/rx-parse.c"
     break;
 
-  case 324:
+  case 324: /* float2_op_ni: $@63 REG ',' REG  */
 #line 1121 "./config/rx-parse.y"
           { id24 (1, 0x83 + (sub_op << 2), 0); F ((yyvsp[-2].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); }
-#line 4104 "config/rx-parse.c"
+#line 4169 "config/rx-parse.c"
     break;
 
-  case 325:
+  case 325: /* $@64: %empty  */
 #line 1122 "./config/rx-parse.y"
           { rx_check_float_support (); }
-#line 4110 "config/rx-parse.c"
+#line 4175 "config/rx-parse.c"
     break;
 
-  case 326:
+  case 326: /* float2_op_ni: $@64 disp '[' REG ']' opt_l ',' REG  */
 #line 1124 "./config/rx-parse.y"
           { id24 (1, 0x80 + (sub_op << 2), 0); F ((yyvsp[-4].regno), 16, 4); F ((yyvsp[0].regno), 20, 4); DSP ((yyvsp[-6].exp), 14, LSIZE); }
-#line 4116 "config/rx-parse.c"
+#line 4181 "config/rx-parse.c"
     break;
 
-  case 327:
+  case 327: /* $@65: %empty  */
 #line 1128 "./config/rx-parse.y"
           { rx_check_v2 (); }
-#line 4122 "config/rx-parse.c"
+#line 4187 "config/rx-parse.c"
     break;
 
-  case 328:
+  case 328: /* mvfa_op: $@65 '#' EXPR ',' ACC ',' REG  */
 #line 1130 "./config/rx-parse.y"
           { id24 (2, 0x1e, sub_op << 4); F ((yyvsp[0].regno), 20, 4); F ((yyvsp[-2].regno), 16, 1);
 	    if (rx_uintop ((yyvsp[-4].exp), 4))
@@ -4141,175 +4206,175 @@ yyreduce:
 		    as_bad (_("IMM expects #0 to #2"));}
 	      } else
 	        as_bad (_("IMM expects #0 to #2"));}
-#line 4145 "config/rx-parse.c"
+#line 4210 "config/rx-parse.c"
     break;
 
-  case 330:
+  case 330: /* op_xor: REG ',' REG ',' REG  */
 #line 1153 "./config/rx-parse.y"
           { rx_check_v3(); B3(0xff,0x60,0x00), F ((yyvsp[0].regno), 12, 4), F ((yyvsp[-4].regno), 16, 4), F ((yyvsp[-2].regno), 20, 4); }
-#line 4151 "config/rx-parse.c"
+#line 4216 "config/rx-parse.c"
     break;
 
-  case 331:
+  case 331: /* $@66: %empty  */
 #line 1157 "./config/rx-parse.y"
           { rx_check_v3(); }
-#line 4157 "config/rx-parse.c"
+#line 4222 "config/rx-parse.c"
     break;
 
-  case 332:
+  case 332: /* op_bfield: $@66 '#' EXPR ',' '#' EXPR ',' '#' EXPR ',' REG ',' REG  */
 #line 1159 "./config/rx-parse.y"
           { rx_range((yyvsp[-10].exp), 0, 31); rx_range((yyvsp[-7].exp), 0, 31); rx_range((yyvsp[-4].exp), 1, 31);
 	    B3(0xfc, 0x5a + (sub_op << 2), 0); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno), 20, 4);
 	  rx_bfield((yyvsp[-10].exp), (yyvsp[-7].exp), (yyvsp[-4].exp));}
-#line 4165 "config/rx-parse.c"
+#line 4230 "config/rx-parse.c"
     break;
 
-  case 333:
+  case 333: /* op_save_rstr: '#' EXPR  */
 #line 1166 "./config/rx-parse.y"
           { B3(0xfd,0x76,0xe0 + (sub_op << 4)); UO1((yyvsp[0].exp)); }
-#line 4171 "config/rx-parse.c"
+#line 4236 "config/rx-parse.c"
     break;
 
-  case 334:
+  case 334: /* op_save_rstr: REG  */
 #line 1168 "./config/rx-parse.y"
           { B4(0xfd,0x76,0xc0 + (sub_op << 4), 0x00); F((yyvsp[0].regno), 20, 4); }
-#line 4177 "config/rx-parse.c"
+#line 4242 "config/rx-parse.c"
     break;
 
-  case 335:
+  case 335: /* double2_op: DREG ',' DREG  */
 #line 1173 "./config/rx-parse.y"
         { B4(0x76, 0x90, sub_op, sub_op2); F((yyvsp[-2].regno), 16, 4); F((yyvsp[0].regno), 24, 4);}
-#line 4183 "config/rx-parse.c"
+#line 4248 "config/rx-parse.c"
     break;
 
-  case 336:
+  case 336: /* double3_op: DREG ',' DREG ',' DREG  */
 #line 1177 "./config/rx-parse.y"
         { B4(0x76, 0x90, sub_op, 0x00); F((yyvsp[-4].regno), 28, 4); F((yyvsp[-2].regno), 16,4); F((yyvsp[0].regno), 24, 4);}
-#line 4189 "config/rx-parse.c"
+#line 4254 "config/rx-parse.c"
     break;
 
-  case 337:
+  case 337: /* disp: %empty  */
 #line 1181 "./config/rx-parse.y"
                { (yyval.exp) = zero_expr (); }
-#line 4195 "config/rx-parse.c"
+#line 4260 "config/rx-parse.c"
     break;
 
-  case 338:
+  case 338: /* disp: EXPR  */
 #line 1182 "./config/rx-parse.y"
                { (yyval.exp) = (yyvsp[0].exp); }
-#line 4201 "config/rx-parse.c"
+#line 4266 "config/rx-parse.c"
     break;
 
-  case 339:
+  case 339: /* $@67: %empty  */
 #line 1185 "./config/rx-parse.y"
           { need_flag = 1; }
-#line 4207 "config/rx-parse.c"
+#line 4272 "config/rx-parse.c"
     break;
 
-  case 340:
+  case 340: /* flag: $@67 FLAG  */
 #line 1185 "./config/rx-parse.y"
                                   { need_flag = 0; (yyval.regno) = (yyvsp[0].regno); }
-#line 4213 "config/rx-parse.c"
+#line 4278 "config/rx-parse.c"
     break;
 
-  case 341:
+  case 341: /* memex: DOT_B  */
 #line 1190 "./config/rx-parse.y"
                  { (yyval.regno) = 0; }
-#line 4219 "config/rx-parse.c"
+#line 4284 "config/rx-parse.c"
     break;
 
-  case 342:
+  case 342: /* memex: DOT_W  */
 #line 1191 "./config/rx-parse.y"
                  { (yyval.regno) = 1; }
-#line 4225 "config/rx-parse.c"
+#line 4290 "config/rx-parse.c"
     break;
 
-  case 343:
+  case 343: /* memex: %empty  */
 #line 1192 "./config/rx-parse.y"
                  { (yyval.regno) = 2; }
-#line 4231 "config/rx-parse.c"
+#line 4296 "config/rx-parse.c"
     break;
 
-  case 344:
+  case 344: /* memex: DOT_L  */
 #line 1193 "./config/rx-parse.y"
                  { (yyval.regno) = 2; }
-#line 4237 "config/rx-parse.c"
+#line 4302 "config/rx-parse.c"
     break;
 
-  case 345:
+  case 345: /* memex: DOT_UW  */
 #line 1194 "./config/rx-parse.y"
                  { (yyval.regno) = 3; }
-#line 4243 "config/rx-parse.c"
+#line 4308 "config/rx-parse.c"
     break;
 
-  case 346:
+  case 346: /* bwl: %empty  */
 #line 1197 "./config/rx-parse.y"
                 { (yyval.regno) = LSIZE; }
-#line 4249 "config/rx-parse.c"
+#line 4314 "config/rx-parse.c"
     break;
 
-  case 347:
+  case 347: /* bwl: DOT_B  */
 #line 1198 "./config/rx-parse.y"
                 { (yyval.regno) = BSIZE; }
-#line 4255 "config/rx-parse.c"
+#line 4320 "config/rx-parse.c"
     break;
 
-  case 348:
+  case 348: /* bwl: DOT_W  */
 #line 1199 "./config/rx-parse.y"
                 { (yyval.regno) = WSIZE; }
-#line 4261 "config/rx-parse.c"
+#line 4326 "config/rx-parse.c"
     break;
 
-  case 349:
+  case 349: /* bwl: DOT_L  */
 #line 1200 "./config/rx-parse.y"
                 { (yyval.regno) = LSIZE; }
-#line 4267 "config/rx-parse.c"
+#line 4332 "config/rx-parse.c"
     break;
 
-  case 350:
+  case 350: /* bw: %empty  */
 #line 1203 "./config/rx-parse.y"
                 { (yyval.regno) = 1; }
-#line 4273 "config/rx-parse.c"
+#line 4338 "config/rx-parse.c"
     break;
 
-  case 351:
+  case 351: /* bw: DOT_B  */
 #line 1204 "./config/rx-parse.y"
                 { (yyval.regno) = 0; }
-#line 4279 "config/rx-parse.c"
+#line 4344 "config/rx-parse.c"
     break;
 
-  case 352:
+  case 352: /* bw: DOT_W  */
 #line 1205 "./config/rx-parse.y"
                 { (yyval.regno) = 1; }
-#line 4285 "config/rx-parse.c"
+#line 4350 "config/rx-parse.c"
     break;
 
-  case 353:
+  case 353: /* opt_l: %empty  */
 #line 1208 "./config/rx-parse.y"
                 {}
-#line 4291 "config/rx-parse.c"
+#line 4356 "config/rx-parse.c"
     break;
 
-  case 354:
+  case 354: /* opt_l: DOT_L  */
 #line 1209 "./config/rx-parse.y"
                 {}
-#line 4297 "config/rx-parse.c"
+#line 4362 "config/rx-parse.c"
     break;
 
-  case 355:
+  case 355: /* opt_b: %empty  */
 #line 1212 "./config/rx-parse.y"
                 {}
-#line 4303 "config/rx-parse.c"
+#line 4368 "config/rx-parse.c"
     break;
 
-  case 356:
+  case 356: /* opt_b: DOT_B  */
 #line 1213 "./config/rx-parse.y"
                 {}
-#line 4309 "config/rx-parse.c"
+#line 4374 "config/rx-parse.c"
     break;
 
 
-#line 4313 "config/rx-parse.c"
+#line 4378 "config/rx-parse.c"
 
       default: break;
     }
@@ -4324,11 +4389,10 @@ yyreduce:
      case of YYERROR or YYBACKUP, subsequent parser actions might lead
      to an incorrect destructor call or verbose syntax error message
      before the lookahead is translated.  */
-  YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
+  YY_SYMBOL_PRINT ("-> $$ =", YY_CAST (yysymbol_kind_t, yyr1[yyn]), &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
   yylen = 0;
-  YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
 
@@ -4352,49 +4416,13 @@ yyreduce:
 yyerrlab:
   /* Make sure we have latest lookahead translation.  See comments at
      user semantic actions for why this is necessary.  */
-  yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
-
+  yytoken = yychar == YYEMPTY ? YYSYMBOL_YYEMPTY : YYTRANSLATE (yychar);
   /* If not already recovering from an error, report this error.  */
   if (!yyerrstatus)
     {
       ++yynerrs;
-#if ! YYERROR_VERBOSE
       yyerror (YY_("syntax error"));
-#else
-# define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
-                                        yyssp, yytoken)
-      {
-        char const *yymsgp = YY_("syntax error");
-        int yysyntax_error_status;
-        yysyntax_error_status = YYSYNTAX_ERROR;
-        if (yysyntax_error_status == 0)
-          yymsgp = yymsg;
-        else if (yysyntax_error_status == 1)
-          {
-            if (yymsg != yymsgbuf)
-              YYSTACK_FREE (yymsg);
-            yymsg = YY_CAST (char *, YYSTACK_ALLOC (YY_CAST (YYSIZE_T, yymsg_alloc)));
-            if (!yymsg)
-              {
-                yymsg = yymsgbuf;
-                yymsg_alloc = sizeof yymsgbuf;
-                yysyntax_error_status = 2;
-              }
-            else
-              {
-                yysyntax_error_status = YYSYNTAX_ERROR;
-                yymsgp = yymsg;
-              }
-          }
-        yyerror (yymsgp);
-        if (yysyntax_error_status == 2)
-          goto yyexhaustedlab;
-      }
-# undef YYSYNTAX_ERROR
-#endif
     }
-
-
 
   if (yyerrstatus == 3)
     {
@@ -4444,13 +4472,14 @@ yyerrorlab:
 yyerrlab1:
   yyerrstatus = 3;      /* Each real token shifted decrements this.  */
 
+  /* Pop stack until we find a state that shifts the error token.  */
   for (;;)
     {
       yyn = yypact[yystate];
       if (!yypact_value_is_default (yyn))
         {
-          yyn += YYTERROR;
-          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+          yyn += YYSYMBOL_YYerror;
+          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYSYMBOL_YYerror)
             {
               yyn = yytable[yyn];
               if (0 < yyn)
@@ -4464,7 +4493,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp);
+                  YY_ACCESSING_SYMBOL (yystate), yyvsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -4476,7 +4505,7 @@ yyerrlab1:
 
 
   /* Shift the error token.  */
-  YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
+  YY_SYMBOL_PRINT ("Shifting", YY_ACCESSING_SYMBOL (yyn), yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
@@ -4498,20 +4527,20 @@ yyabortlab:
   goto yyreturn;
 
 
-#if !defined yyoverflow || YYERROR_VERBOSE
+#if !defined yyoverflow
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  /* Fall through.  */
+  goto yyreturn;
 #endif
 
 
-/*-----------------------------------------------------.
-| yyreturn -- parsing is finished, return the result.  |
-`-----------------------------------------------------*/
+/*-------------------------------------------------------.
+| yyreturn -- parsing is finished, clean up and return.  |
+`-------------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {
@@ -4528,19 +4557,17 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp);
+                  YY_ACCESSING_SYMBOL (+*yyssp), yyvsp);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
   if (yyss != yyssa)
     YYSTACK_FREE (yyss);
 #endif
-#if YYERROR_VERBOSE
-  if (yymsg != yymsgbuf)
-    YYSTACK_FREE (yymsg);
-#endif
+
   return yyresult;
 }
+
 #line 1216 "./config/rx-parse.y"
 
 /* ====================================================================== */
@@ -4645,7 +4672,7 @@ token_table[] =
 
   { "DPSW", DCREG, 0 },
   { "DCMR", DCREG, 1 },
-  { "DCENT", DCREG, 2 },
+  { "DECNT", DCREG, 2 },
   { "DEPC", DCREG, 3 },
   { "DCR0", DCREG, 0 },
   { "DCR1", DCREG, 1 },

@@ -1,5 +1,5 @@
 /* tc-z80.c -- Assemble code for the Zilog Z80, Z180, EZ80 and ASCII R800
-   Copyright (C) 2005-2021 Free Software Foundation, Inc.
+   Copyright (C) 2005-2022 Free Software Foundation, Inc.
    Contributed by Arnold Metselaar <arnold_m@operamail.com>
 
    This file is part of GAS, the GNU Assembler.
@@ -3853,7 +3853,7 @@ tc_gen_reloc (asection *seg ATTRIBUTE_UNUSED , fixS *fixp)
 
   if (fixp->fx_subsy != NULL)
     {
-      as_bad_where (fixp->fx_file, fixp->fx_line, _("expression too complex"));
+      as_bad_subtract (fixp);
       return NULL;
     }
 

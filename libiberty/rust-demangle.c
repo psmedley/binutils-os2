@@ -1,5 +1,5 @@
 /* Demangler for the Rust programming language
-   Copyright (C) 2016-2021 Free Software Foundation, Inc.
+   Copyright (C) 2016-2022 Free Software Foundation, Inc.
    Written by David Tolnay (dtolnay@gmail.com).
    Rewritten by Eduard-Mihai Burtescu (eddyb@lyken.rs) for v0 support.
 
@@ -75,10 +75,10 @@ struct rust_demangler
   int version;
 
   /* Recursion depth.  */
-  uint recursion;
+  unsigned int recursion;
   /* Maximum number of times demangle_path may be called recursively.  */
 #define RUST_MAX_RECURSION_COUNT  1024
-#define RUST_NO_RECURSION_LIMIT   ((uint) -1)
+#define RUST_NO_RECURSION_LIMIT   ((unsigned int) -1)
 
   uint64_t bound_lifetime_depth;
 };
@@ -888,6 +888,19 @@ demangle_type (struct rust_demangler *rdm)
       return;
     }
 
+   if (rdm->recursion != RUST_NO_RECURSION_LIMIT)
+    {
+      ++ rdm->recursion;
+      if (rdm->recursion > RUST_MAX_RECURSION_COUNT)
+	/* FIXME: There ought to be a way to report
+	   that the recursion limit has been reached.  */
+	{
+	  rdm->errored = 1;
+	  -- rdm->recursion;
+	  return;
+	}
+    }
+
   switch (tag)
     {
     case 'R':
@@ -1048,6 +1061,9 @@ demangle_type (struct rust_demangler *rdm)
       rdm->next--;
       demangle_path (rdm, 0);
     }
+
+  if (rdm->recursion != RUST_NO_RECURSION_LIMIT)
+    -- rdm->recursion;
 }
 
 /* A trait in a trait object may have some "existential projections"

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_DEFFILEP_H_INCLUDED
 # define YY_YY_DEFFILEP_H_INCLUDED
@@ -44,42 +45,51 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NAME = 258,
-    LIBRARY = 259,
-    DESCRIPTION = 260,
-    STACKSIZE_K = 261,
-    HEAPSIZE = 262,
-    CODE = 263,
-    DATAU = 264,
-    DATAL = 265,
-    SECTIONS = 266,
-    EXPORTS = 267,
-    IMPORTS = 268,
-    VERSIONK = 269,
-    BASE = 270,
-    CONSTANTU = 271,
-    CONSTANTL = 272,
-    PRIVATEU = 273,
-    PRIVATEL = 274,
-    ALIGNCOMM = 275,
-    READ = 276,
-    WRITE = 277,
-    EXECUTE = 278,
-    SHARED_K = 279,
-    NONAMEU = 280,
-    NONAMEL = 281,
-    DIRECTIVE = 282,
-    EQUAL = 283,
-    ID = 284,
-    DIGITS = 285
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    NAME = 258,                    /* NAME  */
+    LIBRARY = 259,                 /* LIBRARY  */
+    DESCRIPTION = 260,             /* DESCRIPTION  */
+    STACKSIZE_K = 261,             /* STACKSIZE_K  */
+    HEAPSIZE = 262,                /* HEAPSIZE  */
+    CODE = 263,                    /* CODE  */
+    DATAU = 264,                   /* DATAU  */
+    DATAL = 265,                   /* DATAL  */
+    SECTIONS = 266,                /* SECTIONS  */
+    EXPORTS = 267,                 /* EXPORTS  */
+    IMPORTS = 268,                 /* IMPORTS  */
+    VERSIONK = 269,                /* VERSIONK  */
+    BASE = 270,                    /* BASE  */
+    CONSTANTU = 271,               /* CONSTANTU  */
+    CONSTANTL = 272,               /* CONSTANTL  */
+    PRIVATEU = 273,                /* PRIVATEU  */
+    PRIVATEL = 274,                /* PRIVATEL  */
+    ALIGNCOMM = 275,               /* ALIGNCOMM  */
+    READ = 276,                    /* READ  */
+    WRITE = 277,                   /* WRITE  */
+    EXECUTE = 278,                 /* EXECUTE  */
+    SHARED_K = 279,                /* SHARED_K  */
+    NONAMEU = 280,                 /* NONAMEU  */
+    NONAMEL = 281,                 /* NONAMEL  */
+    DIRECTIVE = 282,               /* DIRECTIVE  */
+    EQUAL = 283,                   /* EQUAL  */
+    ID = 284,                      /* ID  */
+    DIGITS = 285                   /* DIGITS  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define NAME 258
 #define LIBRARY 259
 #define DESCRIPTION 260
@@ -121,7 +131,7 @@ union YYSTYPE
   bfd_vma vma;
   char *digits;
 
-#line 125 "deffilep.h"
+#line 135 "deffilep.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

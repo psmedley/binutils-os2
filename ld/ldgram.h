@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_LDGRAM_H_INCLUDED
 # define YY_YY_LDGRAM_H_INCLUDED
@@ -44,144 +45,154 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    NAME = 259,
-    LNAME = 260,
-    PLUSEQ = 261,
-    MINUSEQ = 262,
-    MULTEQ = 263,
-    DIVEQ = 264,
-    LSHIFTEQ = 265,
-    RSHIFTEQ = 266,
-    ANDEQ = 267,
-    OREQ = 268,
-    OROR = 269,
-    ANDAND = 270,
-    EQ = 271,
-    NE = 272,
-    LE = 273,
-    GE = 274,
-    LSHIFT = 275,
-    RSHIFT = 276,
-    UNARY = 277,
-    END = 278,
-    ALIGN_K = 279,
-    BLOCK = 280,
-    BIND = 281,
-    QUAD = 282,
-    SQUAD = 283,
-    LONG = 284,
-    SHORT = 285,
-    BYTE = 286,
-    SECTIONS = 287,
-    PHDRS = 288,
-    INSERT_K = 289,
-    AFTER = 290,
-    BEFORE = 291,
-    DATA_SEGMENT_ALIGN = 292,
-    DATA_SEGMENT_RELRO_END = 293,
-    DATA_SEGMENT_END = 294,
-    SORT_BY_NAME = 295,
-    SORT_BY_ALIGNMENT = 296,
-    SORT_NONE = 297,
-    SORT_BY_INIT_PRIORITY = 298,
-    SIZEOF_HEADERS = 299,
-    OUTPUT_FORMAT = 300,
-    FORCE_COMMON_ALLOCATION = 301,
-    OUTPUT_ARCH = 302,
-    INHIBIT_COMMON_ALLOCATION = 303,
-    FORCE_GROUP_ALLOCATION = 304,
-    SEGMENT_START = 305,
-    INCLUDE = 306,
-    MEMORY = 307,
-    REGION_ALIAS = 308,
-    LD_FEATURE = 309,
-    NOLOAD = 310,
-    DSECT = 311,
-    COPY = 312,
-    INFO = 313,
-    OVERLAY = 314,
-    DEFINED = 315,
-    TARGET_K = 316,
-    SEARCH_DIR = 317,
-    MAP = 318,
-    ENTRY = 319,
-    NEXT = 320,
-    SIZEOF = 321,
-    ALIGNOF = 322,
-    ADDR = 323,
-    LOADADDR = 324,
-    MAX_K = 325,
-    MIN_K = 326,
-    STARTUP = 327,
-    HLL = 328,
-    SYSLIB = 329,
-    FLOAT = 330,
-    NOFLOAT = 331,
-    NOCROSSREFS = 332,
-    NOCROSSREFS_TO = 333,
-    ORIGIN = 334,
-    FILL = 335,
-    LENGTH = 336,
-    CREATE_OBJECT_SYMBOLS = 337,
-    INPUT = 338,
-    GROUP = 339,
-    OUTPUT = 340,
-    CONSTRUCTORS = 341,
-    ALIGNMOD = 342,
-    AT = 343,
-    SUBALIGN = 344,
-    HIDDEN = 345,
-    PROVIDE = 346,
-    PROVIDE_HIDDEN = 347,
-    AS_NEEDED = 348,
-    CHIP = 349,
-    LIST = 350,
-    SECT = 351,
-    ABSOLUTE = 352,
-    LOAD = 353,
-    NEWLINE = 354,
-    ENDWORD = 355,
-    ORDER = 356,
-    NAMEWORD = 357,
-    ASSERT_K = 358,
-    LOG2CEIL = 359,
-    FORMAT = 360,
-    PUBLIC = 361,
-    DEFSYMEND = 362,
-    BASE = 363,
-    ALIAS = 364,
-    TRUNCATE = 365,
-    REL = 366,
-    INPUT_SCRIPT = 367,
-    INPUT_MRI_SCRIPT = 368,
-    INPUT_DEFSYM = 369,
-    CASE = 370,
-    EXTERN = 371,
-    START = 372,
-    VERS_TAG = 373,
-    VERS_IDENTIFIER = 374,
-    GLOBAL = 375,
-    LOCAL = 376,
-    VERSIONK = 377,
-    INPUT_VERSION_SCRIPT = 378,
-    KEEP = 379,
-    ONLY_IF_RO = 380,
-    ONLY_IF_RW = 381,
-    SPECIAL = 382,
-    INPUT_SECTION_FLAGS = 383,
-    ALIGN_WITH_INPUT = 384,
-    EXCLUDE_FILE = 385,
-    CONSTANT = 386,
-    INPUT_DYNAMIC_LIST = 387
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    INT = 258,                     /* INT  */
+    NAME = 259,                    /* NAME  */
+    LNAME = 260,                   /* LNAME  */
+    PLUSEQ = 261,                  /* PLUSEQ  */
+    MINUSEQ = 262,                 /* MINUSEQ  */
+    MULTEQ = 263,                  /* MULTEQ  */
+    DIVEQ = 264,                   /* DIVEQ  */
+    LSHIFTEQ = 265,                /* LSHIFTEQ  */
+    RSHIFTEQ = 266,                /* RSHIFTEQ  */
+    ANDEQ = 267,                   /* ANDEQ  */
+    OREQ = 268,                    /* OREQ  */
+    OROR = 269,                    /* OROR  */
+    ANDAND = 270,                  /* ANDAND  */
+    EQ = 271,                      /* EQ  */
+    NE = 272,                      /* NE  */
+    LE = 273,                      /* LE  */
+    GE = 274,                      /* GE  */
+    LSHIFT = 275,                  /* LSHIFT  */
+    RSHIFT = 276,                  /* RSHIFT  */
+    UNARY = 277,                   /* UNARY  */
+    END = 278,                     /* END  */
+    ALIGN_K = 279,                 /* ALIGN_K  */
+    BLOCK = 280,                   /* BLOCK  */
+    BIND = 281,                    /* BIND  */
+    QUAD = 282,                    /* QUAD  */
+    SQUAD = 283,                   /* SQUAD  */
+    LONG = 284,                    /* LONG  */
+    SHORT = 285,                   /* SHORT  */
+    BYTE = 286,                    /* BYTE  */
+    SECTIONS = 287,                /* SECTIONS  */
+    PHDRS = 288,                   /* PHDRS  */
+    INSERT_K = 289,                /* INSERT_K  */
+    AFTER = 290,                   /* AFTER  */
+    BEFORE = 291,                  /* BEFORE  */
+    DATA_SEGMENT_ALIGN = 292,      /* DATA_SEGMENT_ALIGN  */
+    DATA_SEGMENT_RELRO_END = 293,  /* DATA_SEGMENT_RELRO_END  */
+    DATA_SEGMENT_END = 294,        /* DATA_SEGMENT_END  */
+    SORT_BY_NAME = 295,            /* SORT_BY_NAME  */
+    SORT_BY_ALIGNMENT = 296,       /* SORT_BY_ALIGNMENT  */
+    SORT_NONE = 297,               /* SORT_NONE  */
+    SORT_BY_INIT_PRIORITY = 298,   /* SORT_BY_INIT_PRIORITY  */
+    SIZEOF_HEADERS = 299,          /* SIZEOF_HEADERS  */
+    OUTPUT_FORMAT = 300,           /* OUTPUT_FORMAT  */
+    FORCE_COMMON_ALLOCATION = 301, /* FORCE_COMMON_ALLOCATION  */
+    OUTPUT_ARCH = 302,             /* OUTPUT_ARCH  */
+    INHIBIT_COMMON_ALLOCATION = 303, /* INHIBIT_COMMON_ALLOCATION  */
+    FORCE_GROUP_ALLOCATION = 304,  /* FORCE_GROUP_ALLOCATION  */
+    SEGMENT_START = 305,           /* SEGMENT_START  */
+    INCLUDE = 306,                 /* INCLUDE  */
+    MEMORY = 307,                  /* MEMORY  */
+    REGION_ALIAS = 308,            /* REGION_ALIAS  */
+    LD_FEATURE = 309,              /* LD_FEATURE  */
+    NOLOAD = 310,                  /* NOLOAD  */
+    DSECT = 311,                   /* DSECT  */
+    COPY = 312,                    /* COPY  */
+    INFO = 313,                    /* INFO  */
+    OVERLAY = 314,                 /* OVERLAY  */
+    READONLY = 315,                /* READONLY  */
+    DEFINED = 316,                 /* DEFINED  */
+    TARGET_K = 317,                /* TARGET_K  */
+    SEARCH_DIR = 318,              /* SEARCH_DIR  */
+    MAP = 319,                     /* MAP  */
+    ENTRY = 320,                   /* ENTRY  */
+    NEXT = 321,                    /* NEXT  */
+    SIZEOF = 322,                  /* SIZEOF  */
+    ALIGNOF = 323,                 /* ALIGNOF  */
+    ADDR = 324,                    /* ADDR  */
+    LOADADDR = 325,                /* LOADADDR  */
+    MAX_K = 326,                   /* MAX_K  */
+    MIN_K = 327,                   /* MIN_K  */
+    STARTUP = 328,                 /* STARTUP  */
+    HLL = 329,                     /* HLL  */
+    SYSLIB = 330,                  /* SYSLIB  */
+    FLOAT = 331,                   /* FLOAT  */
+    NOFLOAT = 332,                 /* NOFLOAT  */
+    NOCROSSREFS = 333,             /* NOCROSSREFS  */
+    NOCROSSREFS_TO = 334,          /* NOCROSSREFS_TO  */
+    ORIGIN = 335,                  /* ORIGIN  */
+    FILL = 336,                    /* FILL  */
+    LENGTH = 337,                  /* LENGTH  */
+    CREATE_OBJECT_SYMBOLS = 338,   /* CREATE_OBJECT_SYMBOLS  */
+    INPUT = 339,                   /* INPUT  */
+    GROUP = 340,                   /* GROUP  */
+    OUTPUT = 341,                  /* OUTPUT  */
+    CONSTRUCTORS = 342,            /* CONSTRUCTORS  */
+    ALIGNMOD = 343,                /* ALIGNMOD  */
+    AT = 344,                      /* AT  */
+    SUBALIGN = 345,                /* SUBALIGN  */
+    HIDDEN = 346,                  /* HIDDEN  */
+    PROVIDE = 347,                 /* PROVIDE  */
+    PROVIDE_HIDDEN = 348,          /* PROVIDE_HIDDEN  */
+    AS_NEEDED = 349,               /* AS_NEEDED  */
+    CHIP = 350,                    /* CHIP  */
+    LIST = 351,                    /* LIST  */
+    SECT = 352,                    /* SECT  */
+    ABSOLUTE = 353,                /* ABSOLUTE  */
+    LOAD = 354,                    /* LOAD  */
+    NEWLINE = 355,                 /* NEWLINE  */
+    ENDWORD = 356,                 /* ENDWORD  */
+    ORDER = 357,                   /* ORDER  */
+    NAMEWORD = 358,                /* NAMEWORD  */
+    ASSERT_K = 359,                /* ASSERT_K  */
+    LOG2CEIL = 360,                /* LOG2CEIL  */
+    FORMAT = 361,                  /* FORMAT  */
+    PUBLIC = 362,                  /* PUBLIC  */
+    DEFSYMEND = 363,               /* DEFSYMEND  */
+    BASE = 364,                    /* BASE  */
+    ALIAS = 365,                   /* ALIAS  */
+    TRUNCATE = 366,                /* TRUNCATE  */
+    REL = 367,                     /* REL  */
+    INPUT_SCRIPT = 368,            /* INPUT_SCRIPT  */
+    INPUT_MRI_SCRIPT = 369,        /* INPUT_MRI_SCRIPT  */
+    INPUT_DEFSYM = 370,            /* INPUT_DEFSYM  */
+    CASE = 371,                    /* CASE  */
+    EXTERN = 372,                  /* EXTERN  */
+    START = 373,                   /* START  */
+    VERS_TAG = 374,                /* VERS_TAG  */
+    VERS_IDENTIFIER = 375,         /* VERS_IDENTIFIER  */
+    GLOBAL = 376,                  /* GLOBAL  */
+    LOCAL = 377,                   /* LOCAL  */
+    VERSIONK = 378,                /* VERSIONK  */
+    INPUT_VERSION_SCRIPT = 379,    /* INPUT_VERSION_SCRIPT  */
+    KEEP = 380,                    /* KEEP  */
+    ONLY_IF_RO = 381,              /* ONLY_IF_RO  */
+    ONLY_IF_RW = 382,              /* ONLY_IF_RW  */
+    SPECIAL = 383,                 /* SPECIAL  */
+    INPUT_SECTION_FLAGS = 384,     /* INPUT_SECTION_FLAGS  */
+    ALIGN_WITH_INPUT = 385,        /* ALIGN_WITH_INPUT  */
+    EXCLUDE_FILE = 386,            /* EXCLUDE_FILE  */
+    CONSTANT = 387,                /* CONSTANT  */
+    INPUT_DYNAMIC_LIST = 388       /* INPUT_DYNAMIC_LIST  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define INT 258
 #define NAME 259
 #define LNAME 260
@@ -239,79 +250,80 @@ extern int yydebug;
 #define COPY 312
 #define INFO 313
 #define OVERLAY 314
-#define DEFINED 315
-#define TARGET_K 316
-#define SEARCH_DIR 317
-#define MAP 318
-#define ENTRY 319
-#define NEXT 320
-#define SIZEOF 321
-#define ALIGNOF 322
-#define ADDR 323
-#define LOADADDR 324
-#define MAX_K 325
-#define MIN_K 326
-#define STARTUP 327
-#define HLL 328
-#define SYSLIB 329
-#define FLOAT 330
-#define NOFLOAT 331
-#define NOCROSSREFS 332
-#define NOCROSSREFS_TO 333
-#define ORIGIN 334
-#define FILL 335
-#define LENGTH 336
-#define CREATE_OBJECT_SYMBOLS 337
-#define INPUT 338
-#define GROUP 339
-#define OUTPUT 340
-#define CONSTRUCTORS 341
-#define ALIGNMOD 342
-#define AT 343
-#define SUBALIGN 344
-#define HIDDEN 345
-#define PROVIDE 346
-#define PROVIDE_HIDDEN 347
-#define AS_NEEDED 348
-#define CHIP 349
-#define LIST 350
-#define SECT 351
-#define ABSOLUTE 352
-#define LOAD 353
-#define NEWLINE 354
-#define ENDWORD 355
-#define ORDER 356
-#define NAMEWORD 357
-#define ASSERT_K 358
-#define LOG2CEIL 359
-#define FORMAT 360
-#define PUBLIC 361
-#define DEFSYMEND 362
-#define BASE 363
-#define ALIAS 364
-#define TRUNCATE 365
-#define REL 366
-#define INPUT_SCRIPT 367
-#define INPUT_MRI_SCRIPT 368
-#define INPUT_DEFSYM 369
-#define CASE 370
-#define EXTERN 371
-#define START 372
-#define VERS_TAG 373
-#define VERS_IDENTIFIER 374
-#define GLOBAL 375
-#define LOCAL 376
-#define VERSIONK 377
-#define INPUT_VERSION_SCRIPT 378
-#define KEEP 379
-#define ONLY_IF_RO 380
-#define ONLY_IF_RW 381
-#define SPECIAL 382
-#define INPUT_SECTION_FLAGS 383
-#define ALIGN_WITH_INPUT 384
-#define EXCLUDE_FILE 385
-#define CONSTANT 386
-#define INPUT_DYNAMIC_LIST 387
+#define READONLY 315
+#define DEFINED 316
+#define TARGET_K 317
+#define SEARCH_DIR 318
+#define MAP 319
+#define ENTRY 320
+#define NEXT 321
+#define SIZEOF 322
+#define ALIGNOF 323
+#define ADDR 324
+#define LOADADDR 325
+#define MAX_K 326
+#define MIN_K 327
+#define STARTUP 328
+#define HLL 329
+#define SYSLIB 330
+#define FLOAT 331
+#define NOFLOAT 332
+#define NOCROSSREFS 333
+#define NOCROSSREFS_TO 334
+#define ORIGIN 335
+#define FILL 336
+#define LENGTH 337
+#define CREATE_OBJECT_SYMBOLS 338
+#define INPUT 339
+#define GROUP 340
+#define OUTPUT 341
+#define CONSTRUCTORS 342
+#define ALIGNMOD 343
+#define AT 344
+#define SUBALIGN 345
+#define HIDDEN 346
+#define PROVIDE 347
+#define PROVIDE_HIDDEN 348
+#define AS_NEEDED 349
+#define CHIP 350
+#define LIST 351
+#define SECT 352
+#define ABSOLUTE 353
+#define LOAD 354
+#define NEWLINE 355
+#define ENDWORD 356
+#define ORDER 357
+#define NAMEWORD 358
+#define ASSERT_K 359
+#define LOG2CEIL 360
+#define FORMAT 361
+#define PUBLIC 362
+#define DEFSYMEND 363
+#define BASE 364
+#define ALIAS 365
+#define TRUNCATE 366
+#define REL 367
+#define INPUT_SCRIPT 368
+#define INPUT_MRI_SCRIPT 369
+#define INPUT_DEFSYM 370
+#define CASE 371
+#define EXTERN 372
+#define START 373
+#define VERS_TAG 374
+#define VERS_IDENTIFIER 375
+#define GLOBAL 376
+#define LOCAL 377
+#define VERSIONK 378
+#define INPUT_VERSION_SCRIPT 379
+#define KEEP 380
+#define ONLY_IF_RO 381
+#define ONLY_IF_RW 382
+#define SPECIAL 383
+#define INPUT_SECTION_FLAGS 384
+#define ALIGN_WITH_INPUT 385
+#define EXCLUDE_FILE 386
+#define CONSTANT 387
+#define INPUT_DYNAMIC_LIST 388
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -348,7 +360,7 @@ union YYSTYPE
   struct bfd_elf_version_expr *versyms;
   struct bfd_elf_version_tree *versnode;
 
-#line 352 "ldgram.h"
+#line 364 "ldgram.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

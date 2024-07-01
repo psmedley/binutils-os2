@@ -1,5 +1,5 @@
 /* tc-cris.c -- Assembler code for the CRIS CPU core.
-   Copyright (C) 2000-2021 Free Software Foundation, Inc.
+   Copyright (C) 2000-2022 Free Software Foundation, Inc.
 
    Contributed by Axis Communications AB, Lund, Sweden.
    Originally written for GAS 1.38.1 by Mikael Asker.
@@ -4050,8 +4050,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg)
 
   /* We can't actually support subtracting a symbol.  */
   if (fixP->fx_subsy != (symbolS *) NULL)
-    as_bad_where (fixP->fx_file, fixP->fx_line,
-		  _("expression too complex"));
+    as_bad_subtract (fixP);
 
   /* This operand-type is scaled.  */
   if (fixP->fx_r_type == BFD_RELOC_CRIS_LAPCQ_OFFSET)

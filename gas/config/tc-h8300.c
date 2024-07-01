@@ -1,5 +1,5 @@
 /* tc-h8300.c -- Assemble code for the Renesas H8/300
-   Copyright (C) 1991-2021 Free Software Foundation, Inc.
+   Copyright (C) 1991-2022 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -2298,8 +2298,7 @@ tc_gen_reloc (asection *section ATTRIBUTE_UNUSED, fixS *fixp)
       if ((S_GET_SEGMENT (fixp->fx_addsy) != S_GET_SEGMENT (fixp->fx_subsy))
 	  || S_GET_SEGMENT (fixp->fx_addsy) == undefined_section)
 	{
-	  as_bad_where (fixp->fx_file, fixp->fx_line,
-			_("Difference of symbols in different sections is not supported"));
+	  as_bad_subtract (fixp);
 	  return NULL;
 	}
     }

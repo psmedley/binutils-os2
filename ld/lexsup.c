@@ -1,5 +1,5 @@
 /* Parse options for the GNU linker.
-   Copyright (C) 1991-2021 Free Software Foundation, Inc.
+   Copyright (C) 1991-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Binutils.
 
@@ -333,7 +333,8 @@ static const struct ld_option ld_options[] =
   { {"disable-multiple-abs-defs", no_argument, NULL,
      OPTION_DISABLE_MULTIPLE_DEFS_ABS},
     '\0', NULL, N_("Do not allow multiple definitions with symbols included\n"
-		   "           in filename invoked by -R or --just-symbols"),
+		   "                                in filename invoked by -R "
+		   "or --just-symbols"),
     TWO_DASHES},
   { {"embedded-relocs", no_argument, NULL, OPTION_EMBEDDED_RELOCS},
     '\0', NULL, N_("Generate embedded relocs"), TWO_DASHES},
@@ -432,6 +433,10 @@ static const struct ld_option ld_options[] =
   { {"reduce-memory-overheads", no_argument, NULL,
      OPTION_REDUCE_MEMORY_OVERHEADS},
     '\0', NULL, N_("Reduce memory overheads, possibly taking much longer"),
+    TWO_DASHES },
+  { {"max-cache-size=SIZE", required_argument, NULL,
+    OPTION_MAX_CACHE_SIZE},
+    '\0', NULL, N_("Set the maximum cache size to SIZE bytes"),
     TWO_DASHES },
   { {"relax", no_argument, NULL, OPTION_RELAX},
     '\0', NULL, N_("Reduce code size by using target specific optimizations"), TWO_DASHES },
@@ -1629,6 +1634,17 @@ parse_args (unsigned argc, char **argv)
 	  link_info.reduce_memory_overheads = true;
 	  if (config.hash_table_size == 0)
 	    config.hash_table_size = 1021;
+	  break;
+
+	case OPTION_MAX_CACHE_SIZE:
+	  {
+	    char *end;
+	    bfd_size_type cache_size = strtoul (optarg, &end, 0);
+	    if (*end != '\0')
+	      einfo (_("%F%P: invalid cache memory size: %s\n"),
+		     optarg);
+	    link_info.max_cache_size = cache_size;
+	  }
 	  break;
 
 	case OPTION_HASH_SIZE:

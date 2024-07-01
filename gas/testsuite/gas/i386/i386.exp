@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2021 Free Software Foundation, Inc.
+# Copyright (C) 2012-2022 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -118,7 +118,6 @@ if [gas_32_check] then {
     run_list_test "lockbad-1" "-al"
     run_dump_test "long-1"
     run_dump_test "long-1-intel"
-    run_dump_test "fp"
     run_dump_test "nops"
     run_dump_test "nops16-1"
     run_dump_test "nops-1"
@@ -273,6 +272,7 @@ if [gas_32_check] then {
     run_dump_test "evex-wig1-intel"
     run_dump_test "evex-no-scale-32"
     run_dump_test "sse2avx"
+    run_dump_test "unaligned-vector-move"
     run_list_test "inval-avx" "-al"
     run_list_test "inval-avx512f" "-al"
     run_list_test "inval-avx512vl" "-al"
@@ -516,6 +516,12 @@ if [gas_32_check] then {
     run_list_test "vp2intersect-inval-bcast"
     run_dump_test "keylocker"
     run_dump_test "keylocker-intel"
+    run_dump_test "avx512_fp16"
+    run_dump_test "avx512_fp16-intel"
+    run_dump_test "avx512_fp16_vl"
+    run_dump_test "avx512_fp16_vl-intel"
+    run_dump_test "avx512_fp16_pseudo_ops"
+    run_list_test "avx512_fp16-inval-bcast"
     run_list_test "avx512vl-1" "-al"
     run_list_test "avx512vl-2" "-al"
     run_list_test "avx512vl-ambig"
@@ -610,6 +616,7 @@ if [gas_32_check] then {
 	run_dump_test "tlsd"
 	run_dump_test "tlspic"
 	run_dump_test "tlsnopic"
+	run_list_test "inval-tls"
 	run_dump_test "bss"
 	run_dump_test "reloc32"
 	run_list_test "reloc32" "--defsym _bad_=1"
@@ -641,6 +648,8 @@ if [gas_32_check] then {
 	run_dump_test "dw2-compress-2"
 	run_dump_test "dw2-compressed-2"
 
+	run_dump_test "bad-bcast-intel"
+	run_dump_test "bad-bcast"
 	run_dump_test "bad-size"
 
 	run_dump_test "size-1"
@@ -719,6 +728,7 @@ run_dump_test rept
 run_dump_test pr19498
 run_list_test "nop-bad-1" ""
 run_list_test "unspec" ""
+run_dump_test "fp"
 if {[is_elf_format] || [istarget "*-*-vxworks*"]} then {
     run_list_test_stdin "list-1" "-al"
     run_list_test_stdin "list-2" "-al"
@@ -929,6 +939,7 @@ if [gas_64_check] then {
     run_dump_test "x86-64-avx512er-intel"
     run_dump_test "x86-64-avx512pf"
     run_dump_test "x86-64-avx512pf-intel"
+    run_dump_test "x86-64-evex"
     run_dump_test "x86-64-evex-lig256"
     run_dump_test "x86-64-evex-lig512"
     run_dump_test "x86-64-evex-lig256-intel"
@@ -939,6 +950,7 @@ if [gas_64_check] then {
     run_dump_test "x86-64-evex-wig2"
     run_dump_test "evex-no-scale-64"
     run_dump_test "x86-64-sse2avx"
+    run_dump_test "x86-64-unaligned-vector-move"
     run_list_test "x86-64-inval-avx" "-al"
     run_list_test "x86-64-inval-avx512f" "-al"
     run_list_test "x86-64-inval-avx512vl" "-al"
@@ -1161,6 +1173,14 @@ if [gas_64_check] then {
     run_list_test "x86-64-vp2intersect-inval-bcast"
     run_dump_test "x86-64-keylocker"
     run_dump_test "x86-64-keylocker-intel"
+    run_dump_test "x86-64-avx512_fp16"
+    run_dump_test "x86-64-avx512_fp16-intel"
+    run_dump_test "x86-64-avx512_fp16_vl"
+    run_dump_test "x86-64-avx512_fp16_vl-intel"
+    run_dump_test "x86-64-avx512_fp16_pseudo_ops"
+    run_list_test "x86-64-avx512_fp16-inval-bcast"
+    run_list_test "x86-64-avx512_fp16-inval-register"
+    run_dump_test "x86-64-avx512_fp16-bad"
     run_dump_test "x86-64-fence-as-lock-add-yes"
     run_dump_test "x86-64-fence-as-lock-add-no"
     run_dump_test "x86-64-pr20141"
@@ -1257,6 +1277,7 @@ if [gas_64_check] then {
 
 	run_dump_test "reloc64"
 	run_list_test "reloc64" "--defsym _bad_=1"
+	run_list_test "x86-64-inval-tls"
 	run_dump_test "mixed-mode-reloc64"
 	run_dump_test "rela"
 	run_dump_test "x86-64-ifunc"

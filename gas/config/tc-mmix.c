@@ -1,5 +1,5 @@
 /* tc-mmix.c -- Assembler for Don Knuth's MMIX.
-   Copyright (C) 2001-2021 Free Software Foundation, Inc.
+   Copyright (C) 2001-2022 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -3742,8 +3742,7 @@ mmix_frob_file (void)
       /* This case isn't doable in general anyway, methinks.  */
       if (fixP->fx_subsy != NULL)
 	{
-	  as_bad_where (fixP->fx_file, fixP->fx_line,
-			_("GREG expression too complicated"));
+	  as_bad_subtract (fixP);
 	  continue;
 	}
 

@@ -1,5 +1,5 @@
 /* tc-ppc.h -- Header file for tc-ppc.c.
-   Copyright (C) 1994-2021 Free Software Foundation, Inc.
+   Copyright (C) 1994-2022 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support.
 
    This file is part of GAS, the GNU Assembler.
@@ -130,6 +130,7 @@ struct ppc_tc_sy
   /* For a csect symbol, the last symbol which has been defined in
      this csect, or NULL if none have been defined so far.
      For a .bs symbol, the referenced csect symbol.
+     For a C_STSYM symbol, the containing block (.bs symbol).
      For a label, the enclosing csect.  */
   symbolS *within;
   union
@@ -145,7 +146,7 @@ struct ppc_tc_sy
 #define TC_SYMFIELD_TYPE struct ppc_tc_sy
 
 /* We need an additional auxent for function symbols.  */
-#define OBJ_COFF_MAX_AUXENTRIES 2
+#define OBJ_COFF_MAX_AUXENTRIES 4
 
 /* Square and curly brackets are permitted in symbol names.  */
 #define LEX_BR 3
@@ -285,8 +286,6 @@ extern int ppc_force_relocation (struct fix *);
      || (FIX)->fx_r_type == BFD_RELOC_PPC64_D34			\
      || (FIX)->fx_r_type == BFD_RELOC_PPC64_D28))
 
-#define TC_VALIDATE_FIX_SUB(FIX, SEG) 0
-
 #endif /* OBJ_ELF */
 
 #define RELOC_EXPANSION_POSSIBLE
@@ -303,6 +302,10 @@ extern int ppc_force_relocation (struct fix *);
 /* XCOFF allows undefined differences which will be encoded with
    R_NEG relocations.  */
 #define UNDEFINED_DIFFERENCE_OK
+
+#define TC_VALIDATE_FIX_SUB(FIX, SEG) \
+  (md_register_arithmetic || (SEG) != reg_section)
+
 #endif /* OBJ_XCOFF */
 
 /* Various frobbings of labels and their addresses.  */

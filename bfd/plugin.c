@@ -1,5 +1,5 @@
 /* Plugin support for BFD.
-   Copyright (C) 2009-2021 Free Software Foundation, Inc.
+   Copyright (C) 2009-2022 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -290,6 +290,14 @@ bfd_plugin_close_file_descriptor (bfd *abfd, int fd)
       while (abfd->my_archive
 	     && !bfd_is_thin_archive (abfd->my_archive))
 	abfd = abfd->my_archive;
+
+      /* Close the file descriptor if there is no archive plugin file
+	 descriptor.  */
+      if (abfd->archive_plugin_fd == -1)
+	{
+	  close (fd);
+	  return;
+	}
 
       abfd->archive_plugin_fd_open_count--;
       /* Dup the archive plugin file descriptor for later use, which

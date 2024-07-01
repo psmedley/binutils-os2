@@ -1,10 +1,30 @@
-2021-07-18  Nick Clifton  <nickc@redhat.com>
+2022-02-09  Nick Clifton  <nickc@redhat.com>
 
-	* 2.37 release.
+	2.38 release.
+	* Makefile.in: Regenerate.
+	* configure: Regenerate.
 
-2021-07-05  Nick Clifton  <nickc@redhat.com>
+2022-01-24  Nick Clifton  <nickc@redhat.com>
 
-	* po/tr.po: Updated Turkish translation.
+	* po/ro.po: Updated Romanian translation.
+
+2022-01-22  Nick Clifton  <nickc@redhat.com>
+
+	* configure: Regenerate.
+	* po/gprof.pot: Regenerate.
+	* Makefile.in: Regenerate.
+
+2022-01-22  Nick Clifton  <nickc@redhat.com>
+
+	* 2.38 release branch created.
+
+2021-09-27  Nick Alcock  <nick.alcock@oracle.com>
+
+	* configure: Regenerate.
+
+2021-07-03  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* configure: Regenerated.
 
 2021-07-03  Nick Clifton  <nickc@redhat.com>
 
@@ -113,7 +133,7 @@
 
 For older changes see ChangeLog-2020
 
-Copyright (C) 2021 Free Software Foundation, Inc.
+Copyright (C) 2021-2022 Free Software Foundation, Inc.
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright

@@ -9,16 +9,18 @@ fi
 case ${target} in
   *-*-cygwin*)
     move_default_addr_high=1
+    cygwin_behavior=1
     ;;
   *)
     move_default_addr_high=0;
+    cygwin_behavior=0;
     ;;
 esac
 
 rm -f e${EMULATION_NAME}.c
 (echo;echo;echo;echo;echo)>e${EMULATION_NAME}.c # there, now line numbers match ;-)
 fragment <<EOF
-/* Copyright (C) 2006-2021 Free Software Foundation, Inc.
+/* Copyright (C) 2006-2022 Free Software Foundation, Inc.
    Written by Kai Tietz, OneVision Software GmbH&CoKg.
 
    This file is part of the GNU Binutils.
@@ -99,9 +101,10 @@ fragment <<EOF
 #define DLL_SUPPORT
 #endif
 
-#define DEFAULT_DLL_CHARACTERISTICS	(IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE \
+#define DEFAULT_DLL_CHARACTERISTICS	(${cygwin_behavior} ? 0 : \
+					   IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE \
 					 | IMAGE_DLL_CHARACTERISTICS_HIGH_ENTROPY_VA \
-					 | IMAGE_DLL_CHARACTERISTICS_NX_COMPAT)
+  					 | IMAGE_DLL_CHARACTERISTICS_NX_COMPAT)
 
 #if defined(TARGET_IS_i386pep) || ! defined(DLL_SUPPORT)
 #define	PE_DEF_SUBSYSTEM		3

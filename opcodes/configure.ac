@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl   Copyright (C) 2012-2021 Free Software Foundation, Inc.
+dnl   Copyright (C) 2012-2022 Free Software Foundation, Inc.
 dnl
 dnl This file is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ AC_CONFIG_AUX_DIR(..)
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE
+AM_SILENT_RULES([yes])
 
 AC_PROG_CC
 AC_GNU_SOURCE
@@ -93,6 +94,7 @@ AM_PO_SUBDIRS
 . ${srcdir}/../bfd/configure.host
 
 BFD_CC_FOR_BUILD
+BFD_64_BIT
 
 AC_SUBST(HDEFINES)
 AC_PROG_INSTALL
@@ -194,24 +196,13 @@ if test "$enable_shared" = "yes"; then
       SHARED_LDFLAGS="-no-undefined"
       SHARED_LIBADD="-L`pwd`/../bfd -lbfd -L`pwd`/../libiberty -liberty $SHARED_LIBADD"
       ;;
-   *-*-darwin*)
-     SHARED_LIBADD="-Wl,`pwd`/../bfd/.libs/libbfd.dylib ${SHARED_LIBADD}"
-     SHARED_DEPENDENCIES="../bfd/libbfd.la"
-     ;;
 *-*-os2*)
       SHARED_LDFLAGS="-no-undefined"
-      SHARED_LIBADD="-L`pwd`/../bfd -lbfd -L`pwd`/../libiberty -liberty"
+      SHARED_LIBADD="-L`pwd`/../bfd -lbfd -L`pwd`/../libiberty -liberty ${SHARED_LIBADD}"
 #      SHARED_LIBADD="-L`pwd`/../bfd -lbfd -L`pwd`/../libiberty -liberty -L`pwd`/../intl -lintl"
   ;;
     *)
-      case "$host_vendor" in
-        hp)
-          SHARED_LIBADD="-Wl,`pwd`/../bfd/.libs/libbfd.sl ${SHARED_LIBADD}"
-	  ;;
-	*)
-          SHARED_LIBADD="-Wl,`pwd`/../bfd/.libs/libbfd.so ${SHARED_LIBADD}"
-	  ;;
-      esac
+      SHARED_LIBADD="../bfd/libbfd.la ${SHARED_LIBADD}"
       SHARED_DEPENDENCIES="../bfd/libbfd.la"
       ;;
   esac
@@ -361,6 +352,7 @@ if test x${all_targets} = xfalse ; then
 	bfd_z80_arch)		ta="$ta z80-dis.lo" ;;
 	bfd_z8k_arch)		ta="$ta z8k-dis.lo" ;;
 	bfd_bpf_arch)		ta="$ta bpf-asm.lo bpf-desc.lo bpf-dis.lo bpf-ibld.lo bpf-opc.lo" using_cgen=yes ;;
+	bfd_loongarch_arch)	ta="$ta loongarch-dis.lo loongarch-opc.lo loongarch-coder.lo" ;;
 
 	"")			;;
 	*)		AC_MSG_ERROR(*** unknown target architecture $arch) ;;
@@ -395,7 +387,11 @@ if test x${all_targets} = xfalse ; then
 
 else	# all_targets is true
     archdefs=-DARCH_all
-    BFD_MACHINES='$(ALL_MACHINES)'
+    if test "$enable_64_bit_bfd" = "yes" ; then
+	BFD_MACHINES='$(ALL32_MACHINES) $(ALL64_MACHINES)'
+    else
+	BFD_MACHINES='$(ALL32_MACHINES)'
+    fi
 fi
 
 AC_SUBST(archdefs)

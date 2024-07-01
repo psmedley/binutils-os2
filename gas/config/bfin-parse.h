@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_CONFIG_BFIN_PARSE_H_INCLUDED
 # define YY_YY_CONFIG_BFIN_PARSE_H_INCLUDED
@@ -44,185 +45,194 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    BYTEOP16P = 258,
-    BYTEOP16M = 259,
-    BYTEOP1P = 260,
-    BYTEOP2P = 261,
-    BYTEOP3P = 262,
-    BYTEUNPACK = 263,
-    BYTEPACK = 264,
-    PACK = 265,
-    SAA = 266,
-    ALIGN8 = 267,
-    ALIGN16 = 268,
-    ALIGN24 = 269,
-    VIT_MAX = 270,
-    EXTRACT = 271,
-    DEPOSIT = 272,
-    EXPADJ = 273,
-    SEARCH = 274,
-    ONES = 275,
-    SIGN = 276,
-    SIGNBITS = 277,
-    LINK = 278,
-    UNLINK = 279,
-    REG = 280,
-    PC = 281,
-    CCREG = 282,
-    BYTE_DREG = 283,
-    REG_A_DOUBLE_ZERO = 284,
-    REG_A_DOUBLE_ONE = 285,
-    A_ZERO_DOT_L = 286,
-    A_ZERO_DOT_H = 287,
-    A_ONE_DOT_L = 288,
-    A_ONE_DOT_H = 289,
-    HALF_REG = 290,
-    NOP = 291,
-    RTI = 292,
-    RTS = 293,
-    RTX = 294,
-    RTN = 295,
-    RTE = 296,
-    HLT = 297,
-    IDLE = 298,
-    STI = 299,
-    CLI = 300,
-    CSYNC = 301,
-    SSYNC = 302,
-    EMUEXCPT = 303,
-    RAISE = 304,
-    EXCPT = 305,
-    LSETUP = 306,
-    LOOP = 307,
-    LOOP_BEGIN = 308,
-    LOOP_END = 309,
-    DISALGNEXCPT = 310,
-    JUMP = 311,
-    JUMP_DOT_S = 312,
-    JUMP_DOT_L = 313,
-    CALL = 314,
-    ABORT = 315,
-    NOT = 316,
-    TILDA = 317,
-    BANG = 318,
-    AMPERSAND = 319,
-    BAR = 320,
-    PERCENT = 321,
-    CARET = 322,
-    BXOR = 323,
-    MINUS = 324,
-    PLUS = 325,
-    STAR = 326,
-    SLASH = 327,
-    NEG = 328,
-    MIN = 329,
-    MAX = 330,
-    ABS = 331,
-    DOUBLE_BAR = 332,
-    _PLUS_BAR_PLUS = 333,
-    _PLUS_BAR_MINUS = 334,
-    _MINUS_BAR_PLUS = 335,
-    _MINUS_BAR_MINUS = 336,
-    _MINUS_MINUS = 337,
-    _PLUS_PLUS = 338,
-    SHIFT = 339,
-    LSHIFT = 340,
-    ASHIFT = 341,
-    BXORSHIFT = 342,
-    _GREATER_GREATER_GREATER_THAN_ASSIGN = 343,
-    ROT = 344,
-    LESS_LESS = 345,
-    GREATER_GREATER = 346,
-    _GREATER_GREATER_GREATER = 347,
-    _LESS_LESS_ASSIGN = 348,
-    _GREATER_GREATER_ASSIGN = 349,
-    DIVS = 350,
-    DIVQ = 351,
-    ASSIGN = 352,
-    _STAR_ASSIGN = 353,
-    _BAR_ASSIGN = 354,
-    _CARET_ASSIGN = 355,
-    _AMPERSAND_ASSIGN = 356,
-    _MINUS_ASSIGN = 357,
-    _PLUS_ASSIGN = 358,
-    _ASSIGN_BANG = 359,
-    _LESS_THAN_ASSIGN = 360,
-    _ASSIGN_ASSIGN = 361,
-    GE = 362,
-    LT = 363,
-    LE = 364,
-    GT = 365,
-    LESS_THAN = 366,
-    FLUSHINV = 367,
-    FLUSH = 368,
-    IFLUSH = 369,
-    PREFETCH = 370,
-    PRNT = 371,
-    OUTC = 372,
-    WHATREG = 373,
-    TESTSET = 374,
-    ASL = 375,
-    ASR = 376,
-    B = 377,
-    W = 378,
-    NS = 379,
-    S = 380,
-    CO = 381,
-    SCO = 382,
-    TH = 383,
-    TL = 384,
-    BP = 385,
-    BREV = 386,
-    X = 387,
-    Z = 388,
-    M = 389,
-    MMOD = 390,
-    R = 391,
-    RND = 392,
-    RNDL = 393,
-    RNDH = 394,
-    RND12 = 395,
-    RND20 = 396,
-    V = 397,
-    LO = 398,
-    HI = 399,
-    BITTGL = 400,
-    BITCLR = 401,
-    BITSET = 402,
-    BITTST = 403,
-    BITMUX = 404,
-    DBGAL = 405,
-    DBGAH = 406,
-    DBGHALT = 407,
-    DBG = 408,
-    DBGA = 409,
-    DBGCMPLX = 410,
-    IF = 411,
-    COMMA = 412,
-    BY = 413,
-    COLON = 414,
-    SEMICOLON = 415,
-    RPAREN = 416,
-    LPAREN = 417,
-    LBRACK = 418,
-    RBRACK = 419,
-    STATUS_REG = 420,
-    MNOP = 421,
-    SYMBOL = 422,
-    NUMBER = 423,
-    GOT = 424,
-    GOT17M4 = 425,
-    FUNCDESC_GOT17M4 = 426,
-    AT = 427,
-    PLTPC = 428
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    BYTEOP16P = 258,               /* BYTEOP16P  */
+    BYTEOP16M = 259,               /* BYTEOP16M  */
+    BYTEOP1P = 260,                /* BYTEOP1P  */
+    BYTEOP2P = 261,                /* BYTEOP2P  */
+    BYTEOP3P = 262,                /* BYTEOP3P  */
+    BYTEUNPACK = 263,              /* BYTEUNPACK  */
+    BYTEPACK = 264,                /* BYTEPACK  */
+    PACK = 265,                    /* PACK  */
+    SAA = 266,                     /* SAA  */
+    ALIGN8 = 267,                  /* ALIGN8  */
+    ALIGN16 = 268,                 /* ALIGN16  */
+    ALIGN24 = 269,                 /* ALIGN24  */
+    VIT_MAX = 270,                 /* VIT_MAX  */
+    EXTRACT = 271,                 /* EXTRACT  */
+    DEPOSIT = 272,                 /* DEPOSIT  */
+    EXPADJ = 273,                  /* EXPADJ  */
+    SEARCH = 274,                  /* SEARCH  */
+    ONES = 275,                    /* ONES  */
+    SIGN = 276,                    /* SIGN  */
+    SIGNBITS = 277,                /* SIGNBITS  */
+    LINK = 278,                    /* LINK  */
+    UNLINK = 279,                  /* UNLINK  */
+    REG = 280,                     /* REG  */
+    PC = 281,                      /* PC  */
+    CCREG = 282,                   /* CCREG  */
+    BYTE_DREG = 283,               /* BYTE_DREG  */
+    REG_A_DOUBLE_ZERO = 284,       /* REG_A_DOUBLE_ZERO  */
+    REG_A_DOUBLE_ONE = 285,        /* REG_A_DOUBLE_ONE  */
+    A_ZERO_DOT_L = 286,            /* A_ZERO_DOT_L  */
+    A_ZERO_DOT_H = 287,            /* A_ZERO_DOT_H  */
+    A_ONE_DOT_L = 288,             /* A_ONE_DOT_L  */
+    A_ONE_DOT_H = 289,             /* A_ONE_DOT_H  */
+    HALF_REG = 290,                /* HALF_REG  */
+    NOP = 291,                     /* NOP  */
+    RTI = 292,                     /* RTI  */
+    RTS = 293,                     /* RTS  */
+    RTX = 294,                     /* RTX  */
+    RTN = 295,                     /* RTN  */
+    RTE = 296,                     /* RTE  */
+    HLT = 297,                     /* HLT  */
+    IDLE = 298,                    /* IDLE  */
+    STI = 299,                     /* STI  */
+    CLI = 300,                     /* CLI  */
+    CSYNC = 301,                   /* CSYNC  */
+    SSYNC = 302,                   /* SSYNC  */
+    EMUEXCPT = 303,                /* EMUEXCPT  */
+    RAISE = 304,                   /* RAISE  */
+    EXCPT = 305,                   /* EXCPT  */
+    LSETUP = 306,                  /* LSETUP  */
+    LOOP = 307,                    /* LOOP  */
+    LOOP_BEGIN = 308,              /* LOOP_BEGIN  */
+    LOOP_END = 309,                /* LOOP_END  */
+    DISALGNEXCPT = 310,            /* DISALGNEXCPT  */
+    JUMP = 311,                    /* JUMP  */
+    JUMP_DOT_S = 312,              /* JUMP_DOT_S  */
+    JUMP_DOT_L = 313,              /* JUMP_DOT_L  */
+    CALL = 314,                    /* CALL  */
+    ABORT = 315,                   /* ABORT  */
+    NOT = 316,                     /* NOT  */
+    TILDA = 317,                   /* TILDA  */
+    BANG = 318,                    /* BANG  */
+    AMPERSAND = 319,               /* AMPERSAND  */
+    BAR = 320,                     /* BAR  */
+    PERCENT = 321,                 /* PERCENT  */
+    CARET = 322,                   /* CARET  */
+    BXOR = 323,                    /* BXOR  */
+    MINUS = 324,                   /* MINUS  */
+    PLUS = 325,                    /* PLUS  */
+    STAR = 326,                    /* STAR  */
+    SLASH = 327,                   /* SLASH  */
+    NEG = 328,                     /* NEG  */
+    MIN = 329,                     /* MIN  */
+    MAX = 330,                     /* MAX  */
+    ABS = 331,                     /* ABS  */
+    DOUBLE_BAR = 332,              /* DOUBLE_BAR  */
+    _PLUS_BAR_PLUS = 333,          /* _PLUS_BAR_PLUS  */
+    _PLUS_BAR_MINUS = 334,         /* _PLUS_BAR_MINUS  */
+    _MINUS_BAR_PLUS = 335,         /* _MINUS_BAR_PLUS  */
+    _MINUS_BAR_MINUS = 336,        /* _MINUS_BAR_MINUS  */
+    _MINUS_MINUS = 337,            /* _MINUS_MINUS  */
+    _PLUS_PLUS = 338,              /* _PLUS_PLUS  */
+    SHIFT = 339,                   /* SHIFT  */
+    LSHIFT = 340,                  /* LSHIFT  */
+    ASHIFT = 341,                  /* ASHIFT  */
+    BXORSHIFT = 342,               /* BXORSHIFT  */
+    _GREATER_GREATER_GREATER_THAN_ASSIGN = 343, /* _GREATER_GREATER_GREATER_THAN_ASSIGN  */
+    ROT = 344,                     /* ROT  */
+    LESS_LESS = 345,               /* LESS_LESS  */
+    GREATER_GREATER = 346,         /* GREATER_GREATER  */
+    _GREATER_GREATER_GREATER = 347, /* _GREATER_GREATER_GREATER  */
+    _LESS_LESS_ASSIGN = 348,       /* _LESS_LESS_ASSIGN  */
+    _GREATER_GREATER_ASSIGN = 349, /* _GREATER_GREATER_ASSIGN  */
+    DIVS = 350,                    /* DIVS  */
+    DIVQ = 351,                    /* DIVQ  */
+    ASSIGN = 352,                  /* ASSIGN  */
+    _STAR_ASSIGN = 353,            /* _STAR_ASSIGN  */
+    _BAR_ASSIGN = 354,             /* _BAR_ASSIGN  */
+    _CARET_ASSIGN = 355,           /* _CARET_ASSIGN  */
+    _AMPERSAND_ASSIGN = 356,       /* _AMPERSAND_ASSIGN  */
+    _MINUS_ASSIGN = 357,           /* _MINUS_ASSIGN  */
+    _PLUS_ASSIGN = 358,            /* _PLUS_ASSIGN  */
+    _ASSIGN_BANG = 359,            /* _ASSIGN_BANG  */
+    _LESS_THAN_ASSIGN = 360,       /* _LESS_THAN_ASSIGN  */
+    _ASSIGN_ASSIGN = 361,          /* _ASSIGN_ASSIGN  */
+    GE = 362,                      /* GE  */
+    LT = 363,                      /* LT  */
+    LE = 364,                      /* LE  */
+    GT = 365,                      /* GT  */
+    LESS_THAN = 366,               /* LESS_THAN  */
+    FLUSHINV = 367,                /* FLUSHINV  */
+    FLUSH = 368,                   /* FLUSH  */
+    IFLUSH = 369,                  /* IFLUSH  */
+    PREFETCH = 370,                /* PREFETCH  */
+    PRNT = 371,                    /* PRNT  */
+    OUTC = 372,                    /* OUTC  */
+    WHATREG = 373,                 /* WHATREG  */
+    TESTSET = 374,                 /* TESTSET  */
+    ASL = 375,                     /* ASL  */
+    ASR = 376,                     /* ASR  */
+    B = 377,                       /* B  */
+    W = 378,                       /* W  */
+    NS = 379,                      /* NS  */
+    S = 380,                       /* S  */
+    CO = 381,                      /* CO  */
+    SCO = 382,                     /* SCO  */
+    TH = 383,                      /* TH  */
+    TL = 384,                      /* TL  */
+    BP = 385,                      /* BP  */
+    BREV = 386,                    /* BREV  */
+    X = 387,                       /* X  */
+    Z = 388,                       /* Z  */
+    M = 389,                       /* M  */
+    MMOD = 390,                    /* MMOD  */
+    R = 391,                       /* R  */
+    RND = 392,                     /* RND  */
+    RNDL = 393,                    /* RNDL  */
+    RNDH = 394,                    /* RNDH  */
+    RND12 = 395,                   /* RND12  */
+    RND20 = 396,                   /* RND20  */
+    V = 397,                       /* V  */
+    LO = 398,                      /* LO  */
+    HI = 399,                      /* HI  */
+    BITTGL = 400,                  /* BITTGL  */
+    BITCLR = 401,                  /* BITCLR  */
+    BITSET = 402,                  /* BITSET  */
+    BITTST = 403,                  /* BITTST  */
+    BITMUX = 404,                  /* BITMUX  */
+    DBGAL = 405,                   /* DBGAL  */
+    DBGAH = 406,                   /* DBGAH  */
+    DBGHALT = 407,                 /* DBGHALT  */
+    DBG = 408,                     /* DBG  */
+    DBGA = 409,                    /* DBGA  */
+    DBGCMPLX = 410,                /* DBGCMPLX  */
+    IF = 411,                      /* IF  */
+    COMMA = 412,                   /* COMMA  */
+    BY = 413,                      /* BY  */
+    COLON = 414,                   /* COLON  */
+    SEMICOLON = 415,               /* SEMICOLON  */
+    RPAREN = 416,                  /* RPAREN  */
+    LPAREN = 417,                  /* LPAREN  */
+    LBRACK = 418,                  /* LBRACK  */
+    RBRACK = 419,                  /* RBRACK  */
+    STATUS_REG = 420,              /* STATUS_REG  */
+    MNOP = 421,                    /* MNOP  */
+    SYMBOL = 422,                  /* SYMBOL  */
+    NUMBER = 423,                  /* NUMBER  */
+    GOT = 424,                     /* GOT  */
+    GOT17M4 = 425,                 /* GOT17M4  */
+    FUNCDESC_GOT17M4 = 426,        /* FUNCDESC_GOT17M4  */
+    AT = 427,                      /* AT  */
+    PLTPC = 428                    /* PLTPC  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define BYTEOP16P 258
 #define BYTEOP16M 259
 #define BYTEOP1P 260
@@ -399,7 +409,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 444 "./config/bfin-parse.y"
+#line 447 "./config/bfin-parse.y"
 
   INSTR_T instr;
   Expr_Node *expr;
@@ -411,7 +421,7 @@ union YYSTYPE
   struct { int r0; } r0;
   Opt_mode mod;
 
-#line 415 "config/bfin-parse.h"
+#line 425 "config/bfin-parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

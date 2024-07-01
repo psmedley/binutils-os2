@@ -1,5 +1,5 @@
 /* ldlang.h - linker command language support
-   Copyright (C) 1991-2021 Free Software Foundation, Inc.
+   Copyright (C) 1991-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Binutils.
 
@@ -121,7 +121,8 @@ enum section_type
   first_overlay_section,
   overlay_section,
   noload_section,
-  noalloc_section
+  noalloc_section,
+  readonly_section
 };
 
 /* This structure holds a list of program headers describing

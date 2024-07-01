@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_RL78_CONFIG_RL_PARSE_H_INCLUDED
 # define YY_RL78_CONFIG_RL_PARSE_H_INCLUDED
@@ -44,131 +45,140 @@
 extern int rl78_debug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    A = 258,
-    X = 259,
-    B = 260,
-    C = 261,
-    D = 262,
-    E = 263,
-    H = 264,
-    L = 265,
-    AX = 266,
-    BC = 267,
-    DE = 268,
-    HL = 269,
-    SPL = 270,
-    SPH = 271,
-    PSW = 272,
-    CS = 273,
-    ES = 274,
-    PMC = 275,
-    MEM = 276,
-    FLAG = 277,
-    SP = 278,
-    CY = 279,
-    RB0 = 280,
-    RB1 = 281,
-    RB2 = 282,
-    RB3 = 283,
-    EXPR = 284,
-    UNKNOWN_OPCODE = 285,
-    IS_OPCODE = 286,
-    DOT_S = 287,
-    DOT_B = 288,
-    DOT_W = 289,
-    DOT_L = 290,
-    DOT_A = 291,
-    DOT_UB = 292,
-    DOT_UW = 293,
-    ADD = 294,
-    ADDC = 295,
-    ADDW = 296,
-    AND_ = 297,
-    AND1 = 298,
-    BF = 299,
-    BH = 300,
-    BNC = 301,
-    BNH = 302,
-    BNZ = 303,
-    BR = 304,
-    BRK = 305,
-    BRK1 = 306,
-    BT = 307,
-    BTCLR = 308,
-    BZ = 309,
-    CALL = 310,
-    CALLT = 311,
-    CLR1 = 312,
-    CLRB = 313,
-    CLRW = 314,
-    CMP = 315,
-    CMP0 = 316,
-    CMPS = 317,
-    CMPW = 318,
-    DEC = 319,
-    DECW = 320,
-    DI = 321,
-    DIVHU = 322,
-    DIVWU = 323,
-    EI = 324,
-    HALT = 325,
-    INC = 326,
-    INCW = 327,
-    MACH = 328,
-    MACHU = 329,
-    MOV = 330,
-    MOV1 = 331,
-    MOVS = 332,
-    MOVW = 333,
-    MULH = 334,
-    MULHU = 335,
-    MULU = 336,
-    NOP = 337,
-    NOT1 = 338,
-    ONEB = 339,
-    ONEW = 340,
-    OR = 341,
-    OR1 = 342,
-    POP = 343,
-    PUSH = 344,
-    RET = 345,
-    RETI = 346,
-    RETB = 347,
-    ROL = 348,
-    ROLC = 349,
-    ROLWC = 350,
-    ROR = 351,
-    RORC = 352,
-    SAR = 353,
-    SARW = 354,
-    SEL = 355,
-    SET1 = 356,
-    SHL = 357,
-    SHLW = 358,
-    SHR = 359,
-    SHRW = 360,
-    SKC = 361,
-    SKH = 362,
-    SKNC = 363,
-    SKNH = 364,
-    SKNZ = 365,
-    SKZ = 366,
-    STOP = 367,
-    SUB = 368,
-    SUBC = 369,
-    SUBW = 370,
-    XCH = 371,
-    XCHW = 372,
-    XOR = 373,
-    XOR1 = 374
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    A = 258,                       /* A  */
+    X = 259,                       /* X  */
+    B = 260,                       /* B  */
+    C = 261,                       /* C  */
+    D = 262,                       /* D  */
+    E = 263,                       /* E  */
+    H = 264,                       /* H  */
+    L = 265,                       /* L  */
+    AX = 266,                      /* AX  */
+    BC = 267,                      /* BC  */
+    DE = 268,                      /* DE  */
+    HL = 269,                      /* HL  */
+    SPL = 270,                     /* SPL  */
+    SPH = 271,                     /* SPH  */
+    PSW = 272,                     /* PSW  */
+    CS = 273,                      /* CS  */
+    ES = 274,                      /* ES  */
+    PMC = 275,                     /* PMC  */
+    MEM = 276,                     /* MEM  */
+    FLAG = 277,                    /* FLAG  */
+    SP = 278,                      /* SP  */
+    CY = 279,                      /* CY  */
+    RB0 = 280,                     /* RB0  */
+    RB1 = 281,                     /* RB1  */
+    RB2 = 282,                     /* RB2  */
+    RB3 = 283,                     /* RB3  */
+    EXPR = 284,                    /* EXPR  */
+    UNKNOWN_OPCODE = 285,          /* UNKNOWN_OPCODE  */
+    IS_OPCODE = 286,               /* IS_OPCODE  */
+    DOT_S = 287,                   /* DOT_S  */
+    DOT_B = 288,                   /* DOT_B  */
+    DOT_W = 289,                   /* DOT_W  */
+    DOT_L = 290,                   /* DOT_L  */
+    DOT_A = 291,                   /* DOT_A  */
+    DOT_UB = 292,                  /* DOT_UB  */
+    DOT_UW = 293,                  /* DOT_UW  */
+    ADD = 294,                     /* ADD  */
+    ADDC = 295,                    /* ADDC  */
+    ADDW = 296,                    /* ADDW  */
+    AND_ = 297,                    /* AND_  */
+    AND1 = 298,                    /* AND1  */
+    BF = 299,                      /* BF  */
+    BH = 300,                      /* BH  */
+    BNC = 301,                     /* BNC  */
+    BNH = 302,                     /* BNH  */
+    BNZ = 303,                     /* BNZ  */
+    BR = 304,                      /* BR  */
+    BRK = 305,                     /* BRK  */
+    BRK1 = 306,                    /* BRK1  */
+    BT = 307,                      /* BT  */
+    BTCLR = 308,                   /* BTCLR  */
+    BZ = 309,                      /* BZ  */
+    CALL = 310,                    /* CALL  */
+    CALLT = 311,                   /* CALLT  */
+    CLR1 = 312,                    /* CLR1  */
+    CLRB = 313,                    /* CLRB  */
+    CLRW = 314,                    /* CLRW  */
+    CMP = 315,                     /* CMP  */
+    CMP0 = 316,                    /* CMP0  */
+    CMPS = 317,                    /* CMPS  */
+    CMPW = 318,                    /* CMPW  */
+    DEC = 319,                     /* DEC  */
+    DECW = 320,                    /* DECW  */
+    DI = 321,                      /* DI  */
+    DIVHU = 322,                   /* DIVHU  */
+    DIVWU = 323,                   /* DIVWU  */
+    EI = 324,                      /* EI  */
+    HALT = 325,                    /* HALT  */
+    INC = 326,                     /* INC  */
+    INCW = 327,                    /* INCW  */
+    MACH = 328,                    /* MACH  */
+    MACHU = 329,                   /* MACHU  */
+    MOV = 330,                     /* MOV  */
+    MOV1 = 331,                    /* MOV1  */
+    MOVS = 332,                    /* MOVS  */
+    MOVW = 333,                    /* MOVW  */
+    MULH = 334,                    /* MULH  */
+    MULHU = 335,                   /* MULHU  */
+    MULU = 336,                    /* MULU  */
+    NOP = 337,                     /* NOP  */
+    NOT1 = 338,                    /* NOT1  */
+    ONEB = 339,                    /* ONEB  */
+    ONEW = 340,                    /* ONEW  */
+    OR = 341,                      /* OR  */
+    OR1 = 342,                     /* OR1  */
+    POP = 343,                     /* POP  */
+    PUSH = 344,                    /* PUSH  */
+    RET = 345,                     /* RET  */
+    RETI = 346,                    /* RETI  */
+    RETB = 347,                    /* RETB  */
+    ROL = 348,                     /* ROL  */
+    ROLC = 349,                    /* ROLC  */
+    ROLWC = 350,                   /* ROLWC  */
+    ROR = 351,                     /* ROR  */
+    RORC = 352,                    /* RORC  */
+    SAR = 353,                     /* SAR  */
+    SARW = 354,                    /* SARW  */
+    SEL = 355,                     /* SEL  */
+    SET1 = 356,                    /* SET1  */
+    SHL = 357,                     /* SHL  */
+    SHLW = 358,                    /* SHLW  */
+    SHR = 359,                     /* SHR  */
+    SHRW = 360,                    /* SHRW  */
+    SKC = 361,                     /* SKC  */
+    SKH = 362,                     /* SKH  */
+    SKNC = 363,                    /* SKNC  */
+    SKNH = 364,                    /* SKNH  */
+    SKNZ = 365,                    /* SKNZ  */
+    SKZ = 366,                     /* SKZ  */
+    STOP = 367,                    /* STOP  */
+    SUB = 368,                     /* SUB  */
+    SUBC = 369,                    /* SUBC  */
+    SUBW = 370,                    /* SUBW  */
+    XCH = 371,                     /* XCH  */
+    XCHW = 372,                    /* XCHW  */
+    XOR = 373,                     /* XOR  */
+    XOR1 = 374                     /* XOR1  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define A 258
 #define X 259
 #define B 260
@@ -296,7 +306,7 @@ union YYSTYPE
   int regno;
   expressionS exp;
 
-#line 300 "config/rl78-parse.h"
+#line 310 "config/rl78-parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

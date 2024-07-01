@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.7.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_RX_CONFIG_RX_PARSE_H_INCLUDED
 # define YY_RX_CONFIG_RX_PARSE_H_INCLUDED
@@ -44,175 +45,184 @@
 extern int rx_debug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    REG = 258,
-    FLAG = 259,
-    CREG = 260,
-    ACC = 261,
-    DREG = 262,
-    DREGH = 263,
-    DREGL = 264,
-    DCREG = 265,
-    EXPR = 266,
-    UNKNOWN_OPCODE = 267,
-    IS_OPCODE = 268,
-    DOT_S = 269,
-    DOT_B = 270,
-    DOT_W = 271,
-    DOT_L = 272,
-    DOT_A = 273,
-    DOT_UB = 274,
-    DOT_UW = 275,
-    DOT_D = 276,
-    ABS = 277,
-    ADC = 278,
-    ADD = 279,
-    AND_ = 280,
-    BCLR = 281,
-    BCND = 282,
-    BFMOV = 283,
-    BFMOVZ = 284,
-    BMCND = 285,
-    BNOT = 286,
-    BRA = 287,
-    BRK = 288,
-    BSET = 289,
-    BSR = 290,
-    BTST = 291,
-    CLRPSW = 292,
-    CMP = 293,
-    DABS = 294,
-    DADD = 295,
-    DBT = 296,
-    DCMP = 297,
-    DDIV = 298,
-    DIV = 299,
-    DIVU = 300,
-    DMOV = 301,
-    DMUL = 302,
-    DNEG = 303,
-    DPOPM = 304,
-    DPUSHM = 305,
-    DROUND = 306,
-    DSQRT = 307,
-    DSUB = 308,
-    DTOF = 309,
-    DTOI = 310,
-    DTOU = 311,
-    EDIV = 312,
-    EDIVU = 313,
-    EMACA = 314,
-    EMSBA = 315,
-    EMUL = 316,
-    EMULA = 317,
-    EMULU = 318,
-    FADD = 319,
-    FCMP = 320,
-    FDIV = 321,
-    FMUL = 322,
-    FREIT = 323,
-    FSUB = 324,
-    FSQRT = 325,
-    FTOD = 326,
-    FTOI = 327,
-    FTOU = 328,
-    INT = 329,
-    ITOD = 330,
-    ITOF = 331,
-    JMP = 332,
-    JSR = 333,
-    MACHI = 334,
-    MACLH = 335,
-    MACLO = 336,
-    MAX = 337,
-    MIN = 338,
-    MOV = 339,
-    MOVCO = 340,
-    MOVLI = 341,
-    MOVU = 342,
-    MSBHI = 343,
-    MSBLH = 344,
-    MSBLO = 345,
-    MUL = 346,
-    MULHI = 347,
-    MULLH = 348,
-    MULLO = 349,
-    MULU = 350,
-    MVFACHI = 351,
-    MVFACGU = 352,
-    MVFACMI = 353,
-    MVFACLO = 354,
-    MVFC = 355,
-    MVFDC = 356,
-    MVFDR = 357,
-    MVTACGU = 358,
-    MVTACHI = 359,
-    MVTACLO = 360,
-    MVTC = 361,
-    MVTDC = 362,
-    MVTIPL = 363,
-    NEG = 364,
-    NOP = 365,
-    NOT = 366,
-    OR = 367,
-    POP = 368,
-    POPC = 369,
-    POPM = 370,
-    PUSH = 371,
-    PUSHA = 372,
-    PUSHC = 373,
-    PUSHM = 374,
-    RACL = 375,
-    RACW = 376,
-    RDACL = 377,
-    RDACW = 378,
-    REIT = 379,
-    REVL = 380,
-    REVW = 381,
-    RMPA = 382,
-    ROLC = 383,
-    RORC = 384,
-    ROTL = 385,
-    ROTR = 386,
-    ROUND = 387,
-    RSTR = 388,
-    RTE = 389,
-    RTFI = 390,
-    RTS = 391,
-    RTSD = 392,
-    SAT = 393,
-    SATR = 394,
-    SAVE = 395,
-    SBB = 396,
-    SCCND = 397,
-    SCMPU = 398,
-    SETPSW = 399,
-    SHAR = 400,
-    SHLL = 401,
-    SHLR = 402,
-    SMOVB = 403,
-    SMOVF = 404,
-    SMOVU = 405,
-    SSTR = 406,
-    STNZ = 407,
-    STOP = 408,
-    STZ = 409,
-    SUB = 410,
-    SUNTIL = 411,
-    SWHILE = 412,
-    TST = 413,
-    UTOD = 414,
-    UTOF = 415,
-    WAIT = 416,
-    XCHG = 417,
-    XOR = 418
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    REG = 258,                     /* REG  */
+    FLAG = 259,                    /* FLAG  */
+    CREG = 260,                    /* CREG  */
+    ACC = 261,                     /* ACC  */
+    DREG = 262,                    /* DREG  */
+    DREGH = 263,                   /* DREGH  */
+    DREGL = 264,                   /* DREGL  */
+    DCREG = 265,                   /* DCREG  */
+    EXPR = 266,                    /* EXPR  */
+    UNKNOWN_OPCODE = 267,          /* UNKNOWN_OPCODE  */
+    IS_OPCODE = 268,               /* IS_OPCODE  */
+    DOT_S = 269,                   /* DOT_S  */
+    DOT_B = 270,                   /* DOT_B  */
+    DOT_W = 271,                   /* DOT_W  */
+    DOT_L = 272,                   /* DOT_L  */
+    DOT_A = 273,                   /* DOT_A  */
+    DOT_UB = 274,                  /* DOT_UB  */
+    DOT_UW = 275,                  /* DOT_UW  */
+    DOT_D = 276,                   /* DOT_D  */
+    ABS = 277,                     /* ABS  */
+    ADC = 278,                     /* ADC  */
+    ADD = 279,                     /* ADD  */
+    AND_ = 280,                    /* AND_  */
+    BCLR = 281,                    /* BCLR  */
+    BCND = 282,                    /* BCND  */
+    BFMOV = 283,                   /* BFMOV  */
+    BFMOVZ = 284,                  /* BFMOVZ  */
+    BMCND = 285,                   /* BMCND  */
+    BNOT = 286,                    /* BNOT  */
+    BRA = 287,                     /* BRA  */
+    BRK = 288,                     /* BRK  */
+    BSET = 289,                    /* BSET  */
+    BSR = 290,                     /* BSR  */
+    BTST = 291,                    /* BTST  */
+    CLRPSW = 292,                  /* CLRPSW  */
+    CMP = 293,                     /* CMP  */
+    DABS = 294,                    /* DABS  */
+    DADD = 295,                    /* DADD  */
+    DBT = 296,                     /* DBT  */
+    DCMP = 297,                    /* DCMP  */
+    DDIV = 298,                    /* DDIV  */
+    DIV = 299,                     /* DIV  */
+    DIVU = 300,                    /* DIVU  */
+    DMOV = 301,                    /* DMOV  */
+    DMUL = 302,                    /* DMUL  */
+    DNEG = 303,                    /* DNEG  */
+    DPOPM = 304,                   /* DPOPM  */
+    DPUSHM = 305,                  /* DPUSHM  */
+    DROUND = 306,                  /* DROUND  */
+    DSQRT = 307,                   /* DSQRT  */
+    DSUB = 308,                    /* DSUB  */
+    DTOF = 309,                    /* DTOF  */
+    DTOI = 310,                    /* DTOI  */
+    DTOU = 311,                    /* DTOU  */
+    EDIV = 312,                    /* EDIV  */
+    EDIVU = 313,                   /* EDIVU  */
+    EMACA = 314,                   /* EMACA  */
+    EMSBA = 315,                   /* EMSBA  */
+    EMUL = 316,                    /* EMUL  */
+    EMULA = 317,                   /* EMULA  */
+    EMULU = 318,                   /* EMULU  */
+    FADD = 319,                    /* FADD  */
+    FCMP = 320,                    /* FCMP  */
+    FDIV = 321,                    /* FDIV  */
+    FMUL = 322,                    /* FMUL  */
+    FREIT = 323,                   /* FREIT  */
+    FSUB = 324,                    /* FSUB  */
+    FSQRT = 325,                   /* FSQRT  */
+    FTOD = 326,                    /* FTOD  */
+    FTOI = 327,                    /* FTOI  */
+    FTOU = 328,                    /* FTOU  */
+    INT = 329,                     /* INT  */
+    ITOD = 330,                    /* ITOD  */
+    ITOF = 331,                    /* ITOF  */
+    JMP = 332,                     /* JMP  */
+    JSR = 333,                     /* JSR  */
+    MACHI = 334,                   /* MACHI  */
+    MACLH = 335,                   /* MACLH  */
+    MACLO = 336,                   /* MACLO  */
+    MAX = 337,                     /* MAX  */
+    MIN = 338,                     /* MIN  */
+    MOV = 339,                     /* MOV  */
+    MOVCO = 340,                   /* MOVCO  */
+    MOVLI = 341,                   /* MOVLI  */
+    MOVU = 342,                    /* MOVU  */
+    MSBHI = 343,                   /* MSBHI  */
+    MSBLH = 344,                   /* MSBLH  */
+    MSBLO = 345,                   /* MSBLO  */
+    MUL = 346,                     /* MUL  */
+    MULHI = 347,                   /* MULHI  */
+    MULLH = 348,                   /* MULLH  */
+    MULLO = 349,                   /* MULLO  */
+    MULU = 350,                    /* MULU  */
+    MVFACHI = 351,                 /* MVFACHI  */
+    MVFACGU = 352,                 /* MVFACGU  */
+    MVFACMI = 353,                 /* MVFACMI  */
+    MVFACLO = 354,                 /* MVFACLO  */
+    MVFC = 355,                    /* MVFC  */
+    MVFDC = 356,                   /* MVFDC  */
+    MVFDR = 357,                   /* MVFDR  */
+    MVTACGU = 358,                 /* MVTACGU  */
+    MVTACHI = 359,                 /* MVTACHI  */
+    MVTACLO = 360,                 /* MVTACLO  */
+    MVTC = 361,                    /* MVTC  */
+    MVTDC = 362,                   /* MVTDC  */
+    MVTIPL = 363,                  /* MVTIPL  */
+    NEG = 364,                     /* NEG  */
+    NOP = 365,                     /* NOP  */
+    NOT = 366,                     /* NOT  */
+    OR = 367,                      /* OR  */
+    POP = 368,                     /* POP  */
+    POPC = 369,                    /* POPC  */
+    POPM = 370,                    /* POPM  */
+    PUSH = 371,                    /* PUSH  */
+    PUSHA = 372,                   /* PUSHA  */
+    PUSHC = 373,                   /* PUSHC  */
+    PUSHM = 374,                   /* PUSHM  */
+    RACL = 375,                    /* RACL  */
+    RACW = 376,                    /* RACW  */
+    RDACL = 377,                   /* RDACL  */
+    RDACW = 378,                   /* RDACW  */
+    REIT = 379,                    /* REIT  */
+    REVL = 380,                    /* REVL  */
+    REVW = 381,                    /* REVW  */
+    RMPA = 382,                    /* RMPA  */
+    ROLC = 383,                    /* ROLC  */
+    RORC = 384,                    /* RORC  */
+    ROTL = 385,                    /* ROTL  */
+    ROTR = 386,                    /* ROTR  */
+    ROUND = 387,                   /* ROUND  */
+    RSTR = 388,                    /* RSTR  */
+    RTE = 389,                     /* RTE  */
+    RTFI = 390,                    /* RTFI  */
+    RTS = 391,                     /* RTS  */
+    RTSD = 392,                    /* RTSD  */
+    SAT = 393,                     /* SAT  */
+    SATR = 394,                    /* SATR  */
+    SAVE = 395,                    /* SAVE  */
+    SBB = 396,                     /* SBB  */
+    SCCND = 397,                   /* SCCND  */
+    SCMPU = 398,                   /* SCMPU  */
+    SETPSW = 399,                  /* SETPSW  */
+    SHAR = 400,                    /* SHAR  */
+    SHLL = 401,                    /* SHLL  */
+    SHLR = 402,                    /* SHLR  */
+    SMOVB = 403,                   /* SMOVB  */
+    SMOVF = 404,                   /* SMOVF  */
+    SMOVU = 405,                   /* SMOVU  */
+    SSTR = 406,                    /* SSTR  */
+    STNZ = 407,                    /* STNZ  */
+    STOP = 408,                    /* STOP  */
+    STZ = 409,                     /* STZ  */
+    SUB = 410,                     /* SUB  */
+    SUNTIL = 411,                  /* SUNTIL  */
+    SWHILE = 412,                  /* SWHILE  */
+    TST = 413,                     /* TST  */
+    UTOD = 414,                    /* UTOD  */
+    UTOF = 415,                    /* UTOF  */
+    WAIT = 416,                    /* WAIT  */
+    XCHG = 417,                    /* XCHG  */
+    XOR = 418                      /* XOR  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define REG 258
 #define FLAG 259
 #define CREG 260
@@ -384,7 +394,7 @@ union YYSTYPE
   int regno;
   expressionS exp;
 
-#line 388 "config/rx-parse.h"
+#line 398 "config/rx-parse.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -38,7 +38,7 @@ MAKEINFOFLAGS=--split-size=5000000
 # Support for building net releases
 
 # Files in root used in any net release.
-DEVO_SUPPORT="ar-lib ChangeLog compile config config-ml.in config.guess \
+DEVO_SUPPORT="ar-lib ChangeLog ChangeLog.git.2.37-2.38 compile config config-ml.in config.guess \
 	config.rpath config.sub configure configure.ac COPYING COPYING.LIB \
 	COPYING3 COPYING3.LIB depcomp install-sh libtool.m4 ltgcc.m4 \
 	ltmain.sh ltoptions.m4 ltsugar.m4 ltversion.m4 lt~obsolete.m4 \
@@ -313,7 +313,7 @@ gas_release()
     tar_compress $package $tool "$GAS_SUPPORT_DIRS" "$compressors"
 }
 
-GDB_SUPPORT_DIRS="bfd include libiberty libctf opcodes readline sim intl libdecnumber cpu zlib contrib gnulib gdbsupport gdbserver"
+GDB_SUPPORT_DIRS="bfd include libiberty libctf opcodes readline sim intl libdecnumber cpu zlib contrib gnulib gdbsupport gdbserver libbacktrace"
 gdb_release()
 {
     compressors=$1

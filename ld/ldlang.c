@@ -1,5 +1,5 @@
 /* Linker command language support.
-   Copyright (C) 1991-2021 Free Software Foundation, Inc.
+   Copyright (C) 1991-2022 Free Software Foundation, Inc.
 
    This file is part of the GNU Binutils.
 
@@ -2639,6 +2639,9 @@ lang_add_section (lang_statement_list_type *ptr,
     case noalloc_section:
       flags &= ~SEC_ALLOC;
       break;
+    case readonly_section:
+      flags |= SEC_READONLY;
+      break;
     case noload_section:
       flags &= ~SEC_LOAD;
       flags |= SEC_NEVER_LOAD;
@@ -2697,6 +2700,16 @@ lang_add_section (lang_statement_list_type *ptr,
       /* FIXME: This value should really be obtained from the bfd...  */
       output->block_value = 128;
     }
+
+  /* When a .ctors section is placed in .init_array it must be copied
+     in reverse order.  Similarly for .dtors.  Set that up.  */
+  if (bfd_get_flavour (link_info.output_bfd) == bfd_target_elf_flavour
+      && ((startswith (section->name, ".ctors")
+	   && strcmp (output->bfd_section->name, ".init_array") == 0)
+	  || (startswith (section->name, ".dtors")
+	      && strcmp (output->bfd_section->name, ".fini_array") == 0))
+      && (section->name[6] == 0 || section->name[6] == '.'))
+    section->flags |= SEC_ELF_REVERSE_COPY;
 
   if (section->alignment_power > output->bfd_section->alignment_power)
     output->bfd_section->alignment_power = section->alignment_power;
@@ -3389,6 +3402,22 @@ lang_get_output_target (void)
 static void
 open_output (const char *name)
 {
+  lang_input_statement_type *f;
+  char *out = lrealpath (name);
+
+  for (f = (void *) input_file_chain.head;
+       f != NULL;
+       f = f->next_real_file)
+    if (f->flags.real)
+      {
+	char *in = lrealpath (f->local_sym_name);
+	if (filename_cmp (in, out) == 0)
+	  einfo (_("%F%P: input file '%s' is the same as output file\n"),
+		 f->filename);
+	free (in);
+      }
+  free (out);
+
   output_target = lang_get_output_target ();
 
   /* Has the user requested a particular endianness on the command
@@ -4231,6 +4260,9 @@ map_input_to_output_sections
 	      break;
 	    case noalloc_section:
 	      flags = SEC_HAS_CONTENTS;
+	      break;
+	    case readonly_section:
+	      flags |= SEC_READONLY;
 	      break;
 	    case noload_section:
 	      if (bfd_get_flavour (link_info.output_bfd)
@@ -6380,36 +6412,24 @@ static bool
 lang_size_relro_segment (bool *relax, bool check_regions)
 {
   bool do_reset = false;
-  bool do_data_relro;
-  bfd_vma data_initial_base, data_relro_end;
 
   if (link_info.relro && expld.dataseg.relro_end)
     {
-      do_data_relro = true;
-      data_initial_base = expld.dataseg.base;
-      data_relro_end = lang_size_relro_segment_1 (&expld.dataseg);
-    }
-  else
-    {
-      do_data_relro = false;
-      data_initial_base = data_relro_end = 0;
-    }
+      bfd_vma data_initial_base = expld.dataseg.base;
+      bfd_vma data_relro_end = lang_size_relro_segment_1 (&expld.dataseg);
 
-  if (do_data_relro)
-    {
       lang_reset_memory_regions ();
       one_lang_size_sections_pass (relax, check_regions);
 
       /* Assignments to dot, or to output section address in a user
 	 script have increased padding over the original.  Revert.  */
-      if (do_data_relro && expld.dataseg.relro_end > data_relro_end)
+      if (expld.dataseg.relro_end > data_relro_end)
 	{
 	  expld.dataseg.base = data_initial_base;;
 	  do_reset = true;
 	}
     }
-
-  if (!do_data_relro && lang_size_segment (&expld.dataseg))
+  else if (lang_size_segment (&expld.dataseg))
     do_reset = true;
 
   return do_reset;
@@ -6475,32 +6495,34 @@ lang_do_assignments_1 (lang_statement_union_type *s,
 	    os = &(s->output_section_statement);
 	    os->after_end = *found_end;
 	    init_opb (os->bfd_section);
-	    if (os->bfd_section != NULL && !os->ignored)
+	    newdot = dot;
+	    if (os->bfd_section != NULL)
 	      {
-		if ((os->bfd_section->flags & SEC_ALLOC) != 0)
+		if (!os->ignored && (os->bfd_section->flags & SEC_ALLOC) != 0)
 		  {
 		    current_section = os;
 		    prefer_next_section = false;
 		  }
-		dot = os->bfd_section->vma;
+		newdot = os->bfd_section->vma;
 	      }
 	    newdot = lang_do_assignments_1 (os->children.head,
-					    os, os->fill, dot, found_end);
+					    os, os->fill, newdot, found_end);
 	    if (!os->ignored)
 	      {
 		if (os->bfd_section != NULL)
 		  {
+		    newdot = os->bfd_section->vma;
+
 		    /* .tbss sections effectively have zero size.  */
 		    if (!IS_TBSS (os->bfd_section)
 			|| bfd_link_relocatable (&link_info))
-		      dot += TO_ADDR (os->bfd_section->size);
+		      newdot += TO_ADDR (os->bfd_section->size);
 
 		    if (os->update_dot_tree != NULL)
 		      exp_fold_tree (os->update_dot_tree,
-				     bfd_abs_section_ptr, &dot);
+				     bfd_abs_section_ptr, &newdot);
 		  }
-		else
-		  dot = newdot;
+		dot = newdot;
 	      }
 	  }
 	  break;
@@ -6908,6 +6930,43 @@ lang_finalize_start_stop (void)
 }
 
 static void
+lang_symbol_tweaks (void)
+{
+  /* Give initial values for __start and __stop symbols, so that  ELF
+     gc_sections will keep sections referenced by these symbols.  Must
+     be done before lang_do_assignments.  */
+  if (config.build_constructors)
+    lang_init_start_stop ();
+
+  /* Make __ehdr_start hidden, and set def_regular even though it is
+     likely undefined at this stage.  For lang_check_relocs.  */
+  if (is_elf_hash_table (link_info.hash)
+      && !bfd_link_relocatable (&link_info))
+    {
+      struct elf_link_hash_entry *h = (struct elf_link_hash_entry *)
+	bfd_link_hash_lookup (link_info.hash, "__ehdr_start",
+			      false, false, true);
+
+      /* Only adjust the export class if the symbol was referenced
+	 and not defined, otherwise leave it alone.  */
+      if (h != NULL
+	  && (h->root.type == bfd_link_hash_new
+	      || h->root.type == bfd_link_hash_undefined
+	      || h->root.type == bfd_link_hash_undefweak
+	      || h->root.type == bfd_link_hash_common))
+	{
+	  const struct elf_backend_data *bed;
+	  bed = get_elf_backend_data (link_info.output_bfd);
+	  (*bed->elf_backend_hide_symbol) (&link_info, h, true);
+	  if (ELF_ST_VISIBILITY (h->other) != STV_INTERNAL)
+	    h->other = (h->other & ~ELF_ST_VISIBILITY (-1)) | STV_HIDDEN;
+	  h->def_regular = 1;
+	  h->root.linker_def = 1;
+	}
+    }
+}
+
+static void
 lang_end (void)
 {
   struct bfd_link_hash_entry *h;
@@ -6978,7 +7037,8 @@ lang_end (void)
 	  if (!bfd_set_start_address (link_info.output_bfd, val))
 	    einfo (_("%F%P: can't set start address\n"));
 	}
-      else
+      /* BZ 2004952: Only use the start of the entry section for executables.  */
+      else if bfd_link_executable (&link_info)
 	{
 	  asection *ts;
 
@@ -7003,6 +7063,13 @@ lang_end (void)
 			 " not setting start address\n"),
 		       entry_symbol.name);
 	    }
+	}
+      else
+	{
+	  if (warn)
+	    einfo (_("%P: warning: cannot find entry symbol %s;"
+		     " not setting start address\n"),
+		   entry_symbol.name);
 	}
     }
 }
@@ -7667,7 +7734,8 @@ lang_find_relro_sections (void)
 void
 lang_relax_sections (bool need_layout)
 {
-  if (RELAXATION_ENABLED)
+  /* NB: Also enable relaxation to layout sections for DT_RELR.  */
+  if (RELAXATION_ENABLED || link_info.enable_dt_relr)
     {
       /* We may need more than one relaxation pass.  */
       int i = link_info.relax_pass;
@@ -8114,11 +8182,7 @@ lang_process (void)
      files.  */
   ldctor_build_sets ();
 
-  /* Give initial values for __start and __stop symbols, so that  ELF
-     gc_sections will keep sections referenced by these symbols.  Must
-     be done before lang_do_assignments below.  */
-  if (config.build_constructors)
-    lang_init_start_stop ();
+  lang_symbol_tweaks ();
 
   /* PR 13683: We must rerun the assignments prior to running garbage
      collection in order to make sure that all symbol aliases are resolved.  */
