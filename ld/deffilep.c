@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.7.4.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -46,10 +46,10 @@
    USER NAME SPACE" below.  */
 
 /* Identify Bison output, and Bison version.  */
-#define YYBISON 30704
+#define YYBISON 30802
 
 /* Bison version string.  */
-#define YYBISON_VERSION "3.7.4"
+#define YYBISON_VERSION "3.8.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -312,7 +312,9 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_DEFFILEP_H_INCLUDED  */
 /* Symbol kind.  */
@@ -424,6 +426,18 @@ typedef int_least16_t yytype_int16;
 typedef short yytype_int16;
 #endif
 
+/* Work around bug in HP-UX 11.23, which defines these macros
+   incorrectly for preprocessor constants.  This workaround can likely
+   be removed in 2023, as HPE has promised support for HP-UX 11.23
+   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
+   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
+#ifdef __hpux
+# undef UINT_LEAST8_MAX
+# undef UINT_LEAST16_MAX
+# define UINT_LEAST8_MAX 255
+# define UINT_LEAST16_MAX 65535
+#endif
+
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
 typedef __UINT_LEAST8_TYPE__ yytype_uint8;
 #elif (!defined __UINT_LEAST8_MAX__ && defined YY_STDINT_H \
@@ -521,17 +535,23 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -748,7 +768,7 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
        0,   139,   139,   140,   144,   145,   146,   147,   148,   149,
@@ -796,18 +816,6 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_int16 yytoknum[] =
-{
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,    46,    44,    61,    64
-};
-#endif
-
 #define YYPACT_NINF (-82)
 
 #define yypact_value_is_default(Yyn) \
@@ -818,8 +826,8 @@ static const yytype_int16 yytoknum[] =
 #define yytable_value_is_error(Yyn) \
   0
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
+/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+   STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
      122,    11,    11,   -25,     9,     9,    53,    53,   -17,    11,
@@ -839,9 +847,9 @@ static const yytype_int8 yypact[] =
      -82,   -82,    92,    92,   -82,   -82
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE does not specify something else to do.  Zero
+   means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        0,    82,    82,     0,     0,     0,     0,     0,     0,    18,
@@ -861,7 +869,7 @@ static const yytype_int8 yydefact[] =
       21,    22,    84,    84,    34,    35
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
+/* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
      -82,   -82,   107,   -82,    65,   -11,   -82,   -82,    75,   -82,
@@ -869,17 +877,17 @@ static const yytype_int16 yypgoto[] =
      -82,   101,   -82,   -82,   -82,    -5,   -82
 };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
-static const yytype_int16 yydefgoto[] =
+/* YYDEFGOTO[NTERM-NUM].  */
+static const yytype_uint8 yydefgoto[] =
 {
-      -1,    14,    15,    58,    59,   128,   129,    62,    63,    56,
+       0,    14,    15,    58,    59,   128,   129,    62,    63,    56,
       57,    52,    82,    79,    53,    40,    41,    42,   116,   103,
       88,    76,    67,   108,   119,    46,   111
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+   positive, shift that token.  If negative, reduce the rule whose
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
       47,    60,   114,    54,    44,   115,    64,    48,    49,    50,
@@ -918,8 +926,8 @@ static const yytype_int16 yycheck[] =
       47,    39,    20,     2,    43,    -1,    -1,    -1,    -1,    27
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+   state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,     3,     4,     5,     6,     7,     8,     9,    11,    12,
@@ -939,7 +947,7 @@ static const yytype_int8 yystos[] =
       53,    40,    29,    60,    53,    53
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    35,    36,    36,    37,    37,    37,    37,    37,    37,
@@ -954,7 +962,7 @@ static const yytype_int8 yyr1[] =
       56,    57,    57,    57,    58,    58,    59,    59,    60,    61
 };
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     1,     3,     3,     2,     3,     3,     2,
@@ -978,6 +986,7 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
+#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -1018,10 +1027,7 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
-# ifndef YY_LOCATION_PRINT
-#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-# endif
+
 
 
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
@@ -1045,15 +1051,11 @@ yy_symbol_value_print (FILE *yyo,
                        yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
 {
   FILE *yyoutput = yyo;
-  YYUSE (yyoutput);
+  YY_USE (yyoutput);
   if (!yyvaluep)
     return;
-# ifdef YYPRINT
-  if (yykind < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
-# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yykind);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1167,13 +1169,13 @@ static void
 yydestruct (const char *yymsg,
             yysymbol_kind_t yykind, YYSTYPE *yyvaluep)
 {
-  YYUSE (yyvaluep);
+  YY_USE (yyvaluep);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yykind);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1236,6 +1238,7 @@ yyparse (void)
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yychar = YYEMPTY; /* Cause a token to be read.  */
+
   goto yysetstate;
 
 
@@ -1261,7 +1264,7 @@ yysetstate:
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    goto yyexhaustedlab;
+    YYNOMEM;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1289,7 +1292,7 @@ yysetstate:
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        goto yyexhaustedlab;
+        YYNOMEM;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1300,7 +1303,7 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          goto yyexhaustedlab;
+          YYNOMEM;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
@@ -1321,6 +1324,7 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1436,367 +1440,367 @@ yyreduce:
   case 4: /* command: NAME opt_name opt_base  */
 #line 144 "deffilep.y"
                                        { def_image_name ((yyvsp[-1].id), (yyvsp[0].vma), 0); }
-#line 1440 "deffilep.c"
+#line 1444 "deffilep.c"
     break;
 
   case 5: /* command: LIBRARY opt_name opt_base  */
 #line 145 "deffilep.y"
                                           { def_image_name ((yyvsp[-1].id), (yyvsp[0].vma), 1); }
-#line 1446 "deffilep.c"
+#line 1450 "deffilep.c"
     break;
 
   case 6: /* command: DESCRIPTION ID  */
 #line 146 "deffilep.y"
                                { def_description ((yyvsp[0].id));}
-#line 1452 "deffilep.c"
+#line 1456 "deffilep.c"
     break;
 
   case 7: /* command: STACKSIZE_K NUMBER opt_number  */
 #line 147 "deffilep.y"
                                               { def_stacksize ((yyvsp[-1].number), (yyvsp[0].number));}
-#line 1458 "deffilep.c"
+#line 1462 "deffilep.c"
     break;
 
   case 8: /* command: HEAPSIZE NUMBER opt_number  */
 #line 148 "deffilep.y"
                                            { def_heapsize ((yyvsp[-1].number), (yyvsp[0].number));}
-#line 1464 "deffilep.c"
+#line 1468 "deffilep.c"
     break;
 
   case 9: /* command: CODE attr_list  */
 #line 149 "deffilep.y"
                                { def_section ("CODE", (yyvsp[0].number));}
-#line 1470 "deffilep.c"
+#line 1474 "deffilep.c"
     break;
 
   case 10: /* command: DATAU attr_list  */
 #line 150 "deffilep.y"
                                  { def_section ("DATA", (yyvsp[0].number));}
-#line 1476 "deffilep.c"
+#line 1480 "deffilep.c"
     break;
 
   case 14: /* command: VERSIONK NUMBER  */
 #line 154 "deffilep.y"
                                 { def_version ((yyvsp[0].number), 0);}
-#line 1482 "deffilep.c"
+#line 1486 "deffilep.c"
     break;
 
   case 15: /* command: VERSIONK NUMBER '.' NUMBER  */
 #line 155 "deffilep.y"
                                            { def_version ((yyvsp[-2].number), (yyvsp[0].number));}
-#line 1488 "deffilep.c"
+#line 1492 "deffilep.c"
     break;
 
   case 16: /* command: DIRECTIVE ID  */
 #line 156 "deffilep.y"
                              { def_directive ((yyvsp[0].id));}
-#line 1494 "deffilep.c"
+#line 1498 "deffilep.c"
     break;
 
   case 17: /* command: ALIGNCOMM anylang_id ',' NUMBER  */
 #line 157 "deffilep.y"
                                                 { def_aligncomm ((yyvsp[-2].id), (yyvsp[0].number));}
-#line 1500 "deffilep.c"
+#line 1504 "deffilep.c"
     break;
 
   case 21: /* expline: opt_name2 opt_equal_name opt_ordinal opt_comma exp_opt_list opt_comma opt_equalequal_name  */
 #line 172 "deffilep.y"
                         { def_exports ((yyvsp[-6].id), (yyvsp[-5].id), (yyvsp[-4].number), (yyvsp[-2].number), (yyvsp[0].id)); }
-#line 1506 "deffilep.c"
+#line 1510 "deffilep.c"
     break;
 
   case 22: /* exp_opt_list: exp_opt opt_comma exp_opt_list  */
 #line 178 "deffilep.y"
                                                { (yyval.number) = (yyvsp[-2].number) | (yyvsp[0].number); }
-#line 1512 "deffilep.c"
+#line 1516 "deffilep.c"
     break;
 
   case 23: /* exp_opt_list: %empty  */
 #line 179 "deffilep.y"
                 { (yyval.number) = 0; }
-#line 1518 "deffilep.c"
+#line 1522 "deffilep.c"
     break;
 
   case 24: /* exp_opt: NONAMEU  */
 #line 182 "deffilep.y"
                                 { (yyval.number) = 1; }
-#line 1524 "deffilep.c"
+#line 1528 "deffilep.c"
     break;
 
   case 25: /* exp_opt: NONAMEL  */
 #line 183 "deffilep.y"
                                 { (yyval.number) = 1; }
-#line 1530 "deffilep.c"
+#line 1534 "deffilep.c"
     break;
 
   case 26: /* exp_opt: CONSTANTU  */
 #line 184 "deffilep.y"
                                 { (yyval.number) = 2; }
-#line 1536 "deffilep.c"
+#line 1540 "deffilep.c"
     break;
 
   case 27: /* exp_opt: CONSTANTL  */
 #line 185 "deffilep.y"
                                 { (yyval.number) = 2; }
-#line 1542 "deffilep.c"
+#line 1546 "deffilep.c"
     break;
 
   case 28: /* exp_opt: DATAU  */
 #line 186 "deffilep.y"
                                 { (yyval.number) = 4; }
-#line 1548 "deffilep.c"
+#line 1552 "deffilep.c"
     break;
 
   case 29: /* exp_opt: DATAL  */
 #line 187 "deffilep.y"
                                 { (yyval.number) = 4; }
-#line 1554 "deffilep.c"
+#line 1558 "deffilep.c"
     break;
 
   case 30: /* exp_opt: PRIVATEU  */
 #line 188 "deffilep.y"
                                 { (yyval.number) = 8; }
-#line 1560 "deffilep.c"
+#line 1564 "deffilep.c"
     break;
 
   case 31: /* exp_opt: PRIVATEL  */
 #line 189 "deffilep.y"
                                 { (yyval.number) = 8; }
-#line 1566 "deffilep.c"
+#line 1570 "deffilep.c"
     break;
 
   case 34: /* impline: ID '=' ID '.' ID '.' ID opt_equalequal_name  */
 #line 198 "deffilep.y"
                  { def_import ((yyvsp[-7].id), (yyvsp[-5].id), (yyvsp[-3].id), (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1572 "deffilep.c"
+#line 1576 "deffilep.c"
     break;
 
   case 35: /* impline: ID '=' ID '.' ID '.' NUMBER opt_equalequal_name  */
 #line 200 "deffilep.y"
                                  { def_import ((yyvsp[-7].id), (yyvsp[-5].id), (yyvsp[-3].id),  0, (yyvsp[-1].number), (yyvsp[0].id)); }
-#line 1578 "deffilep.c"
+#line 1582 "deffilep.c"
     break;
 
   case 36: /* impline: ID '=' ID '.' ID opt_equalequal_name  */
 #line 202 "deffilep.y"
                  { def_import ((yyvsp[-5].id), (yyvsp[-3].id),	0, (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1584 "deffilep.c"
+#line 1588 "deffilep.c"
     break;
 
   case 37: /* impline: ID '=' ID '.' NUMBER opt_equalequal_name  */
 #line 204 "deffilep.y"
                  { def_import ((yyvsp[-5].id), (yyvsp[-3].id),	0,  0, (yyvsp[-1].number), (yyvsp[0].id)); }
-#line 1590 "deffilep.c"
+#line 1594 "deffilep.c"
     break;
 
   case 38: /* impline: ID '.' ID '.' ID opt_equalequal_name  */
 #line 206 "deffilep.y"
                  { def_import( 0, (yyvsp[-5].id), (yyvsp[-3].id), (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1596 "deffilep.c"
+#line 1600 "deffilep.c"
     break;
 
   case 39: /* impline: ID '.' ID opt_equalequal_name  */
 #line 208 "deffilep.y"
                  { def_import ( 0, (yyvsp[-3].id),	0, (yyvsp[-1].id), -1, (yyvsp[0].id)); }
-#line 1602 "deffilep.c"
+#line 1606 "deffilep.c"
     break;
 
   case 42: /* secline: ID attr_list  */
 #line 217 "deffilep.y"
                      { def_section ((yyvsp[-1].id), (yyvsp[0].number));}
-#line 1608 "deffilep.c"
+#line 1612 "deffilep.c"
     break;
 
   case 43: /* secline: ID ID  */
 #line 218 "deffilep.y"
                 { def_section_alt ((yyvsp[-1].id), (yyvsp[0].id));}
-#line 1614 "deffilep.c"
+#line 1618 "deffilep.c"
     break;
 
   case 44: /* attr_list: attr_list opt_comma attr  */
 #line 222 "deffilep.y"
                                  { (yyval.number) = (yyvsp[-2].number) | (yyvsp[0].number); }
-#line 1620 "deffilep.c"
+#line 1624 "deffilep.c"
     break;
 
   case 45: /* attr_list: attr  */
 #line 223 "deffilep.y"
                { (yyval.number) = (yyvsp[0].number); }
-#line 1626 "deffilep.c"
+#line 1630 "deffilep.c"
     break;
 
   case 48: /* opt_number: ',' NUMBER  */
 #line 230 "deffilep.y"
                        { (yyval.number)=(yyvsp[0].number);}
-#line 1632 "deffilep.c"
+#line 1636 "deffilep.c"
     break;
 
   case 49: /* opt_number: %empty  */
 #line 231 "deffilep.y"
                    { (yyval.number)=-1;}
-#line 1638 "deffilep.c"
+#line 1642 "deffilep.c"
     break;
 
   case 50: /* attr: READ  */
 #line 235 "deffilep.y"
                         { (yyval.number) = 1;}
-#line 1644 "deffilep.c"
+#line 1648 "deffilep.c"
     break;
 
   case 51: /* attr: WRITE  */
 #line 236 "deffilep.y"
                         { (yyval.number) = 2;}
-#line 1650 "deffilep.c"
+#line 1654 "deffilep.c"
     break;
 
   case 52: /* attr: EXECUTE  */
 #line 237 "deffilep.y"
                         { (yyval.number)=4;}
-#line 1656 "deffilep.c"
+#line 1660 "deffilep.c"
     break;
 
   case 53: /* attr: SHARED_K  */
 #line 238 "deffilep.y"
                          { (yyval.number)=8;}
-#line 1662 "deffilep.c"
+#line 1666 "deffilep.c"
     break;
 
   case 54: /* keyword_as_name: BASE  */
 #line 242 "deffilep.y"
                       { (yyval.id_const) = "BASE"; }
-#line 1668 "deffilep.c"
+#line 1672 "deffilep.c"
     break;
 
   case 55: /* keyword_as_name: CODE  */
 #line 243 "deffilep.y"
                 { (yyval.id_const) = "CODE"; }
-#line 1674 "deffilep.c"
+#line 1678 "deffilep.c"
     break;
 
   case 56: /* keyword_as_name: CONSTANTU  */
 #line 244 "deffilep.y"
                      { (yyval.id_const) = "CONSTANT"; }
-#line 1680 "deffilep.c"
+#line 1684 "deffilep.c"
     break;
 
   case 57: /* keyword_as_name: CONSTANTL  */
 #line 245 "deffilep.y"
                      { (yyval.id_const) = "constant"; }
-#line 1686 "deffilep.c"
+#line 1690 "deffilep.c"
     break;
 
   case 58: /* keyword_as_name: DATAU  */
 #line 246 "deffilep.y"
                  { (yyval.id_const) = "DATA"; }
-#line 1692 "deffilep.c"
+#line 1696 "deffilep.c"
     break;
 
   case 59: /* keyword_as_name: DATAL  */
 #line 247 "deffilep.y"
                  { (yyval.id_const) = "data"; }
-#line 1698 "deffilep.c"
+#line 1702 "deffilep.c"
     break;
 
   case 60: /* keyword_as_name: DESCRIPTION  */
 #line 248 "deffilep.y"
                        { (yyval.id_const) = "DESCRIPTION"; }
-#line 1704 "deffilep.c"
+#line 1708 "deffilep.c"
     break;
 
   case 61: /* keyword_as_name: DIRECTIVE  */
 #line 249 "deffilep.y"
                      { (yyval.id_const) = "DIRECTIVE"; }
-#line 1710 "deffilep.c"
+#line 1714 "deffilep.c"
     break;
 
   case 62: /* keyword_as_name: EXECUTE  */
 #line 250 "deffilep.y"
                    { (yyval.id_const) = "EXECUTE"; }
-#line 1716 "deffilep.c"
+#line 1720 "deffilep.c"
     break;
 
   case 63: /* keyword_as_name: EXPORTS  */
 #line 251 "deffilep.y"
                    { (yyval.id_const) = "EXPORTS"; }
-#line 1722 "deffilep.c"
+#line 1726 "deffilep.c"
     break;
 
   case 64: /* keyword_as_name: HEAPSIZE  */
 #line 252 "deffilep.y"
                     { (yyval.id_const) = "HEAPSIZE"; }
-#line 1728 "deffilep.c"
+#line 1732 "deffilep.c"
     break;
 
   case 65: /* keyword_as_name: IMPORTS  */
 #line 253 "deffilep.y"
                    { (yyval.id_const) = "IMPORTS"; }
-#line 1734 "deffilep.c"
+#line 1738 "deffilep.c"
     break;
 
   case 66: /* keyword_as_name: NAME  */
 #line 260 "deffilep.y"
                 { (yyval.id_const) = "NAME"; }
-#line 1740 "deffilep.c"
+#line 1744 "deffilep.c"
     break;
 
   case 67: /* keyword_as_name: NONAMEU  */
 #line 261 "deffilep.y"
                    { (yyval.id_const) = "NONAME"; }
-#line 1746 "deffilep.c"
+#line 1750 "deffilep.c"
     break;
 
   case 68: /* keyword_as_name: NONAMEL  */
 #line 262 "deffilep.y"
                    { (yyval.id_const) = "noname"; }
-#line 1752 "deffilep.c"
+#line 1756 "deffilep.c"
     break;
 
   case 69: /* keyword_as_name: PRIVATEU  */
 #line 263 "deffilep.y"
                     { (yyval.id_const) = "PRIVATE"; }
-#line 1758 "deffilep.c"
+#line 1762 "deffilep.c"
     break;
 
   case 70: /* keyword_as_name: PRIVATEL  */
 #line 264 "deffilep.y"
                     { (yyval.id_const) = "private"; }
-#line 1764 "deffilep.c"
+#line 1768 "deffilep.c"
     break;
 
   case 71: /* keyword_as_name: READ  */
 #line 265 "deffilep.y"
                 { (yyval.id_const) = "READ"; }
-#line 1770 "deffilep.c"
+#line 1774 "deffilep.c"
     break;
 
   case 72: /* keyword_as_name: SHARED_K  */
 #line 266 "deffilep.y"
                      { (yyval.id_const) = "SHARED"; }
-#line 1776 "deffilep.c"
+#line 1780 "deffilep.c"
     break;
 
   case 73: /* keyword_as_name: STACKSIZE_K  */
 #line 267 "deffilep.y"
                        { (yyval.id_const) = "STACKSIZE"; }
-#line 1782 "deffilep.c"
+#line 1786 "deffilep.c"
     break;
 
   case 74: /* keyword_as_name: VERSIONK  */
 #line 268 "deffilep.y"
                     { (yyval.id_const) = "VERSION"; }
-#line 1788 "deffilep.c"
+#line 1792 "deffilep.c"
     break;
 
   case 75: /* keyword_as_name: WRITE  */
 #line 269 "deffilep.y"
                  { (yyval.id_const) = "WRITE"; }
-#line 1794 "deffilep.c"
+#line 1798 "deffilep.c"
     break;
 
   case 76: /* opt_name2: ID  */
 #line 272 "deffilep.y"
               { (yyval.id) = (yyvsp[0].id); }
-#line 1800 "deffilep.c"
+#line 1804 "deffilep.c"
     break;
 
   case 77: /* opt_name2: '.' keyword_as_name  */
@@ -1806,7 +1810,7 @@ yyreduce:
 	    sprintf (name, ".%s", (yyvsp[0].id_const));
 	    (yyval.id) = name;
 	  }
-#line 1810 "deffilep.c"
+#line 1814 "deffilep.c"
     break;
 
   case 78: /* opt_name2: '.' opt_name2  */
@@ -1816,7 +1820,7 @@ yyreduce:
 	    sprintf (name, ".%s", (yyvsp[0].id));
 	    (yyval.id) = name;
 	  }
-#line 1820 "deffilep.c"
+#line 1824 "deffilep.c"
     break;
 
   case 79: /* opt_name2: keyword_as_name '.' opt_name2  */
@@ -1826,7 +1830,7 @@ yyreduce:
 	    sprintf (name, "%s.%s", (yyvsp[-2].id_const), (yyvsp[0].id));
 	    (yyval.id) = name;
 	  }
-#line 1830 "deffilep.c"
+#line 1834 "deffilep.c"
     break;
 
   case 80: /* opt_name2: ID '.' opt_name2  */
@@ -1836,73 +1840,73 @@ yyreduce:
 	    sprintf (name, "%s.%s", (yyvsp[-2].id), (yyvsp[0].id));
 	    (yyval.id) = name;
 	  }
-#line 1840 "deffilep.c"
+#line 1844 "deffilep.c"
     break;
 
   case 81: /* opt_name: opt_name2  */
 #line 299 "deffilep.y"
                     { (yyval.id) = (yyvsp[0].id); }
-#line 1846 "deffilep.c"
+#line 1850 "deffilep.c"
     break;
 
   case 82: /* opt_name: %empty  */
 #line 300 "deffilep.y"
                         { (yyval.id) = ""; }
-#line 1852 "deffilep.c"
+#line 1856 "deffilep.c"
     break;
 
   case 83: /* opt_equalequal_name: EQUAL ID  */
 #line 303 "deffilep.y"
                                 { (yyval.id) = (yyvsp[0].id); }
-#line 1858 "deffilep.c"
+#line 1862 "deffilep.c"
     break;
 
   case 84: /* opt_equalequal_name: %empty  */
 #line 304 "deffilep.y"
                                                                 { (yyval.id) = 0; }
-#line 1864 "deffilep.c"
+#line 1868 "deffilep.c"
     break;
 
   case 85: /* opt_ordinal: '@' NUMBER  */
 #line 308 "deffilep.y"
                          { (yyval.number) = (yyvsp[0].number);}
-#line 1870 "deffilep.c"
+#line 1874 "deffilep.c"
     break;
 
   case 86: /* opt_ordinal: %empty  */
 #line 309 "deffilep.y"
                          { (yyval.number) = -1;}
-#line 1876 "deffilep.c"
+#line 1880 "deffilep.c"
     break;
 
   case 87: /* opt_equal_name: '=' opt_name2  */
 #line 313 "deffilep.y"
                         { (yyval.id) = (yyvsp[0].id); }
-#line 1882 "deffilep.c"
+#line 1886 "deffilep.c"
     break;
 
   case 88: /* opt_equal_name: %empty  */
 #line 314 "deffilep.y"
                         { (yyval.id) =	0; }
-#line 1888 "deffilep.c"
+#line 1892 "deffilep.c"
     break;
 
   case 89: /* opt_base: BASE '=' VMA  */
 #line 317 "deffilep.y"
                         { (yyval.vma) = (yyvsp[0].vma);}
-#line 1894 "deffilep.c"
+#line 1898 "deffilep.c"
     break;
 
   case 90: /* opt_base: %empty  */
 #line 318 "deffilep.y"
                 { (yyval.vma) = (bfd_vma) -1;}
-#line 1900 "deffilep.c"
+#line 1904 "deffilep.c"
     break;
 
   case 91: /* anylang_id: ID  */
 #line 321 "deffilep.y"
                         { (yyval.id) = (yyvsp[0].id); }
-#line 1906 "deffilep.c"
+#line 1910 "deffilep.c"
     break;
 
   case 92: /* anylang_id: '.' ID  */
@@ -1912,7 +1916,7 @@ yyreduce:
 	    sprintf (id, ".%s", (yyvsp[0].id));
 	    (yyval.id) = id;
 	  }
-#line 1916 "deffilep.c"
+#line 1920 "deffilep.c"
     break;
 
   case 93: /* anylang_id: anylang_id '.' opt_digits opt_id  */
@@ -1922,47 +1926,47 @@ yyreduce:
 	    sprintf (id, "%s.%s%s", (yyvsp[-3].id), (yyvsp[-1].digits), (yyvsp[0].id));
 	    (yyval.id) = id;
 	  }
-#line 1926 "deffilep.c"
+#line 1930 "deffilep.c"
     break;
 
   case 94: /* opt_digits: DIGITS  */
 #line 336 "deffilep.y"
                         { (yyval.digits) = (yyvsp[0].digits); }
-#line 1932 "deffilep.c"
+#line 1936 "deffilep.c"
     break;
 
   case 95: /* opt_digits: %empty  */
 #line 337 "deffilep.y"
                         { (yyval.digits) = ""; }
-#line 1938 "deffilep.c"
+#line 1942 "deffilep.c"
     break;
 
   case 96: /* opt_id: ID  */
 #line 340 "deffilep.y"
                         { (yyval.id) = (yyvsp[0].id); }
-#line 1944 "deffilep.c"
+#line 1948 "deffilep.c"
     break;
 
   case 97: /* opt_id: %empty  */
 #line 341 "deffilep.y"
                         { (yyval.id) = ""; }
-#line 1950 "deffilep.c"
+#line 1954 "deffilep.c"
     break;
 
   case 98: /* NUMBER: DIGITS  */
 #line 344 "deffilep.y"
                         { (yyval.number) = strtoul ((yyvsp[0].digits), 0, 0); }
-#line 1956 "deffilep.c"
+#line 1960 "deffilep.c"
     break;
 
   case 99: /* VMA: DIGITS  */
 #line 346 "deffilep.y"
                         { (yyval.vma) = (bfd_vma) strtoull ((yyvsp[0].digits), 0, 0); }
-#line 1962 "deffilep.c"
+#line 1966 "deffilep.c"
     break;
 
 
-#line 1966 "deffilep.c"
+#line 1970 "deffilep.c"
 
       default: break;
     }
@@ -2044,6 +2048,7 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
+  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -2104,7 +2109,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
 /*-----------------------------------.
@@ -2112,24 +2117,22 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
-#if !defined yyoverflow
-/*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+/*-----------------------------------------------------------.
+| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
+`-----------------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  goto yyreturn;
-#endif
+  goto yyreturnlab;
 
 
-/*-------------------------------------------------------.
-| yyreturn -- parsing is finished, clean up and return.  |
-`-------------------------------------------------------*/
-yyreturn:
+/*----------------------------------------------------------.
+| yyreturnlab -- parsing is finished, clean up and return.  |
+`----------------------------------------------------------*/
+yyreturnlab:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at

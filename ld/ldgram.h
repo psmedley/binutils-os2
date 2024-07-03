@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.7.4.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -112,79 +112,80 @@ extern int yydebug;
     INFO = 313,                    /* INFO  */
     OVERLAY = 314,                 /* OVERLAY  */
     READONLY = 315,                /* READONLY  */
-    DEFINED = 316,                 /* DEFINED  */
-    TARGET_K = 317,                /* TARGET_K  */
-    SEARCH_DIR = 318,              /* SEARCH_DIR  */
-    MAP = 319,                     /* MAP  */
-    ENTRY = 320,                   /* ENTRY  */
-    NEXT = 321,                    /* NEXT  */
-    SIZEOF = 322,                  /* SIZEOF  */
-    ALIGNOF = 323,                 /* ALIGNOF  */
-    ADDR = 324,                    /* ADDR  */
-    LOADADDR = 325,                /* LOADADDR  */
-    MAX_K = 326,                   /* MAX_K  */
-    MIN_K = 327,                   /* MIN_K  */
-    STARTUP = 328,                 /* STARTUP  */
-    HLL = 329,                     /* HLL  */
-    SYSLIB = 330,                  /* SYSLIB  */
-    FLOAT = 331,                   /* FLOAT  */
-    NOFLOAT = 332,                 /* NOFLOAT  */
-    NOCROSSREFS = 333,             /* NOCROSSREFS  */
-    NOCROSSREFS_TO = 334,          /* NOCROSSREFS_TO  */
-    ORIGIN = 335,                  /* ORIGIN  */
-    FILL = 336,                    /* FILL  */
-    LENGTH = 337,                  /* LENGTH  */
-    CREATE_OBJECT_SYMBOLS = 338,   /* CREATE_OBJECT_SYMBOLS  */
-    INPUT = 339,                   /* INPUT  */
-    GROUP = 340,                   /* GROUP  */
-    OUTPUT = 341,                  /* OUTPUT  */
-    CONSTRUCTORS = 342,            /* CONSTRUCTORS  */
-    ALIGNMOD = 343,                /* ALIGNMOD  */
-    AT = 344,                      /* AT  */
-    SUBALIGN = 345,                /* SUBALIGN  */
-    HIDDEN = 346,                  /* HIDDEN  */
-    PROVIDE = 347,                 /* PROVIDE  */
-    PROVIDE_HIDDEN = 348,          /* PROVIDE_HIDDEN  */
-    AS_NEEDED = 349,               /* AS_NEEDED  */
-    CHIP = 350,                    /* CHIP  */
-    LIST = 351,                    /* LIST  */
-    SECT = 352,                    /* SECT  */
-    ABSOLUTE = 353,                /* ABSOLUTE  */
-    LOAD = 354,                    /* LOAD  */
-    NEWLINE = 355,                 /* NEWLINE  */
-    ENDWORD = 356,                 /* ENDWORD  */
-    ORDER = 357,                   /* ORDER  */
-    NAMEWORD = 358,                /* NAMEWORD  */
-    ASSERT_K = 359,                /* ASSERT_K  */
-    LOG2CEIL = 360,                /* LOG2CEIL  */
-    FORMAT = 361,                  /* FORMAT  */
-    PUBLIC = 362,                  /* PUBLIC  */
-    DEFSYMEND = 363,               /* DEFSYMEND  */
-    BASE = 364,                    /* BASE  */
-    ALIAS = 365,                   /* ALIAS  */
-    TRUNCATE = 366,                /* TRUNCATE  */
-    REL = 367,                     /* REL  */
-    INPUT_SCRIPT = 368,            /* INPUT_SCRIPT  */
-    INPUT_MRI_SCRIPT = 369,        /* INPUT_MRI_SCRIPT  */
-    INPUT_DEFSYM = 370,            /* INPUT_DEFSYM  */
-    CASE = 371,                    /* CASE  */
-    EXTERN = 372,                  /* EXTERN  */
-    START = 373,                   /* START  */
-    VERS_TAG = 374,                /* VERS_TAG  */
-    VERS_IDENTIFIER = 375,         /* VERS_IDENTIFIER  */
-    GLOBAL = 376,                  /* GLOBAL  */
-    LOCAL = 377,                   /* LOCAL  */
-    VERSIONK = 378,                /* VERSIONK  */
-    INPUT_VERSION_SCRIPT = 379,    /* INPUT_VERSION_SCRIPT  */
-    KEEP = 380,                    /* KEEP  */
-    ONLY_IF_RO = 381,              /* ONLY_IF_RO  */
-    ONLY_IF_RW = 382,              /* ONLY_IF_RW  */
-    SPECIAL = 383,                 /* SPECIAL  */
-    INPUT_SECTION_FLAGS = 384,     /* INPUT_SECTION_FLAGS  */
-    ALIGN_WITH_INPUT = 385,        /* ALIGN_WITH_INPUT  */
-    EXCLUDE_FILE = 386,            /* EXCLUDE_FILE  */
-    CONSTANT = 387,                /* CONSTANT  */
-    INPUT_DYNAMIC_LIST = 388       /* INPUT_DYNAMIC_LIST  */
+    TYPE = 316,                    /* TYPE  */
+    DEFINED = 317,                 /* DEFINED  */
+    TARGET_K = 318,                /* TARGET_K  */
+    SEARCH_DIR = 319,              /* SEARCH_DIR  */
+    MAP = 320,                     /* MAP  */
+    ENTRY = 321,                   /* ENTRY  */
+    NEXT = 322,                    /* NEXT  */
+    SIZEOF = 323,                  /* SIZEOF  */
+    ALIGNOF = 324,                 /* ALIGNOF  */
+    ADDR = 325,                    /* ADDR  */
+    LOADADDR = 326,                /* LOADADDR  */
+    MAX_K = 327,                   /* MAX_K  */
+    MIN_K = 328,                   /* MIN_K  */
+    STARTUP = 329,                 /* STARTUP  */
+    HLL = 330,                     /* HLL  */
+    SYSLIB = 331,                  /* SYSLIB  */
+    FLOAT = 332,                   /* FLOAT  */
+    NOFLOAT = 333,                 /* NOFLOAT  */
+    NOCROSSREFS = 334,             /* NOCROSSREFS  */
+    NOCROSSREFS_TO = 335,          /* NOCROSSREFS_TO  */
+    ORIGIN = 336,                  /* ORIGIN  */
+    FILL = 337,                    /* FILL  */
+    LENGTH = 338,                  /* LENGTH  */
+    CREATE_OBJECT_SYMBOLS = 339,   /* CREATE_OBJECT_SYMBOLS  */
+    INPUT = 340,                   /* INPUT  */
+    GROUP = 341,                   /* GROUP  */
+    OUTPUT = 342,                  /* OUTPUT  */
+    CONSTRUCTORS = 343,            /* CONSTRUCTORS  */
+    ALIGNMOD = 344,                /* ALIGNMOD  */
+    AT = 345,                      /* AT  */
+    SUBALIGN = 346,                /* SUBALIGN  */
+    HIDDEN = 347,                  /* HIDDEN  */
+    PROVIDE = 348,                 /* PROVIDE  */
+    PROVIDE_HIDDEN = 349,          /* PROVIDE_HIDDEN  */
+    AS_NEEDED = 350,               /* AS_NEEDED  */
+    CHIP = 351,                    /* CHIP  */
+    LIST = 352,                    /* LIST  */
+    SECT = 353,                    /* SECT  */
+    ABSOLUTE = 354,                /* ABSOLUTE  */
+    LOAD = 355,                    /* LOAD  */
+    NEWLINE = 356,                 /* NEWLINE  */
+    ENDWORD = 357,                 /* ENDWORD  */
+    ORDER = 358,                   /* ORDER  */
+    NAMEWORD = 359,                /* NAMEWORD  */
+    ASSERT_K = 360,                /* ASSERT_K  */
+    LOG2CEIL = 361,                /* LOG2CEIL  */
+    FORMAT = 362,                  /* FORMAT  */
+    PUBLIC = 363,                  /* PUBLIC  */
+    DEFSYMEND = 364,               /* DEFSYMEND  */
+    BASE = 365,                    /* BASE  */
+    ALIAS = 366,                   /* ALIAS  */
+    TRUNCATE = 367,                /* TRUNCATE  */
+    REL = 368,                     /* REL  */
+    INPUT_SCRIPT = 369,            /* INPUT_SCRIPT  */
+    INPUT_MRI_SCRIPT = 370,        /* INPUT_MRI_SCRIPT  */
+    INPUT_DEFSYM = 371,            /* INPUT_DEFSYM  */
+    CASE = 372,                    /* CASE  */
+    EXTERN = 373,                  /* EXTERN  */
+    START = 374,                   /* START  */
+    VERS_TAG = 375,                /* VERS_TAG  */
+    VERS_IDENTIFIER = 376,         /* VERS_IDENTIFIER  */
+    GLOBAL = 377,                  /* GLOBAL  */
+    LOCAL = 378,                   /* LOCAL  */
+    VERSIONK = 379,                /* VERSIONK  */
+    INPUT_VERSION_SCRIPT = 380,    /* INPUT_VERSION_SCRIPT  */
+    KEEP = 381,                    /* KEEP  */
+    ONLY_IF_RO = 382,              /* ONLY_IF_RO  */
+    ONLY_IF_RW = 383,              /* ONLY_IF_RW  */
+    SPECIAL = 384,                 /* SPECIAL  */
+    INPUT_SECTION_FLAGS = 385,     /* INPUT_SECTION_FLAGS  */
+    ALIGN_WITH_INPUT = 386,        /* ALIGN_WITH_INPUT  */
+    EXCLUDE_FILE = 387,            /* EXCLUDE_FILE  */
+    CONSTANT = 388,                /* CONSTANT  */
+    INPUT_DYNAMIC_LIST = 389       /* INPUT_DYNAMIC_LIST  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -251,85 +252,86 @@ extern int yydebug;
 #define INFO 313
 #define OVERLAY 314
 #define READONLY 315
-#define DEFINED 316
-#define TARGET_K 317
-#define SEARCH_DIR 318
-#define MAP 319
-#define ENTRY 320
-#define NEXT 321
-#define SIZEOF 322
-#define ALIGNOF 323
-#define ADDR 324
-#define LOADADDR 325
-#define MAX_K 326
-#define MIN_K 327
-#define STARTUP 328
-#define HLL 329
-#define SYSLIB 330
-#define FLOAT 331
-#define NOFLOAT 332
-#define NOCROSSREFS 333
-#define NOCROSSREFS_TO 334
-#define ORIGIN 335
-#define FILL 336
-#define LENGTH 337
-#define CREATE_OBJECT_SYMBOLS 338
-#define INPUT 339
-#define GROUP 340
-#define OUTPUT 341
-#define CONSTRUCTORS 342
-#define ALIGNMOD 343
-#define AT 344
-#define SUBALIGN 345
-#define HIDDEN 346
-#define PROVIDE 347
-#define PROVIDE_HIDDEN 348
-#define AS_NEEDED 349
-#define CHIP 350
-#define LIST 351
-#define SECT 352
-#define ABSOLUTE 353
-#define LOAD 354
-#define NEWLINE 355
-#define ENDWORD 356
-#define ORDER 357
-#define NAMEWORD 358
-#define ASSERT_K 359
-#define LOG2CEIL 360
-#define FORMAT 361
-#define PUBLIC 362
-#define DEFSYMEND 363
-#define BASE 364
-#define ALIAS 365
-#define TRUNCATE 366
-#define REL 367
-#define INPUT_SCRIPT 368
-#define INPUT_MRI_SCRIPT 369
-#define INPUT_DEFSYM 370
-#define CASE 371
-#define EXTERN 372
-#define START 373
-#define VERS_TAG 374
-#define VERS_IDENTIFIER 375
-#define GLOBAL 376
-#define LOCAL 377
-#define VERSIONK 378
-#define INPUT_VERSION_SCRIPT 379
-#define KEEP 380
-#define ONLY_IF_RO 381
-#define ONLY_IF_RW 382
-#define SPECIAL 383
-#define INPUT_SECTION_FLAGS 384
-#define ALIGN_WITH_INPUT 385
-#define EXCLUDE_FILE 386
-#define CONSTANT 387
-#define INPUT_DYNAMIC_LIST 388
+#define TYPE 316
+#define DEFINED 317
+#define TARGET_K 318
+#define SEARCH_DIR 319
+#define MAP 320
+#define ENTRY 321
+#define NEXT 322
+#define SIZEOF 323
+#define ALIGNOF 324
+#define ADDR 325
+#define LOADADDR 326
+#define MAX_K 327
+#define MIN_K 328
+#define STARTUP 329
+#define HLL 330
+#define SYSLIB 331
+#define FLOAT 332
+#define NOFLOAT 333
+#define NOCROSSREFS 334
+#define NOCROSSREFS_TO 335
+#define ORIGIN 336
+#define FILL 337
+#define LENGTH 338
+#define CREATE_OBJECT_SYMBOLS 339
+#define INPUT 340
+#define GROUP 341
+#define OUTPUT 342
+#define CONSTRUCTORS 343
+#define ALIGNMOD 344
+#define AT 345
+#define SUBALIGN 346
+#define HIDDEN 347
+#define PROVIDE 348
+#define PROVIDE_HIDDEN 349
+#define AS_NEEDED 350
+#define CHIP 351
+#define LIST 352
+#define SECT 353
+#define ABSOLUTE 354
+#define LOAD 355
+#define NEWLINE 356
+#define ENDWORD 357
+#define ORDER 358
+#define NAMEWORD 359
+#define ASSERT_K 360
+#define LOG2CEIL 361
+#define FORMAT 362
+#define PUBLIC 363
+#define DEFSYMEND 364
+#define BASE 365
+#define ALIAS 366
+#define TRUNCATE 367
+#define REL 368
+#define INPUT_SCRIPT 369
+#define INPUT_MRI_SCRIPT 370
+#define INPUT_DEFSYM 371
+#define CASE 372
+#define EXTERN 373
+#define START 374
+#define VERS_TAG 375
+#define VERS_IDENTIFIER 376
+#define GLOBAL 377
+#define LOCAL 378
+#define VERSIONK 379
+#define INPUT_VERSION_SCRIPT 380
+#define KEEP 381
+#define ONLY_IF_RO 382
+#define ONLY_IF_RW 383
+#define SPECIAL 384
+#define INPUT_SECTION_FLAGS 385
+#define ALIGN_WITH_INPUT 386
+#define EXCLUDE_FILE 387
+#define CONSTANT 388
+#define INPUT_DYNAMIC_LIST 389
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 61 "ldgram.y"
+#line 62 "ldgram.y"
 
   bfd_vma integer;
   struct big_int
@@ -360,7 +362,7 @@ union YYSTYPE
   struct bfd_elf_version_expr *versyms;
   struct bfd_elf_version_tree *versnode;
 
-#line 364 "ldgram.h"
+#line 366 "ldgram.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -371,6 +373,8 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_LDGRAM_H_INCLUDED  */

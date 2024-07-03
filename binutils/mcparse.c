@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.7.4.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -46,10 +46,10 @@
    USER NAME SPACE" below.  */
 
 /* Identify Bison output, and Bison version.  */
-#define YYBISON 30704
+#define YYBISON 30802
 
 /* Bison version string.  */
-#define YYBISON_VERSION "3.7.4"
+#define YYBISON_VERSION "3.8.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -220,7 +220,9 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_MCPARSE_H_INCLUDED  */
 /* Symbol kind.  */
@@ -325,6 +327,18 @@ typedef int_least16_t yytype_int16;
 typedef short yytype_int16;
 #endif
 
+/* Work around bug in HP-UX 11.23, which defines these macros
+   incorrectly for preprocessor constants.  This workaround can likely
+   be removed in 2023, as HPE has promised support for HP-UX 11.23
+   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
+   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
+#ifdef __hpux
+# undef UINT_LEAST8_MAX
+# undef UINT_LEAST16_MAX
+# define UINT_LEAST8_MAX 255
+# define UINT_LEAST16_MAX 65535
+#endif
+
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
 typedef __UINT_LEAST8_TYPE__ yytype_uint8;
 #elif (!defined __UINT_LEAST8_MAX__ && defined YY_STDINT_H \
@@ -422,17 +436,23 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -648,7 +668,7 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
        0,    66,    66,    69,    71,    73,    74,    75,    80,    84,
@@ -695,17 +715,6 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_int16 yytoknum[] =
-{
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,    61,    40,    41,    58,    43
-};
-#endif
-
 #define YYPACT_NINF (-34)
 
 #define yypact_value_is_default(Yyn) \
@@ -716,8 +725,8 @@ static const yytype_int16 yytoknum[] =
 #define yytable_value_is_error(Yyn) \
   0
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
+/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+   STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
      -34,    62,    70,   -34,   -34,   -34,    15,    22,    30,   -15,
@@ -735,9 +744,9 @@ static const yytype_int8 yypact[] =
      -34,   -34,   -34,   -34,   -34
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE does not specify something else to do.  Zero
+   means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        3,     0,     0,     1,     8,    71,     0,     0,     0,     0,
@@ -755,7 +764,7 @@ static const yytype_int8 yydefact[] =
       74,    73,    75,    41,    40
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
+/* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
      -34,   -34,   -34,   -34,   -34,   -34,    50,   -34,    53,   -34,
@@ -763,17 +772,17 @@ static const yytype_int8 yypgoto[] =
      -34,    44,   -34,   -34,   -34,   -33,   -34,   -34,   -34
 };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
+/* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     2,    12,    13,    61,    62,    57,    58,    53,
+       0,     1,     2,    12,    13,    61,    62,    57,    58,    53,
       54,   108,    14,    46,    15,    42,    28,    47,    48,    49,
       70,    71,   104,    16,    72,    55,    92,    94,   106
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+   positive, shift that token.  If negative, reduce the rule whose
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
       59,    39,    63,   105,   102,    73,    23,    78,    51,   103,
@@ -806,8 +815,8 @@ static const yytype_int8 yycheck[] =
       57,    61,    53,   100,    70
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+   state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,    27,    28,     0,     1,     7,    10,    11,    12,    13,
@@ -825,7 +834,7 @@ static const yytype_int8 yystos[] =
        3,     3,     1,     1,     5
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    26,    27,    28,    28,    29,    29,    29,    29,    30,
@@ -839,7 +848,7 @@ static const yytype_int8 yyr1[] =
       52,    53,    54
 };
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     0,     2,     1,     1,     1,     1,     5,
@@ -862,6 +871,7 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
+#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -902,10 +912,7 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
-# ifndef YY_LOCATION_PRINT
-#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-# endif
+
 
 
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
@@ -929,15 +936,11 @@ yy_symbol_value_print (FILE *yyo,
                        yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
 {
   FILE *yyoutput = yyo;
-  YYUSE (yyoutput);
+  YY_USE (yyoutput);
   if (!yyvaluep)
     return;
-# ifdef YYPRINT
-  if (yykind < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
-# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yykind);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1051,13 +1054,13 @@ static void
 yydestruct (const char *yymsg,
             yysymbol_kind_t yykind, YYSTYPE *yyvaluep)
 {
-  YYUSE (yyvaluep);
+  YY_USE (yyvaluep);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yykind);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1120,6 +1123,7 @@ yyparse (void)
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yychar = YYEMPTY; /* Cause a token to be read.  */
+
   goto yysetstate;
 
 
@@ -1145,7 +1149,7 @@ yysetstate:
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    goto yyexhaustedlab;
+    YYNOMEM;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1173,7 +1177,7 @@ yysetstate:
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        goto yyexhaustedlab;
+        YYNOMEM;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1184,7 +1188,7 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          goto yyexhaustedlab;
+          YYNOMEM;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
@@ -1205,6 +1209,7 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1323,67 +1328,67 @@ yyreduce:
 	    cur_node = mc_add_node ();
 	    cur_node->user_text = (yyvsp[0].ustr);
 	  }
-#line 1327 "mcparse.c"
+#line 1332 "mcparse.c"
     break;
 
   case 8: /* entity: error  */
 #line 80 "mcparse.y"
                 { mc_fatal ("syntax error"); }
-#line 1333 "mcparse.c"
+#line 1338 "mcparse.c"
     break;
 
   case 10: /* global_section: MCSEVERITYNAMES '=' '(' severitymaps error  */
 #line 85 "mcparse.y"
                                                      { mc_fatal ("missing ')' in SeverityNames"); }
-#line 1339 "mcparse.c"
+#line 1344 "mcparse.c"
     break;
 
   case 11: /* global_section: MCSEVERITYNAMES '=' error  */
 #line 86 "mcparse.y"
                                     { mc_fatal ("missing '(' in SeverityNames"); }
-#line 1345 "mcparse.c"
+#line 1350 "mcparse.c"
     break;
 
   case 12: /* global_section: MCSEVERITYNAMES error  */
 #line 87 "mcparse.y"
                                 { mc_fatal ("missing '=' for SeverityNames"); }
-#line 1351 "mcparse.c"
+#line 1356 "mcparse.c"
     break;
 
   case 14: /* global_section: MCLANGUAGENAMES '=' '(' langmaps error  */
 #line 89 "mcparse.y"
                                                  { mc_fatal ("missing ')' in LanguageNames"); }
-#line 1357 "mcparse.c"
+#line 1362 "mcparse.c"
     break;
 
   case 15: /* global_section: MCLANGUAGENAMES '=' error  */
 #line 90 "mcparse.y"
                                     { mc_fatal ("missing '(' in LanguageNames"); }
-#line 1363 "mcparse.c"
+#line 1368 "mcparse.c"
     break;
 
   case 16: /* global_section: MCLANGUAGENAMES error  */
 #line 91 "mcparse.y"
                                 { mc_fatal ("missing '=' for LanguageNames"); }
-#line 1369 "mcparse.c"
+#line 1374 "mcparse.c"
     break;
 
   case 18: /* global_section: MCFACILITYNAMES '=' '(' facilitymaps error  */
 #line 93 "mcparse.y"
                                                      { mc_fatal ("missing ')' in FacilityNames"); }
-#line 1375 "mcparse.c"
+#line 1380 "mcparse.c"
     break;
 
   case 19: /* global_section: MCFACILITYNAMES '=' error  */
 #line 94 "mcparse.y"
                                     { mc_fatal ("missing '(' in FacilityNames"); }
-#line 1381 "mcparse.c"
+#line 1386 "mcparse.c"
     break;
 
   case 20: /* global_section: MCFACILITYNAMES error  */
 #line 95 "mcparse.y"
                                 { mc_fatal ("missing '=' for FacilityNames"); }
-#line 1387 "mcparse.c"
+#line 1392 "mcparse.c"
     break;
 
   case 21: /* global_section: MCOUTPUTBASE '=' MCNUMBER  */
@@ -1393,7 +1398,7 @@ yyreduce:
 	      mc_fatal ("OutputBase allows 10 or 16 as value");
 	    mcset_out_values_are_decimal = ((yyvsp[0].ival) == 10 ? 1 : 0);
 	  }
-#line 1397 "mcparse.c"
+#line 1402 "mcparse.c"
     break;
 
   case 22: /* global_section: MCMESSAGEIDTYPEDEF '=' MCIDENT  */
@@ -1401,7 +1406,7 @@ yyreduce:
           {
 	    mcset_msg_id_typedef = (yyvsp[0].ustr);
 	  }
-#line 1405 "mcparse.c"
+#line 1410 "mcparse.c"
     break;
 
   case 23: /* global_section: MCMESSAGEIDTYPEDEF '=' error  */
@@ -1409,7 +1414,7 @@ yyreduce:
           {
 	    mc_fatal ("MessageIdTypedef expects an identifier");
 	  }
-#line 1413 "mcparse.c"
+#line 1418 "mcparse.c"
     break;
 
   case 24: /* global_section: MCMESSAGEIDTYPEDEF error  */
@@ -1417,13 +1422,13 @@ yyreduce:
           {
 	    mc_fatal ("missing '=' for MessageIdTypedef");
 	  }
-#line 1421 "mcparse.c"
+#line 1426 "mcparse.c"
     break;
 
   case 27: /* severitymaps: error  */
 #line 119 "mcparse.y"
                 { mc_fatal ("severity ident missing"); }
-#line 1427 "mcparse.c"
+#line 1432 "mcparse.c"
     break;
 
   case 28: /* severitymap: token '=' MCNUMBER alias_name  */
@@ -1431,25 +1436,25 @@ yyreduce:
           {
 	    mc_add_keyword ((yyvsp[-3].ustr), MCTOKEN, "severity", (yyvsp[-1].ival), (yyvsp[0].ustr));
 	  }
-#line 1435 "mcparse.c"
+#line 1440 "mcparse.c"
     break;
 
   case 29: /* severitymap: token '=' error  */
 #line 127 "mcparse.y"
                           { mc_fatal ("severity number missing"); }
-#line 1441 "mcparse.c"
+#line 1446 "mcparse.c"
     break;
 
   case 30: /* severitymap: token error  */
 #line 128 "mcparse.y"
                       { mc_fatal ("severity missing '='"); }
-#line 1447 "mcparse.c"
+#line 1452 "mcparse.c"
     break;
 
   case 33: /* facilitymaps: error  */
 #line 134 "mcparse.y"
                 { mc_fatal ("missing ident in FacilityNames"); }
-#line 1453 "mcparse.c"
+#line 1458 "mcparse.c"
     break;
 
   case 34: /* facilitymap: token '=' MCNUMBER alias_name  */
@@ -1457,25 +1462,25 @@ yyreduce:
           {
 	    mc_add_keyword ((yyvsp[-3].ustr), MCTOKEN, "facility", (yyvsp[-1].ival), (yyvsp[0].ustr));
 	  }
-#line 1461 "mcparse.c"
+#line 1466 "mcparse.c"
     break;
 
   case 35: /* facilitymap: token '=' error  */
 #line 142 "mcparse.y"
                           { mc_fatal ("facility number missing"); }
-#line 1467 "mcparse.c"
+#line 1472 "mcparse.c"
     break;
 
   case 36: /* facilitymap: token error  */
 #line 143 "mcparse.y"
                       { mc_fatal ("facility missing '='"); }
-#line 1473 "mcparse.c"
+#line 1478 "mcparse.c"
     break;
 
   case 39: /* langmaps: error  */
 #line 149 "mcparse.y"
                 { mc_fatal ("missing ident in LanguageNames"); }
-#line 1479 "mcparse.c"
+#line 1484 "mcparse.c"
     break;
 
   case 40: /* langmap: token '=' MCNUMBER lex_want_filename ':' MCFILENAME  */
@@ -1483,31 +1488,31 @@ yyreduce:
           {
 	    mc_add_keyword ((yyvsp[-5].ustr), MCTOKEN, "language", (yyvsp[-3].ival), (yyvsp[0].ustr));
 	  }
-#line 1487 "mcparse.c"
+#line 1492 "mcparse.c"
     break;
 
   case 41: /* langmap: token '=' MCNUMBER lex_want_filename ':' error  */
 #line 157 "mcparse.y"
                                                          { mc_fatal ("missing filename in LanguageNames"); }
-#line 1493 "mcparse.c"
+#line 1498 "mcparse.c"
     break;
 
   case 42: /* langmap: token '=' MCNUMBER error  */
 #line 158 "mcparse.y"
                                    { mc_fatal ("missing ':' in LanguageNames"); }
-#line 1499 "mcparse.c"
+#line 1504 "mcparse.c"
     break;
 
   case 43: /* langmap: token '=' error  */
 #line 159 "mcparse.y"
                           { mc_fatal ("missing language code in LanguageNames"); }
-#line 1505 "mcparse.c"
+#line 1510 "mcparse.c"
     break;
 
   case 44: /* langmap: token error  */
 #line 160 "mcparse.y"
                       { mc_fatal ("missing '=' for LanguageNames"); }
-#line 1511 "mcparse.c"
+#line 1516 "mcparse.c"
     break;
 
   case 45: /* alias_name: %empty  */
@@ -1515,7 +1520,7 @@ yyreduce:
           {
 	    (yyval.ustr) = NULL;
 	  }
-#line 1519 "mcparse.c"
+#line 1524 "mcparse.c"
     break;
 
   case 46: /* alias_name: ':' MCIDENT  */
@@ -1523,13 +1528,13 @@ yyreduce:
           {
 	    (yyval.ustr) = (yyvsp[0].ustr);
 	  }
-#line 1527 "mcparse.c"
+#line 1532 "mcparse.c"
     break;
 
   case 47: /* alias_name: ':' error  */
 #line 172 "mcparse.y"
                     { mc_fatal ("illegal token in identifier"); (yyval.ustr) = NULL; }
-#line 1533 "mcparse.c"
+#line 1538 "mcparse.c"
     break;
 
   case 48: /* $@1: %empty  */
@@ -1544,25 +1549,25 @@ yyreduce:
 	    cur_node->id_typecast = mcset_msg_id_typedef;
 	    mc_last_id = (yyvsp[-1].ival);
 	  }
-#line 1548 "mcparse.c"
+#line 1553 "mcparse.c"
     break;
 
   case 50: /* id: MCMESSAGEID '=' vid  */
 #line 190 "mcparse.y"
                               { (yyval.ival) = (yyvsp[0].ival); }
-#line 1554 "mcparse.c"
+#line 1559 "mcparse.c"
     break;
 
   case 51: /* id: MCMESSAGEID '=' error  */
 #line 191 "mcparse.y"
                                 { mc_fatal ("missing number in MessageId"); (yyval.ival) = 0; }
-#line 1560 "mcparse.c"
+#line 1565 "mcparse.c"
     break;
 
   case 52: /* id: MCMESSAGEID error  */
 #line 192 "mcparse.y"
                             { mc_fatal ("missing '=' for MessageId"); (yyval.ival) = 0; }
-#line 1566 "mcparse.c"
+#line 1571 "mcparse.c"
     break;
 
   case 53: /* vid: %empty  */
@@ -1570,7 +1575,7 @@ yyreduce:
           {
 	    (yyval.ival) = ++mc_last_id;
 	  }
-#line 1574 "mcparse.c"
+#line 1579 "mcparse.c"
     break;
 
   case 54: /* vid: MCNUMBER  */
@@ -1578,7 +1583,7 @@ yyreduce:
           {
 	    (yyval.ival) = (yyvsp[0].ival);
 	  }
-#line 1582 "mcparse.c"
+#line 1587 "mcparse.c"
     break;
 
   case 55: /* vid: '+' MCNUMBER  */
@@ -1586,13 +1591,13 @@ yyreduce:
           {
 	    (yyval.ival) = mc_last_id + (yyvsp[0].ival);
 	  }
-#line 1590 "mcparse.c"
+#line 1595 "mcparse.c"
     break;
 
   case 56: /* vid: '+' error  */
 #line 207 "mcparse.y"
                     { mc_fatal ("missing number after MessageId '+'"); }
-#line 1596 "mcparse.c"
+#line 1601 "mcparse.c"
     break;
 
   case 57: /* sefasy_def: %empty  */
@@ -1604,7 +1609,7 @@ yyreduce:
 	    mc_cur_severity = NULL;
 	    mc_cur_facility = NULL;
 	  }
-#line 1608 "mcparse.c"
+#line 1613 "mcparse.c"
     break;
 
   case 58: /* sefasy_def: sefasy_def severity  */
@@ -1614,7 +1619,7 @@ yyreduce:
 	      mc_warn (_("duplicate definition of Severity"));
 	    (yyval.ival) = (yyvsp[-1].ival) | 1;
 	  }
-#line 1618 "mcparse.c"
+#line 1623 "mcparse.c"
     break;
 
   case 59: /* sefasy_def: sefasy_def facility  */
@@ -1624,7 +1629,7 @@ yyreduce:
 	      mc_warn (_("duplicate definition of Facility"));
 	    (yyval.ival) = (yyvsp[-1].ival) | 2;
 	  }
-#line 1628 "mcparse.c"
+#line 1633 "mcparse.c"
     break;
 
   case 60: /* sefasy_def: sefasy_def symbol  */
@@ -1634,7 +1639,7 @@ yyreduce:
 	      mc_warn (_("duplicate definition of SymbolicName"));
 	    (yyval.ival) = (yyvsp[-1].ival) | 4;
 	  }
-#line 1638 "mcparse.c"
+#line 1643 "mcparse.c"
     break;
 
   case 61: /* severity: MCSEVERITY '=' MCTOKEN  */
@@ -1644,7 +1649,7 @@ yyreduce:
 	    mc_sefa_val |= (((yyvsp[0].tok)->nval & 0x3UL) << 30);
 	    mc_cur_severity = (yyvsp[0].tok);
 	  }
-#line 1648 "mcparse.c"
+#line 1653 "mcparse.c"
     break;
 
   case 62: /* facility: MCFACILITY '=' MCTOKEN  */
@@ -1654,7 +1659,7 @@ yyreduce:
 	    mc_sefa_val |= (((yyvsp[0].tok)->nval & 0xfffUL) << 16);
 	    mc_cur_facility = (yyvsp[0].tok);
 	  }
-#line 1658 "mcparse.c"
+#line 1663 "mcparse.c"
     break;
 
   case 63: /* symbol: MCSYMBOLICNAME '=' MCIDENT  */
@@ -1662,7 +1667,7 @@ yyreduce:
         {
 	  mc_last_symbol = (yyvsp[0].ustr);
 	}
-#line 1666 "mcparse.c"
+#line 1671 "mcparse.c"
     break;
 
   case 66: /* lang_entity: lang lex_want_line lines MCENDLINE  */
@@ -1674,7 +1679,7 @@ yyreduce:
 	    if (mcset_max_message_length != 0 && unichar_len (h->message) > mcset_max_message_length)
 	      mc_warn ("message length to long");
 	  }
-#line 1678 "mcparse.c"
+#line 1683 "mcparse.c"
     break;
 
   case 67: /* lines: MCLINE  */
@@ -1682,7 +1687,7 @@ yyreduce:
           {
 	    (yyval.ustr) = (yyvsp[0].ustr);
 	  }
-#line 1686 "mcparse.c"
+#line 1691 "mcparse.c"
     break;
 
   case 68: /* lines: lines MCLINE  */
@@ -1698,25 +1703,25 @@ yyreduce:
 	    h[l1 + l2] = 0;
 	    (yyval.ustr) = h;
 	  }
-#line 1702 "mcparse.c"
+#line 1707 "mcparse.c"
     break;
 
   case 69: /* lines: error  */
 #line 293 "mcparse.y"
                 { mc_fatal ("missing end of message text"); (yyval.ustr) = NULL; }
-#line 1708 "mcparse.c"
+#line 1713 "mcparse.c"
     break;
 
   case 70: /* lines: lines error  */
 #line 294 "mcparse.y"
                       { mc_fatal ("missing end of message text"); (yyval.ustr) = (yyvsp[-1].ustr); }
-#line 1714 "mcparse.c"
+#line 1719 "mcparse.c"
     break;
 
   case 71: /* comments: MCCOMMENT  */
 #line 297 "mcparse.y"
                     { (yyval.ustr) = (yyvsp[0].ustr); }
-#line 1720 "mcparse.c"
+#line 1725 "mcparse.c"
     break;
 
   case 72: /* comments: comments MCCOMMENT  */
@@ -1732,7 +1737,7 @@ yyreduce:
 	    h[l1 + l2] = 0;
 	    (yyval.ustr) = h;
 	  }
-#line 1736 "mcparse.c"
+#line 1741 "mcparse.c"
     break;
 
   case 73: /* lang: MCLANGUAGE lex_want_nl '=' MCTOKEN NL  */
@@ -1740,7 +1745,7 @@ yyreduce:
           {
 	    (yyval.tok) = (yyvsp[-1].tok);
 	  }
-#line 1744 "mcparse.c"
+#line 1749 "mcparse.c"
     break;
 
   case 74: /* lang: MCLANGUAGE lex_want_nl '=' MCIDENT NL  */
@@ -1749,7 +1754,7 @@ yyreduce:
 	    (yyval.tok) = NULL;
 	    mc_fatal (_("undeclared language identifier"));
 	  }
-#line 1753 "mcparse.c"
+#line 1758 "mcparse.c"
     break;
 
   case 75: /* lang: MCLANGUAGE lex_want_nl '=' token error  */
@@ -1758,7 +1763,7 @@ yyreduce:
 	    (yyval.tok) = NULL;
 	    mc_fatal ("missing newline after Language");
 	  }
-#line 1762 "mcparse.c"
+#line 1767 "mcparse.c"
     break;
 
   case 76: /* lang: MCLANGUAGE lex_want_nl '=' error  */
@@ -1767,7 +1772,7 @@ yyreduce:
 	    (yyval.tok) = NULL;
 	    mc_fatal ("missing ident for Language");
 	  }
-#line 1771 "mcparse.c"
+#line 1776 "mcparse.c"
     break;
 
   case 77: /* lang: MCLANGUAGE error  */
@@ -1776,41 +1781,41 @@ yyreduce:
 	    (yyval.tok) = NULL;
 	    mc_fatal ("missing '=' for Language");
 	  }
-#line 1780 "mcparse.c"
+#line 1785 "mcparse.c"
     break;
 
   case 78: /* token: MCIDENT  */
 #line 338 "mcparse.y"
                 { (yyval.ustr) = (yyvsp[0].ustr); }
-#line 1786 "mcparse.c"
+#line 1791 "mcparse.c"
     break;
 
   case 79: /* token: MCTOKEN  */
 #line 339 "mcparse.y"
                    { (yyval.ustr) = (yyvsp[0].tok)->usz; }
-#line 1792 "mcparse.c"
+#line 1797 "mcparse.c"
     break;
 
   case 80: /* lex_want_nl: %empty  */
 #line 343 "mcparse.y"
                         { mclex_want_nl = 1; }
-#line 1798 "mcparse.c"
+#line 1803 "mcparse.c"
     break;
 
   case 81: /* lex_want_line: %empty  */
 #line 347 "mcparse.y"
                         { mclex_want_line = 1; }
-#line 1804 "mcparse.c"
+#line 1809 "mcparse.c"
     break;
 
   case 82: /* lex_want_filename: %empty  */
 #line 351 "mcparse.y"
                         { mclex_want_filename = 1; }
-#line 1810 "mcparse.c"
+#line 1815 "mcparse.c"
     break;
 
 
-#line 1814 "mcparse.c"
+#line 1819 "mcparse.c"
 
       default: break;
     }
@@ -1892,6 +1897,7 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
+  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -1952,7 +1958,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
 /*-----------------------------------.
@@ -1960,24 +1966,22 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
-#if !defined yyoverflow
-/*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+/*-----------------------------------------------------------.
+| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
+`-----------------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  goto yyreturn;
-#endif
+  goto yyreturnlab;
 
 
-/*-------------------------------------------------------.
-| yyreturn -- parsing is finished, clean up and return.  |
-`-------------------------------------------------------*/
-yyreturn:
+/*----------------------------------------------------------.
+| yyreturnlab -- parsing is finished, clean up and return.  |
+`----------------------------------------------------------*/
+yyreturnlab:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at
