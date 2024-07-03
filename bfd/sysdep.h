@@ -39,26 +39,15 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-#endif
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
-
-#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <errno.h>
+#include <time.h>
 
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>

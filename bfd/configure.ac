@@ -20,7 +20,6 @@ dnl
 m4_include([version.m4])
 AC_INIT([bfd], BFD_VERSION)
 AC_CONFIG_SRCDIR([libbfd.c])
-AC_CONFIG_AUX_DIR(..)
 
 AC_CANONICAL_TARGET
 
@@ -306,6 +305,7 @@ changequote([,])dnl
   if test -n "$x"; then
     SHARED_LIBADD="-L`pwd`/../libiberty/pic -liberty"
   fi
+fi
 
 SHARED_LIBADD="$SHARED_LIBADD $LIBINTL"
  
@@ -937,10 +937,10 @@ changequote(,)dnl
   i[3-7]86-*-isc*)	COREFILE=trad-core.lo ;;
   i[3-7]86-*-aix*)	COREFILE=aix386-core.lo ;;
   i[3456]86-*-os2*)
-changequote([,])dnl
 	COREFILE=trad-core.lo
 	TRAD_HEADER='"hosts/i386emx.h"'
 	;;
+changequote([,])dnl
   mips*-*-netbsd* | mips*-*-openbsd*)
 	COREFILE=netbsd-core.lo
 	;;

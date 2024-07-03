@@ -3846,7 +3846,7 @@ copy_file (const char *input_filename, const char *output_filename, int ofd,
       set_long_section_mode (obfd, ibfd, long_section_names);
 
       copy_archive (ibfd, obfd, output_target, force_output_target, input_arch);
-      #ifdef __EMX__
+      #ifdef __EMX__x
       /*
        * On OS/2 executables are normally pushed thru emxbind.
        * So, if input and target format was both NULL and this was

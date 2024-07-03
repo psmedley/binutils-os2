@@ -194,14 +194,10 @@ set_times (const char *destination, const struct stat *statbuf)
   tb[1] = statbuf->st_mtime;
   result = utime (destination, tb);
 #endif
-  }
 
   if (result != 0)
     non_fatal (_("%s: cannot set time: %s"), destination, strerror (errno));
 }
-
-/* Rename FROM to TO, copying if TO is a link.
-   Return 0 if ok, -1 if error.  */
 
 /* Copy FROM to TO.  TARGET_STAT has the file status that, if non-NULL,
    is used to fix up timestamps.  Return 0 if ok, -1 if error.

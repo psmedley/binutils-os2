@@ -5065,7 +5065,7 @@ aout_link_write_symbols (struct aout_final_link_info *flaginfo, bfd *input_bfd)
 		skip = true;
 	      break;
 	    case strip_some:
-	      if (bfd_hash_lookup (flaginfo->info->keep_hash, name, FALSE, FALSE)
+	      if (bfd_hash_lookup (flaginfo->info->keep_hash, name, false, false)
 		  == NULL)
 		skip = true;
 	      break;
