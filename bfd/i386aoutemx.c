@@ -89,7 +89,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 static bool      MY(set_sizes) (bfd *);
 const bfd_target *      MY(object_p) (bfd *);
 reloc_howto_type *      MY(reloc_type_lookup) (bfd *, bfd_reloc_code_real_type);
-bfd_reloc_status_type   MY(generic_reloc) (bfd *, arelent *, asymbol *, PTR, asection *, bfd *, char **);
+bfd_reloc_status_type   MY(generic_reloc) (bfd *, arelent *, asymbol *, void *, asection *, bfd *, char **);
 /*reloc_howto_type *  MY(reloc_howto) PARAMS ((bfd *, struct reloc_std_external *, int *, int *, int *));*/
 
 reloc_howto_type MY(howto_table)[] =
@@ -226,7 +226,7 @@ MY(object_p) (abfd)
   (void)_fseek_hdr(bfd_cache_lookup(abfd));
   add = bfd_tell (abfd) - org_pos;
 
-  if (bfd_bread ((PTR) &exec_bytes, EXEC_BYTES_SIZE, abfd)
+  if (bfd_bread ((void *) &exec_bytes, EXEC_BYTES_SIZE, abfd)
       != EXEC_BYTES_SIZE)
   {
     if (bfd_get_error () != bfd_error_system_call)
@@ -249,7 +249,7 @@ MY(object_p) (abfd)
   const bfd_target *target;
   bfd_size_type amt = EXEC_BYTES_SIZE;
 
-  if (bfd_bread ((PTR) &exec_bytes, amt, abfd) != amt)
+  if (bfd_bread ((void *) &exec_bytes, amt, abfd) != amt)
     {
       if (bfd_get_error () != bfd_error_system_call)
 	bfd_set_error (bfd_error_wrong_format);
@@ -360,7 +360,7 @@ MY(generic_reloc) (abfd,
      bfd *abfd ATTRIBUTE_UNUSED;
      arelent *reloc_entry;
      asymbol *symbol;
-     PTR data ATTRIBUTE_UNUSED;
+     void * data ATTRIBUTE_UNUSED;
      asection *input_section;
      bfd *output_bfd;
      char **error_message ATTRIBUTE_UNUSED;
