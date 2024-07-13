@@ -1,6 +1,6 @@
 // object.cc -- support for an object file for linking in gold
 
-// Copyright (C) 2006-2022 Free Software Foundation, Inc.
+// Copyright (C) 2006-2023 Free Software Foundation, Inc.
 // Written by Ian Lance Taylor <iant@google.com>.
 
 // This file is part of gold.
@@ -3358,7 +3358,7 @@ Relocate_info<size, big_endian>::location(size_t, off_t offset) const
       if (info.enclosing_symbol_type == elfcpp::STT_FUNC)
 	ret += _("function ");
       ret += info.enclosing_symbol_name;
-      return ret;
+      ret += ":";
     }
 
   ret += "(";

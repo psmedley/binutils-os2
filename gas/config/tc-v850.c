@@ -1,5 +1,5 @@
 /* tc-v850.c -- Assembler code for the NEC V850
-   Copyright (C) 1996-2022 Free Software Foundation, Inc.
+   Copyright (C) 1996-2023 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -2909,6 +2909,7 @@ md_assemble (char *str)
 	      else
 		{
 		  expression (&ex);
+		  resolve_register (&ex);
 
 		  if ((operand->flags & V850_NOT_IMM0)
 		      && ex.X_op == O_constant
@@ -3728,7 +3729,7 @@ v850_force_relocation (struct fix *fixP)
 
 /* Create a v850 note section.  */
 void
-v850_md_end (void)
+v850_md_finish (void)
 {
   segT note_sec;
   segT orig_seg = now_seg;

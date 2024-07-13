@@ -1,5 +1,5 @@
 /* BFD back-end for Intel 386 COFF files (DJGPP variant with a stub).
-   Copyright (C) 1997-2022 Free Software Foundation, Inc.
+   Copyright (C) 1997-2023 Free Software Foundation, Inc.
    Written by Robert Hoehne.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -248,6 +248,7 @@ static void
 go32exe_cleanup (bfd *abfd)
 {
   abfd->origin = 0;
+  coff_object_cleanup (abfd);
 
   free (go32exe_temp_stub);
   go32exe_temp_stub = NULL;
@@ -291,6 +292,10 @@ go32exe_check_format (bfd *abfd)
   if (last_page_size != 0)
     stubsize += last_page_size - 512;
 
+  ufile_ptr filesize = bfd_get_file_size (abfd);
+  if (filesize != 0 && stubsize > filesize)
+    goto fail_format;
+
   /* Save now the stub to be used later.  Put the stub data to a temporary
      location first as tdata still does not exist.  It may not even
      be ever created if we are just checking the file format of ABFD.  */
@@ -319,7 +324,7 @@ go32exe_check_format (bfd *abfd)
   bfd_cleanup cleanup = coff_object_p (abfd);
   if (cleanup == NULL)
     goto fail;
-  BFD_ASSERT (cleanup == _bfd_no_cleanup);
+  BFD_ASSERT (cleanup == coff_object_cleanup);
 
   return go32exe_cleanup;
 

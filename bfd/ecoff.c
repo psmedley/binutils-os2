@@ -1,5 +1,5 @@
 /* Generic ECOFF (Extended-COFF) routines.
-   Copyright (C) 1990-2022 Free Software Foundation, Inc.
+   Copyright (C) 1990-2023 Free Software Foundation, Inc.
    Original version by Per Bothner.
    Full support added by Ian Lance Taylor, ian@cygnus.com.
 
@@ -107,6 +107,26 @@ _bfd_ecoff_mkobject_hook (bfd *abfd, void * filehdr, void * aouthdr)
      information is written out.  */
 
   return (void *) ecoff;
+}
+
+bool
+_bfd_ecoff_bfd_free_cached_info (bfd *abfd)
+{
+  struct ecoff_tdata *tdata;
+
+  if ((bfd_get_format (abfd) == bfd_object
+       || bfd_get_format (abfd) == bfd_core)
+      && (tdata = ecoff_data (abfd)) != NULL)
+    {
+      while (tdata->mips_refhi_list != NULL)
+	{
+	  struct mips_hi *ref = tdata->mips_refhi_list;
+	  tdata->mips_refhi_list = ref->next;
+	  free (ref);
+	}
+      _bfd_ecoff_free_ecoff_debug_info (&tdata->debug_info);
+    }
+  return _bfd_generic_bfd_free_cached_info (abfd);
 }
 
 /* Initialize a new section.  */
@@ -453,6 +473,23 @@ ecoff_slurp_symbolic_header (bfd *abfd)
       goto error_return;
     }
 
+#define FIX(start, count) \
+  if (internal_symhdr->start == 0)	\
+    internal_symhdr->count = 0;
+
+  FIX (cbLineOffset, cbLine);
+  FIX (cbDnOffset, idnMax);
+  FIX (cbPdOffset, ipdMax);
+  FIX (cbSymOffset, isymMax);
+  FIX (cbOptOffset, ioptMax);
+  FIX (cbAuxOffset, iauxMax);
+  FIX (cbSsOffset, issMax);
+  FIX (cbSsExtOffset, issExtMax);
+  FIX (cbFdOffset, ifdMax);
+  FIX (cbRfdOffset, crfd);
+  FIX (cbExtOffset, iextMax);
+#undef FIX
+
   /* Now we can get the correct number of symbols.  */
   abfd->symcount = internal_symhdr->isymMax + internal_symhdr->iextMax;
 
@@ -490,7 +527,7 @@ _bfd_ecoff_slurp_symbolic_info (bfd *abfd,
 
   /* Check whether we've already gotten it, and whether there's any to
      get.  */
-  if (ecoff_data (abfd)->raw_syments != NULL)
+  if (debug->alloc_syments)
     return true;
   if (ecoff_data (abfd)->sym_filepos == 0)
     {
@@ -512,12 +549,24 @@ _bfd_ecoff_slurp_symbolic_info (bfd *abfd,
      documented section. And the ordering of the sections varies between
      statically and dynamically linked executables.
      If bfd supports SEEK_END someday, this code could be simplified.  */
-  raw_end = 0;
+  raw_end = raw_base;
 
 #define UPDATE_RAW_END(start, count, size) \
-  cb_end = internal_symhdr->start + internal_symhdr->count * (size); \
-  if (cb_end > raw_end) \
-    raw_end = cb_end
+  do									\
+    if (internal_symhdr->count != 0)					\
+      {									\
+	if (internal_symhdr->start < raw_base)				\
+	  goto err;							\
+	if (_bfd_mul_overflow ((unsigned long) internal_symhdr->count,	\
+			       (size), &amt))				\
+	  goto err;							\
+	cb_end = internal_symhdr->start + amt;				\
+	if (cb_end < internal_symhdr->start)				\
+	  goto err;							\
+	if (cb_end > raw_end)						\
+	  raw_end = cb_end;						\
+      }									\
+  while (0)
 
   UPDATE_RAW_END (cbLineOffset, cbLine, sizeof (unsigned char));
   UPDATE_RAW_END (cbDnOffset, idnMax, backend->debug_swap.external_dnr_size);
@@ -549,29 +598,34 @@ _bfd_ecoff_slurp_symbolic_info (bfd *abfd,
   if (raw == NULL)
     return false;
 
-  ecoff_data (abfd)->raw_syments = raw;
+  debug->alloc_syments = true;
 
   /* Get pointers for the numeric offsets in the HDRR structure.  */
-#define FIX(off1, off2, type)				\
-  if (internal_symhdr->off1 == 0)			\
-    debug->off2 = NULL;					\
-  else							\
-    debug->off2 = (type) ((char *) raw			\
-			  + (internal_symhdr->off1	\
-			     - raw_base))
+#define FIX(start, count, ptr, type) \
+  if (internal_symhdr->count == 0)					\
+    debug->ptr = NULL;							\
+  else									\
+    debug->ptr = (type) ((char *) raw					\
+			 + (internal_symhdr->start - raw_base))
 
-  FIX (cbLineOffset, line, unsigned char *);
-  FIX (cbDnOffset, external_dnr, void *);
-  FIX (cbPdOffset, external_pdr, void *);
-  FIX (cbSymOffset, external_sym, void *);
-  FIX (cbOptOffset, external_opt, void *);
-  FIX (cbAuxOffset, external_aux, union aux_ext *);
-  FIX (cbSsOffset, ss, char *);
-  FIX (cbSsExtOffset, ssext, char *);
-  FIX (cbFdOffset, external_fdr, void *);
-  FIX (cbRfdOffset, external_rfd, void *);
-  FIX (cbExtOffset, external_ext, void *);
+  FIX (cbLineOffset, cbLine, line, unsigned char *);
+  FIX (cbDnOffset, idnMax, external_dnr, void *);
+  FIX (cbPdOffset, ipdMax, external_pdr, void *);
+  FIX (cbSymOffset, isymMax, external_sym, void *);
+  FIX (cbOptOffset, ioptMax, external_opt, void *);
+  FIX (cbAuxOffset, iauxMax, external_aux, union aux_ext *);
+  FIX (cbSsOffset, issMax, ss, char *);
+  FIX (cbSsExtOffset, issExtMax, ssext, char *);
+  FIX (cbFdOffset, ifdMax, external_fdr, void *);
+  FIX (cbRfdOffset, crfd, external_rfd, void *);
+  FIX (cbExtOffset, iextMax, external_ext, void *);
 #undef FIX
+
+  /* Ensure string sections are zero terminated.  */
+  if (debug->ss)
+    debug->ss[internal_symhdr->issMax - 1] = 0;
+  if (debug->ssext)
+    debug->ssext[internal_symhdr->issExtMax - 1] = 0;
 
   /* I don't want to always swap all the data, because it will just
      waste time and most programs will never look at it.  The only
@@ -584,6 +638,7 @@ _bfd_ecoff_slurp_symbolic_info (bfd *abfd,
   if (_bfd_mul_overflow ((unsigned long) internal_symhdr->ifdMax,
 			 sizeof (struct fdr), &amt))
     {
+    err:
       bfd_set_error (bfd_error_file_too_big);
       return false;
     }
@@ -868,9 +923,13 @@ _bfd_ecoff_slurp_symbol_table (bfd *abfd)
       (*swap_ext_in) (abfd, (void *) eraw_src, &internal_esym);
 
       /* PR 17512: file: 3372-1000-0.004.  */
-      if (internal_esym.asym.iss >= ecoff_data (abfd)->debug_info.symbolic_header.issExtMax
+      HDRR *symhdr = &ecoff_data (abfd)->debug_info.symbolic_header;
+      if (internal_esym.asym.iss >= symhdr->issExtMax
 	  || internal_esym.asym.iss < 0)
-	return false;
+	{
+	  bfd_set_error (bfd_error_bad_value);
+	  return false;
+	}
 
       internal_ptr->symbol.name = (ecoff_data (abfd)->debug_info.ssext
 				   + internal_esym.asym.iss);
@@ -881,17 +940,13 @@ _bfd_ecoff_slurp_symbol_table (bfd *abfd)
 	return false;
 
       /* The alpha uses a negative ifd field for section symbols.  */
-      if (internal_esym.ifd >= 0)
-	{
-	  /* PR 17512: file: 3372-1983-0.004.  */
-	  if (internal_esym.ifd >= ecoff_data (abfd)->debug_info.symbolic_header.ifdMax)
-	    internal_ptr->fdr = NULL;
-	  else
-	    internal_ptr->fdr = (ecoff_data (abfd)->debug_info.fdr
-				 + internal_esym.ifd);
-	}
-      else
+      /* PR 17512: file: 3372-1983-0.004.  */
+      if (internal_esym.ifd >= symhdr->ifdMax
+	  || internal_esym.ifd < 0)
 	internal_ptr->fdr = NULL;
+      else
+	internal_ptr->fdr = (ecoff_data (abfd)->debug_info.fdr
+			     + internal_esym.ifd);
       internal_ptr->local = false;
       internal_ptr->native = (void *) eraw_src;
     }
@@ -904,7 +959,21 @@ _bfd_ecoff_slurp_symbol_table (bfd *abfd)
     {
       char *lraw_src;
       char *lraw_end;
+      HDRR *symhdr = &ecoff_data (abfd)->debug_info.symbolic_header;
 
+      if (fdr_ptr->csym == 0)
+	continue;
+      if (fdr_ptr->isymBase < 0
+	  || fdr_ptr->isymBase > symhdr->isymMax
+	  || fdr_ptr->csym < 0
+	  || fdr_ptr->csym > ((long) bfd_get_symcount (abfd)
+			      - (internal_ptr - internal))
+	  || fdr_ptr->issBase < 0
+	  || fdr_ptr->issBase > symhdr->issMax)
+	{
+	  bfd_set_error (bfd_error_bad_value);
+	  return false;
+	}
       lraw_src = ((char *) ecoff_data (abfd)->debug_info.external_sym
 		  + fdr_ptr->isymBase * external_sym_size);
       lraw_end = lraw_src + fdr_ptr->csym * external_sym_size;
@@ -915,6 +984,13 @@ _bfd_ecoff_slurp_symbol_table (bfd *abfd)
 	  SYMR internal_sym;
 
 	  (*swap_sym_in) (abfd, (void *) lraw_src, &internal_sym);
+
+	  if (internal_sym.iss >= symhdr->issMax - fdr_ptr->issBase
+	      || internal_sym.iss < 0)
+	    {
+	      bfd_set_error (bfd_error_bad_value);
+	      return false;
+	    }
 	  internal_ptr->symbol.name = (ecoff_data (abfd)->debug_info.ss
 				       + fdr_ptr->issBase
 				       + internal_sym.iss);
@@ -1389,7 +1465,7 @@ _bfd_ecoff_print_symbol (bfd *abfd,
 	  (*debug_swap->swap_sym_in) (abfd, ecoffsymbol (symbol)->native,
 				      &ecoff_sym);
 	  fprintf (file, "ecoff local ");
-	  fprintf_vma (file, (bfd_vma) ecoff_sym.value);
+	  bfd_fprintf_vma (abfd, file, ecoff_sym.value);
 	  fprintf (file, " %x %x", (unsigned) ecoff_sym.st,
 		   (unsigned) ecoff_sym.sc);
 	}
@@ -1400,7 +1476,7 @@ _bfd_ecoff_print_symbol (bfd *abfd,
 	  (*debug_swap->swap_ext_in) (abfd, ecoffsymbol (symbol)->native,
 				      &ecoff_ext);
 	  fprintf (file, "ecoff extern ");
-	  fprintf_vma (file, (bfd_vma) ecoff_ext.asym.value);
+	  bfd_fprintf_vma (abfd, file, ecoff_ext.asym.value);
 	  fprintf (file, " %x %x", (unsigned) ecoff_ext.asym.st,
 		   (unsigned) ecoff_ext.asym.sc);
 	}
@@ -1443,7 +1519,7 @@ _bfd_ecoff_print_symbol (bfd *abfd,
 
 	fprintf (file, "[%3d] %c ",
 		 pos, type);
-	fprintf_vma (file, (bfd_vma) ecoff_ext.asym.value);
+	bfd_fprintf_vma (abfd, file, ecoff_ext.asym.value);
 	fprintf (file, " st %x sc %x indx %x %c%c%c %s",
 		 (unsigned) ecoff_ext.asym.st,
 		 (unsigned) ecoff_ext.asym.sc,
@@ -1612,7 +1688,8 @@ ecoff_slurp_reloc_table (bfd *abfd,
       if (intern.r_extern)
 	{
 	  /* r_symndx is an index into the external symbols.  */
-	  if (intern.r_symndx >= 0
+	  if (symbols != NULL
+	      && intern.r_symndx >= 0
 	      && (intern.r_symndx
 		  < (ecoff_data (abfd)->debug_info.symbolic_header.iextMax)))
 	    rptr->sym_ptr_ptr = symbols + intern.r_symndx;
@@ -1844,6 +1921,9 @@ _bfd_ecoff_bfd_copy_private_bfd_data (bfd *ibfd, bfd *obfd)
 
       oinfo->symbolic_header.crfd = iinfo->symbolic_header.crfd;
       oinfo->external_rfd = iinfo->external_rfd;
+
+      /* Flag that oinfo entries should not be freed.  */
+      oinfo->alloc_syments = true;
     }
   else
     {
@@ -3708,7 +3788,7 @@ ecoff_final_link_debug_accumulate (bfd *output_bfd,
   HDRR *symhdr = &debug->symbolic_header;
   bool ret;
 
-#define READ(ptr, offset, count, size, type)				\
+#define READ(ptr, offset, count, size)					\
   do									\
     {									\
       size_t amt;							\
@@ -3726,29 +3806,28 @@ ecoff_final_link_debug_accumulate (bfd *output_bfd,
 	  ret = false;							\
 	  goto return_something;					\
 	}								\
-      debug->ptr = (type) _bfd_malloc_and_read (input_bfd, amt, amt);	\
+      debug->ptr = _bfd_malloc_and_read (input_bfd, amt + 1, amt);	\
       if (debug->ptr == NULL)						\
 	{								\
 	  ret = false;							\
 	  goto return_something;					\
 	}								\
+      ((char *) debug->ptr)[amt] = 0;					\
     } while (0)
 
-  /* If raw_syments is not NULL, then the data was already by read by
+  /* If alloc_syments is true, then the data was already by read by
      _bfd_ecoff_slurp_symbolic_info.  */
-  if (ecoff_data (input_bfd)->raw_syments == NULL)
+  if (!debug->alloc_syments)
     {
-      READ (line, cbLineOffset, cbLine, sizeof (unsigned char),
-	    unsigned char *);
-      READ (external_dnr, cbDnOffset, idnMax, swap->external_dnr_size, void *);
-      READ (external_pdr, cbPdOffset, ipdMax, swap->external_pdr_size, void *);
-      READ (external_sym, cbSymOffset, isymMax, swap->external_sym_size, void *);
-      READ (external_opt, cbOptOffset, ioptMax, swap->external_opt_size, void *);
-      READ (external_aux, cbAuxOffset, iauxMax, sizeof (union aux_ext),
-	    union aux_ext *);
-      READ (ss, cbSsOffset, issMax, sizeof (char), char *);
-      READ (external_fdr, cbFdOffset, ifdMax, swap->external_fdr_size, void *);
-      READ (external_rfd, cbRfdOffset, crfd, swap->external_rfd_size, void *);
+      READ (line, cbLineOffset, cbLine, sizeof (unsigned char));
+      READ (external_dnr, cbDnOffset, idnMax, swap->external_dnr_size);
+      READ (external_pdr, cbPdOffset, ipdMax, swap->external_pdr_size);
+      READ (external_sym, cbSymOffset, isymMax, swap->external_sym_size);
+      READ (external_opt, cbOptOffset, ioptMax, swap->external_opt_size);
+      READ (external_aux, cbAuxOffset, iauxMax, sizeof (union aux_ext));
+      READ (ss, cbSsOffset, issMax, sizeof (char));
+      READ (external_fdr, cbFdOffset, ifdMax, swap->external_fdr_size);
+      READ (external_rfd, cbRfdOffset, crfd, swap->external_rfd_size);
     }
 #undef READ
 
@@ -3760,31 +3839,7 @@ ecoff_final_link_debug_accumulate (bfd *output_bfd,
 	  input_bfd, debug, swap, info));
 
  return_something:
-  if (ecoff_data (input_bfd)->raw_syments == NULL)
-    {
-      free (debug->line);
-      free (debug->external_dnr);
-      free (debug->external_pdr);
-      free (debug->external_sym);
-      free (debug->external_opt);
-      free (debug->external_aux);
-      free (debug->ss);
-      free (debug->external_fdr);
-      free (debug->external_rfd);
-
-      /* Make sure we don't accidentally follow one of these pointers
-	 into freed memory.  */
-      debug->line = NULL;
-      debug->external_dnr = NULL;
-      debug->external_pdr = NULL;
-      debug->external_sym = NULL;
-      debug->external_opt = NULL;
-      debug->external_aux = NULL;
-      debug->ss = NULL;
-      debug->external_fdr = NULL;
-      debug->external_rfd = NULL;
-    }
-
+  _bfd_ecoff_free_ecoff_debug_info (debug);
   return ret;
 }
 
