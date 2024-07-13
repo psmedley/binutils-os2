@@ -1,7 +1,7 @@
 /* libbfd.h -- Declarations used by bfd library *implementation*.
    (This include file is not for users of the library.)
 
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
 
    Written by Cygnus Support.
 
@@ -38,10 +38,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* If you want to read and write large blocks, you might want to do it
-   in quanta of this amount */
-#define DEFAULT_BUFFERSIZE 8192
 
 /* Set a tdata field.  Can't use the other macros for this, since they
    do casts, and casting to the left of assignment isn't portable.  */
@@ -884,7 +880,7 @@ _bfd_alloc_and_read (bfd *abfd, bfd_size_type asize, bfd_size_type rsize)
   mem = bfd_alloc (abfd, asize);
   if (mem != NULL)
     {
-      if (bfd_bread (mem, rsize, abfd) == rsize)
+      if (bfd_read (mem, rsize, abfd) == rsize)
 	return mem;
       bfd_release (abfd, mem);
     }
@@ -907,7 +903,7 @@ _bfd_malloc_and_read (bfd *abfd, bfd_size_type asize, bfd_size_type rsize)
   mem = bfd_malloc (asize);
   if (mem != NULL)
     {
-      if (bfd_bread (mem, rsize, abfd) == rsize)
+      if (bfd_read (mem, rsize, abfd) == rsize)
 	return mem;
       free (mem);
     }

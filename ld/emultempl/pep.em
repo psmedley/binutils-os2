@@ -20,7 +20,7 @@ esac
 rm -f e${EMULATION_NAME}.c
 (echo;echo;echo;echo;echo)>e${EMULATION_NAME}.c # there, now line numbers match ;-)
 fragment <<EOF
-/* Copyright (C) 2006-2023 Free Software Foundation, Inc.
+/* Copyright (C) 2006-2024 Free Software Foundation, Inc.
    Written by Kai Tietz, OneVision Software GmbH&CoKg.
 
    This file is part of the GNU Binutils.
@@ -1353,7 +1353,7 @@ pecoff_checksum_contents (bfd *abfd,
       if (bfd_seek (abfd, filepos, SEEK_SET) != 0)
 	return 0;
 
-      status = bfd_bread (&b, (bfd_size_type) 1, abfd);
+      status = bfd_read (&b, 1, abfd);
       if (status < 1)
 	{
 	  break;
@@ -1444,7 +1444,7 @@ write_build_id (bfd *abfd)
   if (bfd_seek (abfd, asec->filepos + link_order->offset, SEEK_SET) != 0)
     return 0;
 
-  if (bfd_bwrite (contents, sizeof (*ext), abfd) != sizeof (*ext))
+  if (bfd_write (contents, sizeof (*ext), abfd) != sizeof (*ext))
     return 0;
 
 #ifdef PDB_H
@@ -2295,8 +2295,8 @@ gld${EMULATION_NAME}_open_dynamic_archive
 			    search->name and the start of the format string.  */
 			 + 2);
 
-  sprintf (full_string, "%s/", search->name);
-  base_string = full_string + strlen (full_string);
+  base_string = stpcpy (full_string, search->name);
+  *base_string++ = '/';
 
   for (i = 0; libname_fmt[i].format; i++)
     {
@@ -2342,7 +2342,7 @@ then
 # Scripts compiled in.
 
 # sed commands to quote an ld script as a C string.
-sc="-f stringify.sed"
+sc="-f ${srcdir}/emultempl/stringify.sed"
 
 fragment <<EOF
 {

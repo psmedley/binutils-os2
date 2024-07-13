@@ -1,5 +1,5 @@
 /* BFD back-end data structures for ELF files.
-   Copyright (C) 1992-2023 Free Software Foundation, Inc.
+   Copyright (C) 1992-2024 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -545,6 +545,7 @@ enum elf_target_id
   HPPA64_ELF_DATA,
   I386_ELF_DATA,
   IA64_ELF_DATA,
+  KVX_ELF_DATA,
   LM32_ELF_DATA,
   LARCH_ELF_DATA,
   M32R_ELF_DATA,
@@ -955,6 +956,19 @@ typedef struct elf_property_list
   struct elf_property_list *next;
   struct elf_property property;
 } elf_property_list;
+
+/* This structure is used to pass information to
+   elf_backend_add_glibc_version_dependency.  */
+
+struct elf_find_verdep_info
+{
+  /* General link information.  */
+  struct bfd_link_info *info;
+  /* The number of dependencies.  */
+  unsigned int vers;
+  /* Whether we had a failure.  */
+  bool failed;
+};
 
 struct bfd_elf_section_reloc_data;
 
@@ -1486,6 +1500,10 @@ struct elf_backend_data
      Returns TRUE if it did so and FALSE if the caller should.  */
   bool (*elf_backend_write_section)
     (bfd *, struct bfd_link_info *, asection *, bfd_byte *);
+
+  /* This function adds glibc version dependency.  */
+  void (*elf_backend_add_glibc_version_dependency)
+    (struct elf_find_verdep_info *);
 
   /* This function, if defined, returns TRUE if it is section symbols
      only that are considered local for the purpose of partitioning the
@@ -2038,7 +2056,8 @@ struct elf_obj_tdata
   size_t dt_symtab_count;
   size_t dt_verdef_count;
   size_t dt_verneed_count;
-  char *dt_strtab;
+  char * dt_strtab;
+  size_t dt_strsz;
   elf_section_list * symtab_shndx_list;
   bfd_vma gp;				/* The gp value */
   unsigned int gp_size;			/* The gp size */
@@ -2581,6 +2600,12 @@ extern bool _bfd_elf_link_output_relocs
   (bfd *, asection *, Elf_Internal_Shdr *, Elf_Internal_Rela *,
    struct elf_link_hash_entry **);
 
+extern void _bfd_elf_link_add_glibc_version_dependency
+  (struct elf_find_verdep_info *, const char *[]);
+
+extern void _bfd_elf_link_add_dt_relr_dependency
+  (struct elf_find_verdep_info *);
+
 extern bool _bfd_elf_adjust_dynamic_copy
   (struct bfd_link_info *, struct elf_link_hash_entry *, asection *);
 
@@ -2939,6 +2964,12 @@ extern char *elfcore_write_aarch_pauth
   (bfd *, char *, int *, const void *, int);
 extern char *elfcore_write_aarch_mte
   (bfd *, char *, int *, const void *, int);
+extern char *elfcore_write_aarch_ssve
+  (bfd *, char *, int *, const void *, int);
+extern char *elfcore_write_aarch_za
+  (bfd *, char *, int *, const void *, int);
+extern char *elfcore_write_aarch_zt
+  (bfd *, char *, int *, const void *, int);
 extern char *elfcore_write_arc_v2
   (bfd *, char *, int *, const void *, int);
 extern char *elfcore_write_riscv_csr
@@ -3002,14 +3033,16 @@ extern bfd *_bfd_elf64_bfd_from_remote_memory
 extern bfd_vma bfd_elf_obj_attr_size (bfd *);
 extern void bfd_elf_set_obj_attr_contents (bfd *, bfd_byte *, bfd_vma);
 extern int bfd_elf_get_obj_attr_int (bfd *, int, unsigned int);
-extern void bfd_elf_add_obj_attr_int (bfd *, int, unsigned int, unsigned int);
+extern obj_attribute *bfd_elf_add_obj_attr_int
+  (bfd *, int, unsigned int, unsigned int);
 #define bfd_elf_add_proc_attr_int(BFD, TAG, VALUE) \
   bfd_elf_add_obj_attr_int ((BFD), OBJ_ATTR_PROC, (TAG), (VALUE))
-extern void bfd_elf_add_obj_attr_string (bfd *, int, unsigned int, const char *);
+extern obj_attribute *bfd_elf_add_obj_attr_string
+  (bfd *, int, unsigned int, const char *);
 #define bfd_elf_add_proc_attr_string(BFD, TAG, VALUE) \
   bfd_elf_add_obj_attr_string ((BFD), OBJ_ATTR_PROC, (TAG), (VALUE))
-extern void bfd_elf_add_obj_attr_int_string (bfd *, int, unsigned int,
-					     unsigned int, const char *);
+extern obj_attribute *bfd_elf_add_obj_attr_int_string
+  (bfd *, int, unsigned int, unsigned int, const char *);
 #define bfd_elf_add_proc_attr_int_string(BFD, TAG, INTVAL, STRVAL) \
   bfd_elf_add_obj_attr_int_string ((BFD), OBJ_ATTR_PROC, (TAG), \
 				   (INTVAL), (STRVAL))

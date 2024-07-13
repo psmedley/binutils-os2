@@ -1,5 +1,5 @@
 /* ELF support for BFD.
-   Copyright (C) 1991-2023 Free Software Foundation, Inc.
+   Copyright (C) 1991-2024 Free Software Foundation, Inc.
 
    Written by Fred Fish @ Cygnus Support, from information published
    in "UNIX System V Release 4, Programmers Guide: ANSI C and
@@ -495,6 +495,7 @@
 #define PT_OPENBSD_MUTABLE   (PT_LOOS + 0x5a3dbe5)  /* Like bss, but not immutable.  */
 #define PT_OPENBSD_RANDOMIZE (PT_LOOS + 0x5a3dbe6)  /* Fill with random data.  */
 #define PT_OPENBSD_WXNEEDED  (PT_LOOS + 0x5a3dbe7)  /* Program does W^X violations.  */
+#define PT_OPENBSD_NOBTCFI   (PT_LOOS + 0x5a3dbe8)  /* No branch target CFI.  */
 #define PT_OPENBSD_BOOTDATA  (PT_LOOS + 0x5a41be6)  /* Section for boot arguments.  */
 
 /* Mbind segments */
@@ -644,6 +645,9 @@
 					/*   note name must be "LINUX".  */
 #define NT_X86_CET	0x203		/* x86 CET state.  */
 					/*   note name must be "LINUX".  */
+#define NT_X86_SHSTK	0x204		/* x86 SHSTK state.  */
+					/* This replaces NT_X86_CET (0x203).  */
+					/*   note name must be "LINUX".  */
 #define NT_S390_HIGH_GPRS 0x300		/* S/390 upper halves of GPRs  */
 					/*   note name must be "LINUX".  */
 #define NT_S390_TIMER	0x301		/* S390 timer */
@@ -700,6 +704,8 @@
 #define NT_ARM_SSVE     0x40b        	/* AArch64 SME streaming SVE registers.  */
 					/*   Note: name must be "LINUX".  */
 #define NT_ARM_ZA       0x40c           /* AArch64 SME ZA register.  */
+					/*   Note: name must be "LINUX".  */
+#define NT_ARM_ZT       0x40d           /* AArch64 SME2 ZT registers.  */
 					/*   Note: name must be "LINUX".  */
 #define NT_ARC_V2	0x600		/* ARC HS accumulator/extra registers.  */
 					/*   note name must be "LINUX".  */
@@ -1374,6 +1380,8 @@
 					   may differ from AT_PLATFORM.  */
 #define AT_RANDOM	25		/* Address of 16 random bytes.  */
 #define AT_HWCAP2	26		/* Extension of AT_HWCAP.  */
+#define AT_RSEQ_FEATURE_SIZE	27	/* rseq supported feature size */
+#define AT_RSEQ_ALIGN	28		/* rseq allocation alignment */
 #define AT_EXECFN	31		/* Filename of executable.  */
 /* Pointer to the global system page used for system calls and other
    nice things.  */

@@ -1,5 +1,5 @@
 /* symbols.h -
-   Copyright (C) 1987-2023 Free Software Foundation, Inc.
+   Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -109,8 +109,8 @@ extern int S_IS_STABD (symbolS *);
 extern int S_CAN_BE_REDEFINED (const symbolS *);
 extern int S_IS_VOLATILE (const symbolS *);
 extern int S_IS_FORWARD_REF (const symbolS *);
-extern const char *S_GET_NAME (symbolS *);
-extern segT S_GET_SEGMENT (symbolS *);
+extern const char *S_GET_NAME (const symbolS *);
+extern segT S_GET_SEGMENT (const symbolS *);
 extern void S_SET_SEGMENT (symbolS *, segT);
 extern void S_SET_EXTERNAL (symbolS *);
 extern void S_SET_NAME (symbolS *, const char *);

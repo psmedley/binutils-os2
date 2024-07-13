@@ -10,7 +10,7 @@
 
 @copying
 @c man begin COPYRIGHT
-Copyright @copyright{} 1991-2023 Free Software Foundation, Inc.
+Copyright @copyright{} 1991-2024 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3
@@ -520,6 +520,10 @@ names, use this modifier.  The @samp{u} modifier is allowed only for the
 operation @samp{r} (replace).  In particular, the combination @samp{qu} is
 not allowed, since checking the timestamps would lose any speed
 advantage from the operation @samp{q}.
+
+Note - if an archive has been created in a deterministic manner, eg
+via the use of the @option{D} modifier, then replacement will always
+happen and the @option{u} modifier will be ineffective.
 
 @item U
 @cindex deterministic archives
@@ -1326,10 +1330,10 @@ objcopy [@option{-F} @var{bfdname}|@option{--target=}@var{bfdname}]
         [@option{--pure}]
         [@option{--impure}]
         [@option{--file-alignment=}@var{num}]
-        [@option{--heap=}@var{size}]
+        [@option{--heap=}@var{reserve}[,@var{commit}]]
         [@option{--image-base=}@var{address}]
         [@option{--section-alignment=}@var{num}]
-        [@option{--stack=}@var{size}]
+        [@option{--stack=}@var{reserve}[,@var{commit}]]
         [@option{--subsystem=}@var{which}:@var{major}.@var{minor}]
         [@option{--compress-debug-sections}]
         [@option{--decompress-debug-sections}]
@@ -1626,6 +1630,11 @@ commands.  If the input was '12345678' then the outputs would be
 Set the access and modification dates of the output file to be the same
 as those of the input file.
 
+This option also copies the date stored in a PE format file's header,
+unless the SOURCE_DATE_EPOCH environment variable is defined.  If it
+is defined then this variable will be used as the date stored in the
+header, interpreted as the number of seconds since the Unix epoch.
+
 @item -D
 @itemx --enable-deterministic-archives
 @cindex deterministic archives
@@ -1745,13 +1754,14 @@ Set the flags for any sections matching @var{sectionpattern}.  The
 @var{flags} argument is a comma separated string of flag names.  The
 recognized names are @samp{alloc}, @samp{contents}, @samp{load},
 @samp{noload}, @samp{readonly}, @samp{code}, @samp{data}, @samp{rom},
-@samp{exclude}, @samp{share}, and @samp{debug}.  You can set the
-@samp{contents} flag for a section which does not have contents, but it
-is not meaningful to clear the @samp{contents} flag of a section which
-does have contents--just remove the section instead.  Not all flags are
-meaningful for all object file formats.  In particular the
-@samp{share} flag is only meaningful for COFF format files and not for
-ELF format files.
+@samp{exclude}, @samp{share}, @samp{debug}, and @samp{large}.
+You can set the @samp{contents} flag for a section which does not have
+contents, but it is not meaningful to clear the @samp{contents} flag of a
+section which does have contents--just remove the section instead.  Not all
+flags are meaningful for all object file formats.  In particular the
+@samp{share} flag is only meaningful for COFF format files and not for ELF
+format files.  The ELF x86-64 specific flag @samp{large} corresponds to
+SHF_X86_64_LARGE.
 
 @item --set-section-alignment @var{sectionpattern}=@var{align}
 Set the alignment for any sections matching @var{sectionpattern}.
@@ -1808,7 +1818,7 @@ changing the section's flags to @var{flags} in the process.  This has
 the advantage over using a linker script to perform the rename in that
 the output stays as an object file and does not become a linked
 executable.  This option accepts the same set of flags as the
-@option{--sect-section-flags} option.
+@option{--set-section-flags} option.
 
 This option is particularly helpful when the input format is binary,
 since this will always create a section called .data.  If for example,
@@ -2259,6 +2269,7 @@ objdump [@option{-a}|@option{--archive-headers}]
         [@option{-r}|@option{--reloc}]
         [@option{-R}|@option{--dynamic-reloc}]
         [@option{-s}|@option{--full-contents}]
+        [@option{-Z}|@option{--decompress}]
         [@option{-W[lLiaprmfFsoORtUuTgAck]}|
          @option{--dwarf}[=rawline,=decodedline,=info,=abbrev,=pubnames,=aranges,=macro,=frames,=frames-interp,=str,=str-offsets,=loc,=Ranges,=pubtypes,=trace_info,=trace_abbrev,=trace_aranges,=gdb_index,=addr,=cu_index,=links]]
         [@option{-WK}|@option{--dwarf=follow-links}]
@@ -2790,7 +2801,10 @@ disassembly.
 @cindex object file sections
 Display the full contents of sections, often used in combination with
 @option{-j} to request specific sections.  By default all non-empty
-non-bss sections are displayed.
+non-bss sections are displayed.  By default any compressed section
+will be displayed in its compressed form.  In order to see the
+contents in a decompressed form add the @option{-Z} option to the
+command line.
 
 @item -S
 @itemx --source
@@ -3046,6 +3060,15 @@ Also do not truncate symbol names when they are displayed.
 Normally the disassembly output will skip blocks of zeroes.  This
 option directs the disassembler to disassemble those blocks, just like
 any other data.
+
+@item -Z
+@itemx --decompress
+@cindex sections, full contents
+@cindex object file sections
+@cindex compressed section contents
+The @option{-Z} option is meant to be used in conunction with the
+@option{-s} option.  It instructs @command{objdump} to decompress any
+compressed sections before displaying their contents.
 @end table
 
 @c man end
@@ -4955,6 +4978,7 @@ readelf [@option{-a}|@option{--all}]
         [@option{--quiet}]
         [@option{--recurse-limit}|@option{--no-recurse-limit}]
         [@option{-U} @var{method}|@option{--unicode=}@var{method}]
+        [@option{-X}|@option{--extra-sym-info}|@option{--no-extra-sym-info}]
         [@option{-n}|@option{--notes}]
         [@option{-r}|@option{--relocs}]
         [@option{-u}|@option{--unwind}]
@@ -5145,6 +5169,20 @@ unicode escape sequences but it will also highlighted them in red,
 assuming that colouring is supported by the output device.  The
 colouring is intended to draw attention to the presence of unicode
 sequences when they might not be expected.
+
+@item -X
+@itemx --extra-sym-info
+When displaying details of symbols, include extra information not
+normally presented.  Currently this just adds the name of the section
+referenced by the symbol's index field, if there is one.  In the
+future more information may be displayed when this option is enabled.
+
+Enabling this option effectively enables the @option{--wide} option as
+well, at least when displaying symbol information.
+
+@item --no-extra-sym-info
+Disables the effect of the @option{--extra-sym-info} option.  This
+is the default.
 
 @item -e
 @itemx --headers

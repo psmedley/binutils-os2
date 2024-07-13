@@ -1,5 +1,5 @@
 /* objdump.c -- dump information about an object file.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Binutils.
 
@@ -137,6 +137,7 @@ static bool color_output = false;	/* --visualize-jumps=color.  */
 static bool extended_color_output = false; /* --visualize-jumps=extended-color.  */
 static int process_links = false;       /* --process-links.  */
 static int show_all_symbols;            /* --show-all-symbols.  */
+static bool decompressed_dumps = false; /* -Z, --decompress.  */
 
 static enum color_selection
   {
@@ -277,6 +278,8 @@ usage (FILE *stream, int status)
       --source-comment[=<txt>] Prefix lines of source code with <txt>\n"));
   fprintf (stream, _("\
   -s, --full-contents      Display the full contents of all sections requested\n"));
+  fprintf (stream, _("\
+  -Z, --decompress         Decompress section(s) before displaying their contents\n"));
   fprintf (stream, _("\
   -g, --debugging          Display debug information in object file\n"));
   fprintf (stream, _("\
@@ -500,6 +503,7 @@ static struct option long_options[]=
 #endif
   {"debugging", no_argument, NULL, 'g'},
   {"debugging-tags", no_argument, NULL, 'e'},
+  {"decompress", no_argument, NULL, 'Z'},
   {"demangle", optional_argument, NULL, 'C'},
   {"disassemble", optional_argument, NULL, 'd'},
   {"disassemble-all", no_argument, NULL, 'D'},
@@ -617,11 +621,12 @@ display_utf8 (const unsigned char * in, char * out, unsigned int * consumed)
 
     case unicode_invalid:
     case unicode_hex:
-      out += sprintf (out, "%c", unicode_display == unicode_hex ? '<' : '{');
-      out += sprintf (out, "0x");
+      *out++ = unicode_display == unicode_hex ? '<' : '{';
+      *out++ = '0';
+      *out++ = 'x';
       for (j = 0; j < nchars; j++)
 	out += sprintf (out, "%02x", in [j]);
-      out += sprintf (out, "%c", unicode_display == unicode_hex ? '>' : '}');
+      *out++ = unicode_display == unicode_hex ? '>' : '}';
       break;
 
     case unicode_highlight:
@@ -655,7 +660,7 @@ display_utf8 (const unsigned char * in, char * out, unsigned int * consumed)
 	}
 
       if (unicode_display == unicode_highlight && isatty (1))
-	out += sprintf (out, "\033[0m"); /* Default colour.  */
+	out += sprintf (out, "\x1B[0m"); /* Default colour.  */
       break;
 
     default:
@@ -711,11 +716,15 @@ sanitize_string (const char * in)
 
   /* Copy the input, translating as needed.  */
   in = original;
-  if (buffer_len < (strlen (in) * 9))
+  /* For 2 char unicode, max out is 12 (colour escapes) + 6, ie. 9 per in
+     For hex, max out is 8 for 2 char unicode, ie. 4 per in.
+     3 and 4 char unicode produce less output for input.  */
+  size_t max_needed = strlen (in) * 9 + 1;
+  if (buffer_len < max_needed)
     {
-      free ((void *) buffer);
-      buffer_len = strlen (in) * 9;
-      buffer = xmalloc (buffer_len + 1);
+      buffer_len = max_needed;
+      free (buffer);
+      buffer = xmalloc (buffer_len);
     }
 
   out = buffer;
@@ -735,8 +744,8 @@ sanitize_string (const char * in)
 	{
 	  unsigned int num_consumed;
 
-	  out += display_utf8 ((const unsigned char *)(in - 1), out, & num_consumed);
-	  in += num_consumed - 1;
+	  out += display_utf8 ((const unsigned char *) --in, out, &num_consumed);
+	  in += num_consumed;
 	}
       else
 	*out++ = c;
@@ -924,6 +933,9 @@ dump_section_header (bfd *abfd, asection *section, void *data)
 
       comma = ", ";
     }
+
+  if (bfd_is_section_compressed (abfd, section))
+    printf ("%sCOMPRESSED", comma);
 
   printf ("\n");
 #undef PF
@@ -4146,6 +4158,7 @@ disassemble_data (bfd *abfd)
       non_fatal (_("can't disassemble for architecture %s\n"),
 		 bfd_printable_arch_mach (bfd_get_arch (abfd), 0));
       exit_status = 1;
+      free (sorted_syms);
       return;
     }
 
@@ -5018,6 +5031,9 @@ dump_section (bfd *abfd, asection *section, void *dummy ATTRIBUTE_UNUSED)
 	    (unsigned long) (section->filepos + start_offset));
   printf ("\n");
 
+  if (bfd_is_section_compressed (abfd, section) && ! decompressed_dumps)
+    printf (_(" NOTE: This section is compressed, but its contents have NOT been expanded for this dump.\n"));
+
   if (!bfd_get_full_section_contents (abfd, section, &data))
     {
       non_fatal (_("Reading section %s failed because: %s"),
@@ -5774,7 +5790,7 @@ static void
 display_any_bfd (bfd *file, int level)
 {
   /* Decompress sections unless dumping the section contents.  */
-  if (!dump_section_contents)
+  if (!dump_section_contents || decompressed_dumps)
     file->flags |= BFD_DECOMPRESS;
 
   /* If the file is an archive, process all of its elements.  */
@@ -5895,7 +5911,7 @@ main (int argc, char **argv)
   set_default_bfd_target ();
 
   while ((c = getopt_long (argc, argv,
-			   "CDE:FGHI:LM:P:RSTU:VW::ab:defghij:lm:prstvwxz",
+			   "CDE:FGHI:LM:P:RSTU:VW::Zab:defghij:lm:prstvwxz",
 			   long_options, (int *) 0))
 	 != EOF)
     {
@@ -5905,6 +5921,9 @@ main (int argc, char **argv)
 	  break;		/* We've been given a long option.  */
 	case 'm':
 	  machine = optarg;
+	  break;
+	case 'Z':
+	  decompressed_dumps = true;
 	  break;
 	case 'M':
 	  {

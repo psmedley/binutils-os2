@@ -1,5 +1,5 @@
 /* objcopy.c -- copy object file from input to output, optionally massaging it.
-   Copyright (C) 1991-2023 Free Software Foundation, Inc.
+   Copyright (C) 1991-2024 Free Software Foundation, Inc.
 
    This file is part of GNU Binutils.
 
@@ -803,6 +803,7 @@ parse_flags (const char *s)
       PARSE_FLAG ("contents", SEC_HAS_CONTENTS);
       PARSE_FLAG ("merge", SEC_MERGE);
       PARSE_FLAG ("strings", SEC_STRINGS);
+      PARSE_FLAG ("large", SEC_ELF_LARGE);
 #undef PARSE_FLAG
       else
 	{
@@ -812,8 +813,10 @@ parse_flags (const char *s)
 	  strncpy (copy, s, len);
 	  copy[len] = '\0';
 	  non_fatal (_("unrecognized section flag `%s'"), copy);
-	  fatal (_("supported flags: %s"),
-		 "alloc, load, noload, readonly, debug, code, data, rom, exclude, share, contents, merge, strings");
+	  fatal (_ ("supported flags: %s"),
+		 "alloc, load, noload, readonly, debug, code, data, rom, "
+		 "exclude, contents, merge, strings, (COFF specific) share, "
+		 "(ELF x86-64 specific) large");
 	}
 
       s = snext;
@@ -1958,7 +1961,7 @@ copy_unknown_object (bfd *ibfd, bfd *obfd)
       return false;
     }
 
-  if (bfd_seek (ibfd, (file_ptr) 0, SEEK_SET) != 0)
+  if (bfd_seek (ibfd, 0, SEEK_SET) != 0)
     {
       bfd_nonfatal (bfd_get_archive_filename (ibfd));
       return false;
@@ -1976,14 +1979,14 @@ copy_unknown_object (bfd *ibfd, bfd *obfd)
       else
 	tocopy = size;
 
-      if (bfd_bread (cbuf, tocopy, ibfd) != tocopy)
+      if (bfd_read (cbuf, tocopy, ibfd) != tocopy)
 	{
 	  bfd_nonfatal_message (NULL, ibfd, NULL, NULL);
 	  free (cbuf);
 	  return false;
 	}
 
-      if (bfd_bwrite (cbuf, tocopy, obfd) != tocopy)
+      if (bfd_write (cbuf, tocopy, obfd) != tocopy)
 	{
 	  bfd_nonfatal_message (NULL, obfd, NULL, NULL);
 	  free (cbuf);
@@ -2618,7 +2621,7 @@ merge_gnu_build_notes (bfd *          abfd,
 }
 
 static flagword
-check_new_section_flags (flagword flags, bfd * abfd, const char * secname)
+check_new_section_flags (flagword flags, bfd *abfd, const char * secname)
 {
   /* Only set the SEC_COFF_SHARED flag on COFF files.
      The same bit value is used by ELF targets to indicate
@@ -2631,6 +2634,19 @@ check_new_section_flags (flagword flags, bfd * abfd, const char * secname)
 		 bfd_get_filename (abfd), secname);
       flags &= ~ SEC_COFF_SHARED;
     }
+
+  /* Report a fatal error if 'large' is used with a non-x86-64 ELF target.
+     Suppress the error for non-ELF targets to allow -O binary and formats that
+     use the bit value SEC_ELF_LARGE for other purposes.  */
+  if ((flags & SEC_ELF_LARGE) != 0
+      && bfd_get_flavour (abfd) == bfd_target_elf_flavour
+      && get_elf_backend_data (abfd)->elf_machine_code != EM_X86_64)
+    {
+      fatal (_ ("%s[%s]: 'large' flag is ELF x86-64 specific"),
+	     bfd_get_filename (abfd), secname);
+      flags &= ~SEC_ELF_LARGE;
+    }
+
   return flags;
 }
 
@@ -2862,7 +2878,7 @@ copy_object (bfd *ibfd, bfd *obfd, const bfd_arch_info_type *input_arch)
 	pe->pe_opthdr.SizeOfStackCommit = pe_stack_commit;
 
       if (pe_stack_reserve != (bfd_vma) -1)
-	pe->pe_opthdr.SizeOfStackCommit = pe_stack_reserve;
+	pe->pe_opthdr.SizeOfStackReserve = pe_stack_reserve;
 
       if (pe_subsystem != -1)
 	pe->pe_opthdr.Subsystem = pe_subsystem;
@@ -3594,13 +3610,15 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
   struct name_list
     {
       struct name_list *next;
-      const char *name;
+      char *name;
       bfd *obfd;
-    } *list, *l;
+    } *list;
   bfd **ptr = &obfd->archive_head;
   bfd *this_element;
-  char *dir;
+  char *dir = NULL;
   char *filename;
+
+  list = NULL;
 
   /* PR 24281: It is not clear what should happen when copying a thin archive.
      One part is straight forward - if the output archive is in a different
@@ -3620,7 +3638,7 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
       bfd_set_error (bfd_error_invalid_operation);
       bfd_nonfatal_message (NULL, ibfd, NULL,
 			    _("sorry: copying thin archives is not currently supported"));
-      return;
+      goto cleanup_and_exit;
     }
 
   /* Make a temp directory to hold the contents.  */
@@ -3638,8 +3656,6 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
   if (deterministic)
     obfd->flags |= BFD_DETERMINISTIC_OUTPUT;
 
-  list = NULL;
-
   this_element = bfd_openr_next_archived_file (ibfd, NULL);
 
   if (!bfd_set_format (obfd, bfd_get_format (ibfd)))
@@ -3655,7 +3671,6 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
       bfd *output_element;
       struct stat buf;
       int stat_status = 0;
-      bool del = true;
       bool ok_object;
 
       /* PR binutils/17533: Do not allow directory traversal
@@ -3688,7 +3703,7 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
 	      goto cleanup_and_exit;
 	    }
 
-	  l = (struct name_list *) xmalloc (sizeof (struct name_list));
+	  struct name_list *l = xmalloc (sizeof (*l));
 	  l->name = tmpdir;
 	  l->next = list;
 	  l->obfd = NULL;
@@ -3707,7 +3722,7 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
 		       bfd_get_filename (this_element));
 	}
 
-      l = (struct name_list *) xmalloc (sizeof (struct name_list));
+      struct name_list *l = xmalloc (sizeof (*l));
       l->name = output_name;
       l->next = list;
       l->obfd = NULL;
@@ -3735,32 +3750,31 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
 
       if (ok_object)
 	{
-	  del = !copy_object (this_element, output_element, input_arch);
+	  status = !copy_object (this_element, output_element, input_arch);
 
-	  if (del && bfd_get_arch (this_element) == bfd_arch_unknown)
+	  if (status && bfd_get_arch (this_element) == bfd_arch_unknown)
 	    /* Try again as an unknown object file.  */
 	    ok_object = false;
 	}
 
       if (!ok_object)
-	del = !copy_unknown_object (this_element, output_element);
+	status = !copy_unknown_object (this_element, output_element);
 
-      if (!(ok_object && !del && !status
+      if (!(ok_object && !status
 	    ? bfd_close : bfd_close_all_done) (output_element))
 	{
 	  bfd_nonfatal_message (output_name, NULL, NULL, NULL);
-	  /* Error in new object file. Don't change archive.  */
-	  status = 1;
-	}
-
-      if (del)
-	{
-	  unlink (output_name);
+	  /* Error in new object file.  Don't change archive.  */
 	  status = 1;
 	}
 
       if (status)
-	bfd_close (this_element);
+	{
+	  unlink (output_name);
+	  free (output_name);
+	  list->name = NULL;
+	  bfd_close (this_element);
+	}
       else
 	{
 	  if (preserve_dates && stat_status == 0)
@@ -3769,7 +3783,7 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
 	  /* Open the newly created output file and attach to our list.  */
 	  output_element = bfd_openr (output_name, output_target);
 
-	  l->obfd = output_element;
+	  list->obfd = output_element;
 
 	  *ptr = output_element;
 	  ptr = &output_element->archive_next;
@@ -3781,44 +3795,49 @@ copy_archive (bfd *ibfd, bfd *obfd, const char *output_target,
     }
   *ptr = NULL;
 
+ cleanup_and_exit:
   filename = xstrdup (bfd_get_filename (obfd));
   if (!(status == 0 ? bfd_close : bfd_close_all_done) (obfd))
     {
+      if (!status)
+	bfd_nonfatal_message (filename, NULL, NULL, NULL);
       status = 1;
-      bfd_nonfatal_message (filename, NULL, NULL, NULL);
     }
   free (filename);
 
   filename = xstrdup (bfd_get_filename (ibfd));
   if (!bfd_close (ibfd))
     {
+      if (!status)
+	bfd_nonfatal_message (filename, NULL, NULL, NULL);
       status = 1;
-      bfd_nonfatal_message (filename, NULL, NULL, NULL);
     }
   free (filename);
 
- cleanup_and_exit:
   /* Delete all the files that we opened.  */
-  {
-    struct name_list * next;
+  struct name_list *l, *next;
+  for (l = list; l != NULL; l = next)
+    {
+      if (l->name != NULL)
+	{
+	  if (l->obfd == NULL)
+	    rmdir (l->name);
+	  else
+	    {
+	      bfd_close (l->obfd);
+	      unlink (l->name);
+	    }
+	  free (l->name);
+	}
+      next = l->next;
+      free (l);
+    }
 
-    for (l = list; l != NULL; l = next)
-      {
-	if (l->obfd == NULL)
-	  rmdir (l->name);
-	else
-	  {
-	    bfd_close (l->obfd);
-	    unlink (l->name);
-	  }
-	free ((char *) l->name);
-	next = l->next;
-	free (l);
-      }
-  }
-
-  rmdir (dir);
-  free (dir);
+  if (dir)
+    {
+      rmdir (dir);
+      free (dir);
+    }
 }
 
 /* The top-level control.  */
@@ -3921,7 +3940,8 @@ copy_file (const char *input_filename, const char *output_filename, int ofd,
 
       if (obfd == NULL)
 	{
-	  close (ofd);
+	  if (ofd >= 0)
+	    close (ofd);
 	  bfd_nonfatal_message (output_filename, NULL, NULL, NULL);
 	  bfd_close (ibfd);
 	  status = 1;
@@ -4004,7 +4024,8 @@ copy_file (const char *input_filename, const char *output_filename, int ofd,
 
       if (obfd == NULL)
  	{
-	  close (ofd);
+	  if (ofd >= 0)
+	    close (ofd);
  	  bfd_nonfatal_message (output_filename, NULL, NULL, NULL);
 	  bfd_close (ibfd);
  	  status = 1;
@@ -4195,13 +4216,25 @@ setup_section (bfd *ibfd, sec_ptr isection, void *obfdarg)
       flags = p->flags | (flags & (SEC_HAS_CONTENTS | SEC_RELOC));
       flags = check_new_section_flags (flags, obfd, bfd_section_name (isection));
     }
-  else if (strip_symbols == STRIP_NONDEBUG
-	   && (flags & (SEC_ALLOC | SEC_GROUP)) != 0
-	   && !is_nondebug_keep_contents_section (ibfd, isection))
+  else
     {
-      flagword clr = SEC_HAS_CONTENTS | SEC_LOAD | SEC_GROUP;
+      flagword clr = 0;
 
-      if (bfd_get_flavour (obfd) == bfd_target_elf_flavour)
+      /* For --extract-symbols where section sizes are zeroed, clear
+	 SEC_LOAD to indicate to coff_compute_section_file_positions that
+	 section sizes should not be adjusted for ALIGN_SECTIONS_IN_FILE.
+	 We don't want to clear SEC_HAS_CONTENTS as that will result
+	 in symbols being classified as 'B' by nm.  */
+      if (extract_symbol)
+	clr = SEC_LOAD;
+      /* If only keeping debug sections then we'll be keeping section
+	 sizes in headers but making the sections have no contents.  */
+      else if (strip_symbols == STRIP_NONDEBUG
+	       && (flags & (SEC_ALLOC | SEC_GROUP)) != 0
+	       && !is_nondebug_keep_contents_section (ibfd, isection))
+	clr = SEC_HAS_CONTENTS | SEC_LOAD | SEC_GROUP;
+
+      if (clr && bfd_get_flavour (obfd) == bfd_target_elf_flavour)
 	{
 	  /* PR 29532: Copy group sections intact as otherwise we end up with
 	     empty groups.  This prevents separate debug info files from
@@ -4209,7 +4242,7 @@ setup_section (bfd *ibfd, sec_ptr isection, void *obfdarg)
 	     originally contained groups.  */
 	  if (flags & SEC_GROUP)
 	    clr = SEC_LOAD;
-	  else
+	  if ((clr & SEC_HAS_CONTENTS) != 0)
 	    make_nobits = true;
 
 	  /* Twiddle the input section flags so that it seems to
@@ -5151,6 +5184,11 @@ convert_efi_target (char **targ)
       /* Change aarch64 to aarch64-little.  */
       memcpy (pei + 4 + sizeof ("aarch64") - 1, "-little", sizeof ("-little"));
     }
+  else if (strcmp (efi + 4, "riscv64") == 0)
+    {
+      /* Change riscv64 to riscv64-little.  */
+      memcpy (pei + 4 + sizeof ("riscv64") - 1, "-little", sizeof ("-little"));
+    }
   *targ = pei;
   return subsys;
 }
@@ -5932,7 +5970,7 @@ copy_main (int argc, char *argv[])
 	    char *end;
 	    pe_heap_reserve = strtoul (optarg, &end, 0);
 	    if (end == optarg
-		|| (*end != '.' && *end != '\0'))
+		|| (*end != ',' && *end != '\0'))
 	      non_fatal (_("%s: invalid reserve value for --heap"),
 			 optarg);
 	    else if (*end != '\0')
@@ -5963,7 +6001,7 @@ copy_main (int argc, char *argv[])
 	    char *end;
 	    pe_stack_reserve = strtoul (optarg, &end, 0);
 	    if (end == optarg
-		|| (*end != '.' && *end != '\0'))
+		|| (*end != ',' && *end != '\0'))
 	      non_fatal (_("%s: invalid reserve value for --stack"),
 			 optarg);
 	    else if (*end != '\0')

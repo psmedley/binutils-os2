@@ -1,5 +1,5 @@
 /* BFD back-end for binary objects.
-   Copyright (C) 1994-2023 Free Software Foundation, Inc.
+   Copyright (C) 1994-2024 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support, <ian@cygnus.com>
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -103,7 +103,7 @@ binary_get_section_contents (bfd *abfd,
 			     bfd_size_type count)
 {
   if (bfd_seek (abfd, section->filepos + offset, SEEK_SET) != 0
-      || bfd_bread (location, count, abfd) != count)
+      || bfd_read (location, count, abfd) != count)
     return false;
   return true;
 }

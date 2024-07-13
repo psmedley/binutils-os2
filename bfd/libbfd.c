@@ -1,5 +1,5 @@
 /* Assorted BFD support routines, only used internally.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -515,8 +515,8 @@ bool
 bfd_write_bigendian_4byte_int (bfd *abfd, unsigned int i)
 {
   bfd_byte buffer[4];
-  bfd_putb32 ((bfd_vma) i, buffer);
-  return bfd_bwrite (buffer, (bfd_size_type) 4, abfd) == 4;
+  bfd_putb32 (i, buffer);
+  return bfd_write (buffer, 4, abfd) == 4;
 }
 
 
@@ -728,6 +728,13 @@ SYNOPSIS
 	void bfd_putl16 (bfd_vma, void *);
 	uint64_t bfd_get_bits (const void *, int, bool);
 	void bfd_put_bits (uint64_t, void *, int, bool);
+
+DESCRIPTION
+	Read and write integers in a particular endian order.  getb
+	and putb functions handle big-endian, getl and putl handle
+	little-endian.  bfd_get_bits and bfd_put_bits specify
+	big-endian by passing TRUE in the last parameter,
+	little-endian by passing FALSE.
 */
 
 bfd_vma
@@ -1067,7 +1074,7 @@ _bfd_generic_get_section_contents (bfd *abfd,
     }
 
   if (bfd_seek (abfd, section->filepos + offset, SEEK_SET) != 0
-      || bfd_bread (location, count, abfd) != count)
+      || bfd_read (location, count, abfd) != count)
     return false;
 
   return true;
@@ -1145,7 +1152,7 @@ _bfd_generic_set_section_contents (bfd *abfd,
     return true;
 
   if (bfd_seek (abfd, section->filepos + offset, SEEK_SET) != 0
-      || bfd_bwrite (location, count, abfd) != count)
+      || bfd_write (location, count, abfd) != count)
     return false;
 
   return true;

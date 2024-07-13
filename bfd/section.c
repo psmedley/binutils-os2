@@ -1,5 +1,5 @@
 /* Object file "section" support for the BFD library.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -358,6 +358,9 @@ CODE_FRAGMENT
 .     it should be aligned on a page boundary.  This is for TI
 .     TMS320C54X only.  *}
 .#define SEC_TIC54X_BLOCK           0x10000000
+.
+.  {* This section has the SHF_X86_64_LARGE flag.  This is ELF x86-64 only.  *}
+.#define SEC_ELF_LARGE              0x10000000
 .
 .  {* Conditionally link this section; do not link if there are no
 .     references found to any symbol in the section.  This is for TI

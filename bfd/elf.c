@@ -1,6 +1,6 @@
 /* ELF executable support for BFD.
 
-   Copyright (C) 1993-2023 Free Software Foundation, Inc.
+   Copyright (C) 1993-2024 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -460,7 +460,7 @@ bfd_elf_get_elf_syms (bfd *ibfd,
     }
   if (extsym_buf == NULL
       || bfd_seek (ibfd, pos, SEEK_SET) != 0
-      || bfd_bread (extsym_buf, amt, ibfd) != amt)
+      || bfd_read (extsym_buf, amt, ibfd) != amt)
     {
       intsym_buf = NULL;
       goto out;
@@ -484,7 +484,7 @@ bfd_elf_get_elf_syms (bfd *ibfd,
 	}
       if (extshndx_buf == NULL
 	  || bfd_seek (ibfd, pos, SEEK_SET) != 0
-	  || bfd_bread (extshndx_buf, amt, ibfd) != amt)
+	  || bfd_read (extshndx_buf, amt, ibfd) != amt)
 	{
 	  intsym_buf = NULL;
 	  goto out;
@@ -2102,9 +2102,11 @@ _bfd_elf_get_dynamic_symbols (bfd *abfd, Elf_Internal_Phdr *phdr,
     goto error_return;
 
   /* Dynamic string table must be valid until ABFD is closed.  */
-  strbuf = (char *) _bfd_alloc_and_read (abfd, dt_strsz, dt_strsz);
+  strbuf = (char *) _bfd_alloc_and_read (abfd, dt_strsz + 1, dt_strsz);
   if (strbuf == NULL)
     goto error_return;
+  /* Since this is a string table, make sure that it is terminated.  */
+  strbuf[dt_strsz] = 0;
 
   /* Get the real symbol count from DT_HASH or DT_GNU_HASH.  Prefer
      DT_HASH since it is simpler than DT_GNU_HASH.  */
@@ -2133,8 +2135,7 @@ _bfd_elf_get_dynamic_symbols (bfd *abfd, Elf_Internal_Phdr *phdr,
 				 NULL);
       if (filepos == (file_ptr) -1
 	  || bfd_seek (abfd, filepos, SEEK_SET) != 0
-	  || (bfd_bread (nb, 2 * hash_ent_size, abfd)
-	      != (2 * hash_ent_size)))
+	  || bfd_read (nb, 2 * hash_ent_size, abfd) != 2 * hash_ent_size)
 	goto error_return;
 
       /* The number of dynamic symbol table entries equals the number
@@ -2163,7 +2164,7 @@ _bfd_elf_get_dynamic_symbols (bfd *abfd, Elf_Internal_Phdr *phdr,
 				 sizeof (nb), NULL);
       if (filepos == (file_ptr) -1
 	  || bfd_seek (abfd, filepos, SEEK_SET) != 0
-	  || bfd_bread (nb, sizeof (nb), abfd) != sizeof (nb))
+	  || bfd_read (nb, sizeof (nb), abfd) != sizeof (nb))
 	goto error_return;
 
       ngnubuckets = bfd_get_32 (abfd, nb);
@@ -2210,7 +2211,7 @@ _bfd_elf_get_dynamic_symbols (bfd *abfd, Elf_Internal_Phdr *phdr,
 
       do
 	{
-	  if (bfd_bread (nb, 4, abfd) != 4)
+	  if (bfd_read (nb, 4, abfd) != 4)
 	    goto error_return;
 	  ++maxchain;
 	  if (maxchain == 0)
@@ -2226,7 +2227,7 @@ _bfd_elf_get_dynamic_symbols (bfd *abfd, Elf_Internal_Phdr *phdr,
 	goto error_return;
 
       gnuchains = get_hash_table_data (abfd, maxchain, 4, filesize);
-      if (gnubuckets == NULL)
+      if (gnuchains == NULL)
 	goto error_return;
       ngnuchains = maxchain;
 
@@ -2357,6 +2358,7 @@ _bfd_elf_get_dynamic_symbols (bfd *abfd, Elf_Internal_Phdr *phdr,
 
  empty_gnu_hash:
   elf_tdata (abfd)->dt_strtab = strbuf;
+  elf_tdata (abfd)->dt_strsz = dt_strsz;
   elf_tdata (abfd)->dt_symtab = isymbuf;
   elf_tdata (abfd)->dt_symtab_count = symcount;
   elf_tdata (abfd)->dt_versym = versym;
@@ -3660,6 +3662,8 @@ _bfd_elf_init_reloc_shdr (bfd *abfd,
 
   BFD_ASSERT (reldata->hdr == NULL);
   rel_hdr = bfd_zalloc (abfd, sizeof (*rel_hdr));
+  if (rel_hdr == NULL)
+    return false;
   reldata->hdr = rel_hdr;
 
   if (delay_st_name_p)
@@ -7006,6 +7010,9 @@ assign_file_positions_except_relocs (bfd *abfd,
     {
       if (link_info != NULL && ! link_info->no_warn_rwx_segments)
 	{
+	  bool warned_tls = false;
+	  bool warned_rwx = false;
+
 	  /* Memory resident segments with non-zero size and RWX
 	     permissions are a security risk, so we generate a warning
 	     here if we are creating any.  */
@@ -7018,16 +7025,47 @@ assign_file_positions_except_relocs (bfd *abfd,
 	      if (phdr->p_memsz == 0)
 		continue;
 
-	      if (phdr->p_type == PT_TLS && (phdr->p_flags & PF_X))
-		_bfd_error_handler (_("warning: %pB has a TLS segment"
-				      " with execute permission"),
-				    abfd);
-	      else if (phdr->p_type == PT_LOAD
+	      if (! warned_tls
+		  && phdr->p_type == PT_TLS
+		  && (phdr->p_flags & PF_X))
+		{
+		  if (link_info->warn_is_error_for_rwx_segments)
+		    {
+		      _bfd_error_handler (_("\
+error: %pB has a TLS segment with execute permission"),
+					  abfd);
+		      return false;
+		    }
+
+		  _bfd_error_handler (_("\
+warning: %pB has a TLS segment with execute permission"),
+				      abfd);
+		  if (warned_rwx)
+		    break;
+
+		  warned_tls = true;
+		}
+	      else if (! warned_rwx
+		       && phdr->p_type == PT_LOAD
 		       && ((phdr->p_flags & (PF_R | PF_W | PF_X))
 			   == (PF_R | PF_W | PF_X)))
-		_bfd_error_handler (_("warning: %pB has a LOAD segment"
-				      " with RWX permissions"),
-				    abfd);
+		{
+		  if (link_info->warn_is_error_for_rwx_segments)
+		    {
+		      _bfd_error_handler (_("\
+error: %pB has a LOAD segment with RWX permissions"),
+					  abfd);
+		      return false;
+		    }
+
+		  _bfd_error_handler (_("\
+warning: %pB has a LOAD segment with RWX permissions"),
+				      abfd);
+		  if (warned_tls)
+		    break;
+
+		  warned_rwx = true;
+		}
 	    }
 	}
 
@@ -7302,7 +7340,7 @@ _bfd_elf_write_object_contents (bfd *abfd)
 	  bfd_size_type amt = i_shdrp[count]->sh_size;
 
 	  if (bfd_seek (abfd, i_shdrp[count]->sh_offset, SEEK_SET) != 0
-	      || bfd_bwrite (i_shdrp[count]->contents, amt, abfd) != amt)
+	      || bfd_write (i_shdrp[count]->contents, amt, abfd) != amt)
 	    return false;
 	}
     }
@@ -9470,8 +9508,15 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
 	  iverneed->vn_bfd = abfd;
 
 	  if (elf_use_dt_symtab_p (abfd))
-	    iverneed->vn_filename
-	      = elf_tdata (abfd)->dt_strtab + iverneed->vn_file;
+	    {
+	      if (iverneed->vn_file < elf_tdata (abfd)->dt_strsz)
+		iverneed->vn_filename
+		  = elf_tdata (abfd)->dt_strtab + iverneed->vn_file;
+	      else
+		iverneed->vn_filename = NULL;
+	    }
+	  else if (hdr == NULL)
+	    goto error_return_bad_verref;
 	  else
 	    iverneed->vn_filename
 	      = bfd_elf_string_from_elf_section (abfd, hdr->sh_link,
@@ -9507,8 +9552,15 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
 	      _bfd_elf_swap_vernaux_in (abfd, evernaux, ivernaux);
 
 	      if (elf_use_dt_symtab_p (abfd))
-		ivernaux->vna_nodename
-		  = elf_tdata (abfd)->dt_strtab + ivernaux->vna_name;
+		{
+		  if (ivernaux->vna_name < elf_tdata (abfd)->dt_strsz)
+		    ivernaux->vna_nodename
+		      = elf_tdata (abfd)->dt_strtab + ivernaux->vna_name;
+		  else
+		    ivernaux->vna_nodename = NULL;
+		}
+	      else if (hdr == NULL)
+		goto error_return_bad_verref;
 	      else
 		ivernaux->vna_nodename
 		  = bfd_elf_string_from_elf_section (abfd, hdr->sh_link,
@@ -9539,7 +9591,7 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
 	  iverneed->vn_nextref = NULL;
 	  if (iverneed->vn_next == 0)
 	    break;
-	  if (i + 1 < hdr->sh_info)
+	  if (hdr != NULL && (i + 1 < hdr->sh_info))
 	    iverneed->vn_nextref = iverneed + 1;
 
 	  if (iverneed->vn_next
@@ -9551,7 +9603,7 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
 	}
       elf_tdata (abfd)->cverrefs = i;
 
-      if (elf_tdata (abfd)->dt_verneed == NULL)
+      if (contents != elf_tdata (abfd)->dt_verneed)
 	free (contents);
       contents = NULL;
     }
@@ -9702,8 +9754,13 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
 	      _bfd_elf_swap_verdaux_in (abfd, everdaux, iverdaux);
 
 	      if (elf_use_dt_symtab_p (abfd))
-		iverdaux->vda_nodename
-		  = elf_tdata (abfd)->dt_strtab + iverdaux->vda_name;
+		{
+		  if (iverdaux->vda_name < elf_tdata (abfd)->dt_strsz)
+		    iverdaux->vda_nodename
+		      = elf_tdata (abfd)->dt_strtab + iverdaux->vda_name;
+		  else
+		    iverdaux->vda_nodename = NULL;
+		}
 	      else
 		iverdaux->vda_nodename
 		  = bfd_elf_string_from_elf_section (abfd, hdr->sh_link,
@@ -9742,7 +9799,7 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
 		     ((bfd_byte *) everdef + iverdef->vd_next));
 	}
 
-      if (elf_tdata (abfd)->dt_verdef == NULL)
+      if (contents != elf_tdata (abfd)->dt_verdef)
 	free (contents);
       contents = NULL;
     }
@@ -9798,7 +9855,9 @@ _bfd_elf_slurp_version_tables (bfd *abfd, bool default_imported_symver)
   return true;
 
  error_return:
-  free (contents);
+  if (contents != elf_tdata (abfd)->dt_verneed
+      && contents != elf_tdata (abfd)->dt_verdef)
+    free (contents);
   return false;
 }
 
@@ -10681,6 +10740,27 @@ elfcore_grok_aarch_mte (bfd *abfd, Elf_Internal_Note *note)
 }
 
 static bool
+elfcore_grok_aarch_ssve (bfd *abfd, Elf_Internal_Note *note)
+{
+  return elfcore_make_note_pseudosection (abfd, ".reg-aarch-ssve", note);
+}
+
+static bool
+elfcore_grok_aarch_za (bfd *abfd, Elf_Internal_Note *note)
+{
+  return elfcore_make_note_pseudosection (abfd, ".reg-aarch-za", note);
+}
+
+/* Convert NOTE into a bfd_section called ".reg-aarch-zt".  Return TRUE if
+   successful, otherwise return FALSE.  */
+
+static bool
+elfcore_grok_aarch_zt (bfd *abfd, Elf_Internal_Note *note)
+{
+  return elfcore_make_note_pseudosection (abfd, ".reg-aarch-zt", note);
+}
+
+static bool
 elfcore_grok_arc_v2 (bfd *abfd, Elf_Internal_Note *note)
 {
   return elfcore_make_note_pseudosection (abfd, ".reg-arc-v2", note);
@@ -11392,6 +11472,27 @@ elfcore_grok_note (bfd *abfd, Elf_Internal_Note *note)
       if (note->namesz == 6
 	  && strcmp (note->namedata, "LINUX") == 0)
 	return elfcore_grok_aarch_mte (abfd, note);
+      else
+	return true;
+
+    case NT_ARM_SSVE:
+      if (note->namesz == 6
+	  && strcmp (note->namedata, "LINUX") == 0)
+	return elfcore_grok_aarch_ssve (abfd, note);
+      else
+	return true;
+
+    case NT_ARM_ZA:
+      if (note->namesz == 6
+	  && strcmp (note->namedata, "LINUX") == 0)
+	return elfcore_grok_aarch_za (abfd, note);
+      else
+	return true;
+
+    case NT_ARM_ZT:
+      if (note->namesz == 6
+	  && strcmp (note->namedata, "LINUX") == 0)
+	return elfcore_grok_aarch_zt (abfd, note);
       else
 	return true;
 
@@ -13010,6 +13111,53 @@ elfcore_write_aarch_mte (bfd *abfd,
 }
 
 char *
+elfcore_write_aarch_ssve (bfd *abfd,
+			  char *buf,
+			  int *bufsiz,
+			  const void *aarch_ssve,
+			  int size)
+{
+  char *note_name = "LINUX";
+  return elfcore_write_note (abfd, buf, bufsiz,
+			     note_name, NT_ARM_SSVE,
+			     aarch_ssve,
+			     size);
+}
+
+char *
+elfcore_write_aarch_za (bfd *abfd,
+			char *buf,
+			int *bufsiz,
+			const void *aarch_za,
+			int size)
+{
+  char *note_name = "LINUX";
+  return elfcore_write_note (abfd, buf, bufsiz,
+			     note_name, NT_ARM_ZA,
+			     aarch_za,
+			     size);
+}
+
+/* Write the buffer of zt register values in aarch_zt (length SIZE) into
+   the note buffer BUF and update *BUFSIZ.  ABFD is the bfd the note is being
+   written into.  Return a pointer to the new start of the note buffer, to
+   replace BUF which may no longer be valid.  */
+
+char *
+elfcore_write_aarch_zt (bfd *abfd,
+			char *buf,
+			int *bufsiz,
+			const void *aarch_zt,
+			int size)
+{
+  char *note_name = "LINUX";
+  return elfcore_write_note (abfd, buf, bufsiz,
+			     note_name, NT_ARM_ZT,
+			     aarch_zt,
+			     size);
+}
+
+char *
 elfcore_write_arc_v2 (bfd *abfd,
 		      char *buf,
 		      int *bufsiz,
@@ -13190,6 +13338,12 @@ elfcore_write_register_note (bfd *abfd,
     return elfcore_write_aarch_pauth (abfd, buf, bufsiz, data, size);
   if (strcmp (section, ".reg-aarch-mte") == 0)
     return elfcore_write_aarch_mte (abfd, buf, bufsiz, data, size);
+  if (strcmp (section, ".reg-aarch-ssve") == 0)
+    return elfcore_write_aarch_ssve (abfd, buf, bufsiz, data, size);
+  if (strcmp (section, ".reg-aarch-za") == 0)
+    return elfcore_write_aarch_za (abfd, buf, bufsiz, data, size);
+  if (strcmp (section, ".reg-aarch-zt") == 0)
+    return elfcore_write_aarch_zt (abfd, buf, bufsiz, data, size);
   if (strcmp (section, ".reg-arc-v2") == 0)
     return elfcore_write_arc_v2 (abfd, buf, bufsiz, data, size);
   if (strcmp (section, ".gdb-tdesc") == 0)
@@ -13819,8 +13973,7 @@ _bfd_elf_slurp_secondary_reloc_section (bfd *       abfd,
 	    }
 
 	  if (bfd_seek (abfd, hdr->sh_offset, SEEK_SET) != 0
-	      || (bfd_bread (native_relocs, hdr->sh_size, abfd)
-		  != hdr->sh_size))
+	      || bfd_read (native_relocs, hdr->sh_size, abfd) != hdr->sh_size)
 	    {
 	      free (native_relocs);
 	      /* The internal_relocs will be freed when

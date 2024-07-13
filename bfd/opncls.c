@@ -1,5 +1,5 @@
 /* opncls.c -- open and close a BFD.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
 
    Written by Cygnus Support.
 
@@ -81,6 +81,8 @@ _bfd_new_bfd (void)
   if (nbfd == NULL)
     return NULL;
 
+  if (!bfd_lock ())
+    return NULL;
   if (bfd_use_reserved_id)
     {
       nbfd->id = --bfd_reserved_id_counter;
@@ -88,6 +90,11 @@ _bfd_new_bfd (void)
     }
   else
     nbfd->id = bfd_id_counter++;
+  if (!bfd_unlock ())
+    {
+      free (nbfd);
+      return NULL;
+    }
 
   nbfd->memory = objalloc_create ();
   if (nbfd->memory == NULL)
@@ -920,17 +927,14 @@ bfd_close_all_done (bfd *abfd)
 {
   bool ret = BFD_SEND (abfd, _close_and_cleanup, (abfd));
 
-  if (ret && abfd->iovec != NULL)
-    {
-      ret = abfd->iovec->bclose (abfd) == 0;
+  if (abfd->iovec != NULL)
+    ret &= abfd->iovec->bclose (abfd) == 0;
 
-      if (ret)
-	_maybe_make_executable (abfd);
-    }
+  if (ret)
+    _maybe_make_executable (abfd);
 
   _bfd_delete_bfd (abfd);
-  free (_bfd_error_buf);
-  _bfd_error_buf = NULL;
+  _bfd_clear_error_data ();
 
   return ret;
 }
@@ -1005,7 +1009,7 @@ bfd_make_writable (bfd *abfd)
   if (bim == NULL)
     return false;	/* bfd_error already set.  */
   abfd->iostream = bim;
-  /* bfd_bwrite will grow these as needed.  */
+  /* bfd_write will grow these as needed.  */
   bim->size = 0;
   bim->buffer = 0;
 
@@ -1060,7 +1064,6 @@ bfd_make_readable (bfd *abfd)
   abfd->section_count = 0;
   abfd->usrdata = NULL;
   abfd->cacheable = false;
-  abfd->flags |= BFD_IN_MEMORY;
   abfd->mtime_set = false;
 
   abfd->target_defaulted = true;

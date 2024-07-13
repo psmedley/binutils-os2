@@ -1,5 +1,5 @@
 /* NDS32-specific support for 32-bit ELF.
-   Copyright (C) 2012-2023 Free Software Foundation, Inc.
+   Copyright (C) 2012-2024 Free Software Foundation, Inc.
    Contributed by Andes Technology Corporation.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -6385,18 +6385,18 @@ nds32_elf_finish_dynamic_sections (bfd *output_bfd, struct bfd_link_info *info)
 
 	    case DT_PLTGOT:
 	      /* name = ".got";  */
-	      s = ehtab->sgot->output_section;
+	      s = ehtab->sgot;
 	      goto get_vma;
 	    case DT_JMPREL:
-	      s = ehtab->srelplt->output_section;
+	      s = ehtab->srelplt;
 	    get_vma:
 	      BFD_ASSERT (s != NULL);
-	      dyn.d_un.d_ptr = s->vma;
+	      dyn.d_un.d_ptr = s->output_section->vma + s->output_offset;
 	      bfd_elf32_swap_dyn_out (output_bfd, &dyn, dyncon);
 	      break;
 
 	    case DT_PLTRELSZ:
-	      s = ehtab->srelplt->output_section;
+	      s = ehtab->srelplt;
 	      BFD_ASSERT (s != NULL);
 	      dyn.d_un.d_val = s->size;
 	      bfd_elf32_swap_dyn_out (output_bfd, &dyn, dyncon);
@@ -6414,7 +6414,7 @@ nds32_elf_finish_dynamic_sections (bfd *output_bfd, struct bfd_link_info *info)
 		 about changing the DT_RELA entry.  */
 	      if (ehtab->srelplt != NULL)
 		{
-		  s = ehtab->srelplt->output_section;
+		  s = ehtab->srelplt;
 		  dyn.d_un.d_val -= s->size;
 		}
 	      bfd_elf32_swap_dyn_out (output_bfd, &dyn, dyncon);

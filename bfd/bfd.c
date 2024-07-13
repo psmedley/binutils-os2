@@ -1,5 +1,5 @@
 /* Generic BFD library interface and support routines.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -51,6 +51,14 @@ EXTERNAL
 .    read_direction = 1,
 .    write_direction = 2,
 .    both_direction = 3
+.  };
+.
+.enum bfd_last_io
+.  {
+.    bfd_io_seek = 0,
+.    bfd_io_read = 1,
+.    bfd_io_write = 2,
+.    bfd_io_force = 3
 .  };
 .
 .enum bfd_plugin_format
@@ -152,8 +160,8 @@ CODE_FRAGMENT
 .#define BFD_TRADITIONAL_FORMAT    0x400
 .
 .  {* This flag indicates that the BFD contents are actually cached
-.     in memory.  If this is set, iostream points to a bfd_in_memory
-.     struct.  *}
+.     in memory.  If this is set, iostream points to a malloc'd
+.     bfd_in_memory struct.  *}
 .#define BFD_IN_MEMORY             0x800
 .
 .  {* This BFD has been created by the linker and doesn't correspond
@@ -207,6 +215,20 @@ CODE_FRAGMENT
 .
 .  {* The direction with which the BFD was opened.  *}
 .  ENUM_BITFIELD (bfd_direction) direction : 2;
+.
+.  {* POSIX.1-2017 (IEEE Std 1003.1) says of fopen : "When a file is
+.     opened with update mode ('+' as the second or third character in
+.     the mode argument), both input and output may be performed on
+.     the associated stream.  However, the application shall ensure
+.     that output is not directly followed by input without an
+.     intervening call to fflush() or to a file positioning function
+.     (fseek(), fsetpos(), or rewind()), and input is not directly
+.     followed by output without an intervening call to a file
+.     positioning function, unless the input operation encounters
+.     end-of-file."
+.     This field tracks the last IO operation, so that bfd can insert
+.     a seek when IO direction changes.  *}
+.  ENUM_BITFIELD (bfd_last_io) last_io : 2;
 .
 .  {* Is the file descriptor being cached?  That is, can it be closed as
 .     needed, and re-opened when accessed later?  *}
@@ -669,6 +691,8 @@ SECTION
 	The easiest way to report a BFD error to the user is to
 	use <<bfd_perror>>.
 
+	The BFD error is thread-local.
+
 SUBSECTION
 	Type <<bfd_error_type>>
 
@@ -704,16 +728,12 @@ CODE_FRAGMENT
 .}
 .bfd_error_type;
 .
-INTERNAL
-.{* A buffer that is freed on bfd_close.  *}
-.extern char *_bfd_error_buf;
-.
 */
 
-static bfd_error_type bfd_error;
-static bfd_error_type input_error;
-static bfd *input_bfd;
-char *_bfd_error_buf;
+static TLS bfd_error_type bfd_error;
+static TLS bfd_error_type input_error;
+static TLS bfd *input_bfd;
+static TLS char *_bfd_error_buf;
 
 const char *const bfd_errmsgs[] =
 {
@@ -801,8 +821,7 @@ bfd_set_input_error (bfd *input, bfd_error_type error_tag)
   /* This is an error that occurred during bfd_close when writing an
      archive, but on one of the input files.  */
   bfd_error = bfd_error_on_input;
-  free (_bfd_error_buf);
-  _bfd_error_buf = NULL;
+  _bfd_clear_error_data ();
   input_bfd = input;
   input_error = error_tag;
   if (input_error >= bfd_error_on_input)
@@ -876,6 +895,24 @@ bfd_perror (const char *message)
 
 /*
 INTERNAL_FUNCTION
+	_bfd_clear_error_data
+
+SYNOPSIS
+	void _bfd_clear_error_data (void);
+
+DESCRIPTION
+	Free any data associated with the BFD error.
+*/
+
+void
+_bfd_clear_error_data (void)
+{
+  free (_bfd_error_buf);
+  _bfd_error_buf = NULL;
+}
+
+/*
+INTERNAL_FUNCTION
 	bfd_asprintf
 
 SYNOPSIS
@@ -885,7 +922,7 @@ DESCRIPTION
 	Primarily for error reporting, this function is like
 	libiberty's xasprintf except that it can return NULL on no
 	memory and the returned string should not be freed.  Uses a
-	single malloc'd buffer managed by libbfd, _bfd_error_buf.
+	thread-local malloc'd buffer managed by libbfd, _bfd_error_buf.
 	Be aware that a call to this function frees the result of any
 	previous call.  bfd_errmsg (bfd_error_on_input) also calls
 	this function.
@@ -1679,7 +1716,7 @@ bfd_set_assert_handler (bfd_assert_handler_type pnew)
 
 /*
 INODE
-Initialization, Miscellaneous, Error reporting, BFD front end
+Initialization, Threading, Error reporting, BFD front end
 
 FUNCTION
 	bfd_init
@@ -1703,8 +1740,7 @@ bfd_init (void)
 {
   bfd_error = bfd_error_no_error;
   input_bfd = NULL;
-  free (_bfd_error_buf);
-  _bfd_error_buf = NULL;
+  _bfd_clear_error_data ();
   input_error = bfd_error_no_error;
   _bfd_error_program_name = NULL;
   _bfd_error_internal = error_handler_fprintf;
@@ -1713,9 +1749,136 @@ bfd_init (void)
   return BFD_INIT_MAGIC;
 }
 
+
 /*
 INODE
-Miscellaneous, Memory Usage, Initialization, BFD front end
+Threading, Miscellaneous, Initialization, BFD front end
+
+SECTION
+	Threading
+
+	BFD has limited support for thread-safety.  Most BFD globals
+	are protected by locks, while the error-related globals are
+	thread-local.  A given BFD cannot safely be used from two
+	threads at the same time; it is up to the application to do
+	any needed locking.  However, it is ok for different threads
+	to work on different BFD objects at the same time.
+
+SUBSECTION
+	Thread functions.
+
+CODE_FRAGMENT
+.typedef bool (*bfd_lock_unlock_fn_type) (void *);
+*/
+
+/* The lock and unlock functions, if set.  */
+static bfd_lock_unlock_fn_type lock_fn;
+static bfd_lock_unlock_fn_type unlock_fn;
+static void *lock_data;
+
+/*
+FUNCTION
+	bfd_thread_init
+
+SYNOPSIS
+	bool bfd_thread_init
+	  (bfd_lock_unlock_fn_type lock,
+	  bfd_lock_unlock_fn_type unlock,
+	  void *data);
+
+DESCRIPTION
+
+	Initialize BFD threading.  The functions passed in will be
+	used to lock and unlock global data structures.  This may only
+	be called a single time in a given process.  Returns true on
+	success and false on error.  DATA is passed verbatim to the
+	lock and unlock functions.  The lock and unlock functions
+	should return true on success, or set the BFD error and return
+	false on failure.
+*/
+
+bool
+bfd_thread_init (bfd_lock_unlock_fn_type lock, bfd_lock_unlock_fn_type unlock,
+		 void *data)
+{
+  /* Both functions must be set, and this cannot have been called
+     before.  */
+  if (lock == NULL || unlock == NULL || unlock_fn != NULL)
+    {
+      bfd_set_error (bfd_error_invalid_operation);
+      return false;
+    }
+
+  lock_fn = lock;
+  unlock_fn = unlock;
+  lock_data = data;
+  return true;
+}
+
+/*
+FUNCTION
+	bfd_thread_cleanup
+
+SYNOPSIS
+	void bfd_thread_cleanup (void);
+
+DESCRIPTION
+	Clean up any thread-local state.  This should be called by a
+	thread that uses any BFD functions, before the thread exits.
+	It is fine to call this multiple times, or to call it and then
+	later call BFD functions on the same thread again.
+*/
+
+void
+bfd_thread_cleanup (void)
+{
+  _bfd_clear_error_data ();
+}
+
+/*
+INTERNAL_FUNCTION
+	bfd_lock
+
+SYNOPSIS
+	bool bfd_lock (void);
+
+DESCRIPTION
+	Acquire the global BFD lock, if needed.  Returns true on
+	success, false on error.
+*/
+
+bool
+bfd_lock (void)
+{
+  if (lock_fn != NULL)
+    return lock_fn (lock_data);
+  return true;
+}
+
+/*
+INTERNAL_FUNCTION
+	bfd_unlock
+
+SYNOPSIS
+	bool bfd_unlock (void);
+
+DESCRIPTION
+	Release the global BFD lock, if needed.  Returns true on
+	success, false on error.
+*/
+
+bool
+bfd_unlock (void)
+{
+  if (unlock_fn != NULL)
+    return unlock_fn (lock_data);
+  return true;
+}
+
+
+/*
+INODE
+Miscellaneous, Memory Usage, Threading, BFD front end
 
 SECTION
 	Miscellaneous
@@ -1948,6 +2111,7 @@ bfd_get_sign_extend_vma (bfd *abfd)
       || strcmp (name, "pe-arm-wince-little") == 0
       || strcmp (name, "pei-arm-wince-little") == 0
       || strcmp (name, "pei-loongarch64") == 0
+      || strcmp (name, "pei-riscv64-little") == 0
       || strcmp (name, "aixcoff-rs6000") == 0
       || strcmp (name, "aix5coff64-rs6000") == 0)
     return 1;
@@ -2093,86 +2257,21 @@ SYNOPSIS
 	bfd_vma bfd_scan_vma (const char *string, const char **end, int base);
 
 DESCRIPTION
-	Convert, like <<strtoul>>, a numerical expression
-	@var{string} into a <<bfd_vma>> integer, and return that integer.
-	(Though without as many bells and whistles as <<strtoul>>.)
-	The expression is assumed to be unsigned (i.e., positive).
-	If given a @var{base}, it is used as the base for conversion.
-	A base of 0 causes the function to interpret the string
-	in hex if a leading "0x" or "0X" is found, otherwise
-	in octal if a leading zero is found, otherwise in decimal.
-
-	If the value would overflow, the maximum <<bfd_vma>> value is
-	returned.
+	Convert, like <<strtoul>> or <<stdtoull> depending on the size
+	of a <<bfd_vma>>, a numerical expression @var{string} into a
+	<<bfd_vma>> integer, and return that integer.
 */
 
 bfd_vma
 bfd_scan_vma (const char *string, const char **end, int base)
 {
-  bfd_vma value;
-  bfd_vma cutoff;
-  unsigned int cutlim;
-  int overflow;
-
-  /* Let the host do it if possible.  */
   if (sizeof (bfd_vma) <= sizeof (unsigned long))
     return strtoul (string, (char **) end, base);
 
   if (sizeof (bfd_vma) <= sizeof (unsigned long long))
     return strtoull (string, (char **) end, base);
 
-  if (base == 0)
-    {
-      if (string[0] == '0')
-	{
-	  if ((string[1] == 'x') || (string[1] == 'X'))
-	    base = 16;
-	  else
-	    base = 8;
-	}
-    }
-
-  if ((base < 2) || (base > 36))
-    base = 10;
-
-  if (base == 16
-      && string[0] == '0'
-      && (string[1] == 'x' || string[1] == 'X')
-      && ISXDIGIT (string[2]))
-    {
-      string += 2;
-    }
-
-  cutoff = (~ (bfd_vma) 0) / (bfd_vma) base;
-  cutlim = (~ (bfd_vma) 0) % (bfd_vma) base;
-  value = 0;
-  overflow = 0;
-  while (1)
-    {
-      unsigned int digit;
-
-      digit = *string;
-      if (ISDIGIT (digit))
-	digit = digit - '0';
-      else if (ISALPHA (digit))
-	digit = TOUPPER (digit) - 'A' + 10;
-      else
-	break;
-      if (digit >= (unsigned int) base)
-	break;
-      if (value > cutoff || (value == cutoff && digit > cutlim))
-	overflow = 1;
-      value = value * base + digit;
-      ++string;
-    }
-
-  if (overflow)
-    value = ~ (bfd_vma) 0;
-
-  if (end != NULL)
-    *end = string;
-
-  return value;
+  abort ();
 }
 
 /*

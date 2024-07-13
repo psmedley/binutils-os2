@@ -1,5 +1,5 @@
 /* linker.c -- BFD linker routines
-   Copyright (C) 1993-2023 Free Software Foundation, Inc.
+   Copyright (C) 1993-2024 Free Software Foundation, Inc.
    Written by Steve Chamberlain and Ian Lance Taylor, Cygnus Support
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -544,7 +544,9 @@ bfd_wrapped_link_hash_lookup (bfd *abfd,
       char prefix = '\0';
 
       l = string;
-      if (*l == bfd_get_symbol_leading_char (abfd) || *l == info->wrap_char)
+      if (*l
+	  && (*l == bfd_get_symbol_leading_char (abfd)
+	      || *l == info->wrap_char))
 	{
 	  prefix = *l;
 	  ++l;
@@ -621,8 +623,9 @@ unwrap_hash_lookup (struct bfd_link_info *info,
 {
   const char *l = h->root.string;
 
-  if (*l == bfd_get_symbol_leading_char (input_bfd)
-      || *l == info->wrap_char)
+  if (*l
+      && (*l == bfd_get_symbol_leading_char (input_bfd)
+	  || *l == info->wrap_char))
     ++l;
 
   if (startswith (l, WRAP))
@@ -1781,6 +1784,14 @@ _bfd_generic_link_add_one_symbol (struct bfd_link_info *info,
 	    {
 	      (*info->callbacks->warning) (info, string, h->root.string,
 					   hash_entry_bfd (h), NULL, 0);
+	      /* PR 31067: If garbage collection is enabled then the
+		 referenced symbol may actually be discarded later on.
+		 This could be very confusing to the user.  So give them
+		 a hint as to what might be happening.  */
+	      if (info->gc_sections)
+		(*info->callbacks->info)
+		  (_("%P: %pB: note: the message above does not take linker garbage collection into account\n"),
+		   hash_entry_bfd (h));
 	      break;
 	    }
 	  /* Fall through.  */

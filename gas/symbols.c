@@ -1,5 +1,5 @@
 /* symbols.c -symbol table-
-   Copyright (C) 1987-2023 Free Software Foundation, Inc.
+   Copyright (C) 1987-2024 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -25,6 +25,7 @@
 #include "obstack.h"		/* For "symbols.h" */
 #include "subsegs.h"
 #include "write.h"
+#include "scfi.h"
 
 #include <limits.h>
 #ifndef CHAR_BIT
@@ -709,6 +710,8 @@ colon (/* Just seen "x:" - rattle symbols & frags.  */
 #ifdef obj_frob_label
   obj_frob_label (symbolP);
 #endif
+  if (flag_synth_cfi)
+    ginsn_frob_label (symbolP);
 
   return symbolP;
 }
@@ -2420,14 +2423,13 @@ S_IS_LOCAL (symbolS *s)
   if (s->flags.local_symbol)
     return 1;
 
-  flags = s->bsym->flags;
-
-  /* Sanity check.  */
-  if ((flags & BSF_LOCAL) && (flags & BSF_GLOBAL))
-    abort ();
+  if (S_IS_EXTERNAL (s))
+    return 0;
 
   if (bfd_asymbol_section (s->bsym) == reg_section)
     return 1;
+
+  flags = s->bsym->flags;
 
   if (flag_strip_local_absolute
       /* Keep BSF_FILE symbols in order to allow debuggers to identify
@@ -2485,13 +2487,13 @@ S_IS_FORWARD_REF (const symbolS *s)
 }
 
 const char *
-S_GET_NAME (symbolS *s)
+S_GET_NAME (const symbolS *s)
 {
   return s->name;
 }
 
 segT
-S_GET_SEGMENT (symbolS *s)
+S_GET_SEGMENT (const symbolS *s)
 {
   if (s->flags.local_symbol)
     return ((struct local_symbol *) s)->section;
@@ -3103,7 +3105,7 @@ symbol_begin (void)
 {
   symbol_lastP = NULL;
   symbol_rootP = NULL;		/* In case we have 0 symbols (!!)  */
-  sy_hash = htab_create_alloc (16, hash_symbol_entry, eq_symbol_entry,
+  sy_hash = htab_create_alloc (1024, hash_symbol_entry, eq_symbol_entry,
 			       NULL, xcalloc, free);
 
 #if defined (EMIT_SECTION_SYMBOLS) || !defined (RELOC_REQUIRES_SYMBOL)

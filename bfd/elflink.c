@@ -1,5 +1,5 @@
 /* ELF linking support for BFD.
-   Copyright (C) 1995-2023 Free Software Foundation, Inc.
+   Copyright (C) 1995-2024 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -43,19 +43,6 @@
 struct elf_info_failed
 {
   struct bfd_link_info *info;
-  bool failed;
-};
-
-/* This structure is used to pass information to
-   _bfd_elf_link_find_version_dependencies.  */
-
-struct elf_find_verdep_info
-{
-  /* General link information.  */
-  struct bfd_link_info *info;
-  /* The number of dependencies.  */
-  unsigned int vers;
-  /* Whether we had a failure.  */
   bool failed;
 };
 
@@ -2217,64 +2204,64 @@ _bfd_elf_export_symbol (struct elf_link_hash_entry *h, void *data)
   return true;
 }
 
-/* Return true if GLIBC_ABI_DT_RELR is added to the list of version
-   dependencies successfully.  GLIBC_ABI_DT_RELR will be put into the
-   .gnu.version_r section.  */
+/* Return the glibc version reference if VERSION_DEP is added to the
+   list of glibc version dependencies successfully.  VERSION_DEP will
+   be put into the .gnu.version_r section.  */
 
-static bool
-elf_link_add_dt_relr_dependency (struct elf_find_verdep_info *rinfo)
+static Elf_Internal_Verneed *
+elf_link_add_glibc_verneed (struct elf_find_verdep_info *rinfo,
+			    Elf_Internal_Verneed *glibc_verref,
+			    const char *version_dep)
 {
-  bfd *glibc_bfd = NULL;
   Elf_Internal_Verneed *t;
   Elf_Internal_Vernaux *a;
   size_t amt;
-  const char *relr = "GLIBC_ABI_DT_RELR";
 
-  /* See if we already know about GLIBC_PRIVATE_DT_RELR.  */
-  for (t = elf_tdata (rinfo->info->output_bfd)->verref;
-       t != NULL;
-       t = t->vn_nextref)
+  if (glibc_verref != NULL)
     {
-      const char *soname = bfd_elf_get_dt_soname (t->vn_bfd);
-      /* Skip the shared library if it isn't libc.so.  */
-      if (!soname || !startswith (soname, "libc.so."))
-	continue;
+      t = glibc_verref;
 
       for (a = t->vn_auxptr; a != NULL; a = a->vna_nextptr)
 	{
-	  /* Return if GLIBC_PRIVATE_DT_RELR dependency has been
-	     added.  */
-	  if (a->vna_nodename == relr
-	      || strcmp (a->vna_nodename, relr) == 0)
-	    return true;
+	  /* Return if VERSION_DEP dependency has been added.  */
+	  if (a->vna_nodename == version_dep
+	      || strcmp (a->vna_nodename, version_dep) == 0)
+	    return t;
+	}
+    }
+  else
+    {
+      bool is_glibc;
+
+      for (t = elf_tdata (rinfo->info->output_bfd)->verref;
+	   t != NULL;
+	   t = t->vn_nextref)
+	{
+	  const char *soname = bfd_elf_get_dt_soname (t->vn_bfd);
+	  if (soname != NULL && startswith (soname, "libc.so."))
+	    break;
+	}
+
+      /* Skip the shared library if it isn't libc.so.  */
+      if (t == NULL)
+	return t;
+
+      is_glibc = false;
+      for (a = t->vn_auxptr; a != NULL; a = a->vna_nextptr)
+	{
+	  /* Return if VERSION_DEP dependency has been added.  */
+	  if (a->vna_nodename == version_dep
+	      || strcmp (a->vna_nodename, version_dep) == 0)
+	    return t;
 
 	  /* Check if libc.so provides GLIBC_2.XX version.  */
-	  if (!glibc_bfd && startswith (a->vna_nodename, "GLIBC_2."))
-	    glibc_bfd = t->vn_bfd;
+	  if (!is_glibc && startswith (a->vna_nodename, "GLIBC_2."))
+	    is_glibc = true;
 	}
 
-      break;
-    }
-
-  /* Skip if it isn't linked against glibc.  */
-  if (glibc_bfd == NULL)
-    return true;
-
-  /* This is a new version.  Add it to tree we are building.  */
-  if (t == NULL)
-    {
-      amt = sizeof *t;
-      t = (Elf_Internal_Verneed *) bfd_zalloc (rinfo->info->output_bfd,
-					       amt);
-      if (t == NULL)
-	{
-	  rinfo->failed = true;
-	  return false;
-	}
-
-      t->vn_bfd = glibc_bfd;
-      t->vn_nextref = elf_tdata (rinfo->info->output_bfd)->verref;
-      elf_tdata (rinfo->info->output_bfd)->verref = t;
+      /* Skip if it isn't linked against glibc.  */
+      if (!is_glibc)
+	return NULL;
     }
 
   amt = sizeof *a;
@@ -2282,10 +2269,10 @@ elf_link_add_dt_relr_dependency (struct elf_find_verdep_info *rinfo)
   if (a == NULL)
     {
       rinfo->failed = true;
-      return false;
+      return NULL;
     }
 
-  a->vna_nodename = relr;
+  a->vna_nodename = version_dep;
   a->vna_flags = 0;
   a->vna_nextptr = t->vn_auxptr;
   a->vna_other = rinfo->vers + 1;
@@ -2293,7 +2280,45 @@ elf_link_add_dt_relr_dependency (struct elf_find_verdep_info *rinfo)
 
   t->vn_auxptr = a;
 
-  return true;
+  return t;
+}
+
+/* Add VERSION_DEP to the list of version dependencies when linked
+   against glibc.  */
+
+void
+_bfd_elf_link_add_glibc_version_dependency
+  (struct elf_find_verdep_info *rinfo,
+   const char *version_dep[])
+{
+  Elf_Internal_Verneed *t = NULL;
+
+  do
+    {
+      t = elf_link_add_glibc_verneed (rinfo, t, *version_dep);
+      /* Return if there is no glibc version reference.  */
+      if (t == NULL)
+	return;
+      version_dep++;
+    }
+  while (*version_dep != NULL);
+}
+
+/* Add GLIBC_ABI_DT_RELR to the list of version dependencies when
+   linked against glibc.  */
+
+void
+_bfd_elf_link_add_dt_relr_dependency (struct elf_find_verdep_info *rinfo)
+{
+  if (rinfo->info->enable_dt_relr)
+    {
+      const char *version[] =
+	{
+	  "GLIBC_ABI_DT_RELR",
+	  NULL
+	};
+      _bfd_elf_link_add_glibc_version_dependency (rinfo, version);
+    }
 }
 
 /* Look through the symbols which are defined in other shared
@@ -2651,7 +2676,7 @@ elf_link_read_relocs_from_section (bfd *abfd,
     return false;
 
   /* Read the relocations.  */
-  if (bfd_bread (external_relocs, shdr->sh_size, abfd) != shdr->sh_size)
+  if (bfd_read (external_relocs, shdr->sh_size, abfd) != shdr->sh_size)
     return false;
 
   symtab_hdr = &elf_tdata (abfd)->symtab_hdr;
@@ -3571,12 +3596,6 @@ elf_link_is_defined_archive_symbol (bfd * abfd, carsym * symdef)
   if (! bfd_check_format (abfd, bfd_object))
     return false;
 
-  if (elf_use_dt_symtab_p (abfd))
-    {
-      bfd_set_error (bfd_error_wrong_format);
-      return false;
-    }
-
   /* Select the appropriate symbol table.  If we don't know if the
      object file is an IR object, give linker LTO plugin a chance to
      get the correct symbol table.  */
@@ -3592,10 +3611,19 @@ elf_link_is_defined_archive_symbol (bfd * abfd, carsym * symdef)
       abfd = abfd->plugin_dummy_bfd;
       hdr = &elf_tdata (abfd)->symtab_hdr;
     }
-  else if ((abfd->flags & DYNAMIC) == 0 || elf_dynsymtab (abfd) == 0)
-    hdr = &elf_tdata (abfd)->symtab_hdr;
   else
-    hdr = &elf_tdata (abfd)->dynsymtab_hdr;
+    {
+      if (elf_use_dt_symtab_p (abfd))
+	{
+	  bfd_set_error (bfd_error_wrong_format);
+	  return false;
+	}
+
+      if ((abfd->flags & DYNAMIC) == 0 || elf_dynsymtab (abfd) == 0)
+	hdr = &elf_tdata (abfd)->symtab_hdr;
+      else
+	hdr = &elf_tdata (abfd)->dynsymtab_hdr;
+    }
 
   symcount = hdr->sh_size / get_elf_backend_data (abfd)->s->sizeof_sym;
 
@@ -7044,12 +7072,9 @@ bfd_elf_size_dynamic_sections (bfd *output_bfd,
       if (sinfo.failed)
 	return false;
 
-      if (info->enable_dt_relr)
-	{
-	  elf_link_add_dt_relr_dependency (&sinfo);
-	  if (sinfo.failed)
-	    return false;
-	}
+      bed->elf_backend_add_glibc_version_dependency (&sinfo);
+      if (sinfo.failed)
+	return false;
 
       if (elf_tdata (output_bfd)->verref == NULL)
 	s->flags |= SEC_EXCLUDE;
@@ -7149,9 +7174,20 @@ bfd_elf_size_dynamic_sections (bfd *output_bfd,
       /* If the user has explicitly requested warnings, then generate one even
 	 though the choice is the result of another command line option.  */
       if (info->warn_execstack == 1)
-	_bfd_error_handler
-	  (_("\
+	{
+	  if (info->error_execstack)
+	    {
+	      _bfd_error_handler
+		(_("\
+error: creating an executable stack because of -z execstack command line option"));
+	      return false;
+	    }
+
+	  _bfd_error_handler
+	    (_("\
 warning: enabling an executable stack because of -z execstack command line option"));
+	}
+
       elf_stack_flags (output_bfd) = PF_R | PF_W | PF_X;
     }
   else if (info->noexecstack)
@@ -7207,11 +7243,29 @@ warning: enabling an executable stack because of -z execstack command line optio
 		     being enabled despite the fact that it was not requested
 		     on the command line.  */
 		  if (noteobj)
-		    _bfd_error_handler (_("\
+		    {
+		      if (info->error_execstack)
+			{
+			  _bfd_error_handler (_("\
+error: %s: is triggering the generation of an executable stack (because it has an executable .note.GNU-stack section)"),
+					      bfd_get_filename (noteobj));
+			  return false;
+			}
+
+		      _bfd_error_handler (_("\
 warning: %s: requires executable stack (because the .note.GNU-stack section is executable)"),
 		       bfd_get_filename (noteobj));
+		    }
 		  else if (emptyobj)
 		    {
+		      if (info->error_execstack)
+			{
+			  _bfd_error_handler (_("\
+error: %s: is triggering the generation of an executable stack because it does not have a .note.GNU-stack section"),
+					      bfd_get_filename (emptyobj));
+			  return false;
+			}
+
 		      _bfd_error_handler (_("\
 warning: %s: missing .note.GNU-stack section implies executable stack"),
 					  bfd_get_filename (emptyobj));
@@ -10188,7 +10242,7 @@ elf_link_swap_symbols_out (struct elf_final_link_info *flinfo)
   pos = hdr->sh_offset + hdr->sh_size;
   amt = bed->s->sizeof_sym * flinfo->output_bfd->symcount;
   if (bfd_seek (flinfo->output_bfd, pos, SEEK_SET) == 0
-      && bfd_bwrite (symbuf, amt, flinfo->output_bfd) == amt)
+      && bfd_write (symbuf, amt, flinfo->output_bfd) == amt)
     {
       hdr->sh_size += amt;
       ret = true;
@@ -13071,7 +13125,7 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 							       off, true);
 
 	      if (bfd_seek (abfd, symtab_shndx_hdr->sh_offset, SEEK_SET) != 0
-		  || (bfd_bwrite (flinfo.symshndxbuf, amt, abfd) != amt))
+		  || (bfd_write (flinfo.symshndxbuf, amt, abfd) != amt))
 		{
 		  ret = false;
 		  goto return_local_hash_table;
@@ -13707,7 +13761,7 @@ elf_gc_mark_debug_section (asection *sec ATTRIBUTE_UNUSED,
       /* Return the local debug definition section.  */
       asection *isec = bfd_section_from_elf_index (sec->owner,
 						   sym->st_shndx);
-      if ((isec->flags & SEC_DEBUGGING) != 0)
+      if (isec != NULL && (isec->flags & SEC_DEBUGGING) != 0)
 	return isec;
     }
 

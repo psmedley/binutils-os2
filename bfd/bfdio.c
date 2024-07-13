@@ -1,6 +1,6 @@
 /* Low-level I/O routines for BFDs.
 
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
 
    Written by Cygnus Support.
 
@@ -231,10 +231,11 @@ DESCRIPTION
 
 /*
 FUNCTION
-	bfd_bread
+	bfd_read
 
 SYNOPSIS
-	bfd_size_type bfd_bread (void *, bfd_size_type, bfd *);
+	bfd_size_type bfd_read (void *, bfd_size_type, bfd *)
+				ATTRIBUTE_WARN_UNUSED_RESULT;
 
 DESCRIPTION
 	Attempt to read SIZE bytes from ABFD's iostream to PTR.
@@ -242,7 +243,7 @@ DESCRIPTION
 */
 
 bfd_size_type
-bfd_bread (void *ptr, bfd_size_type size, bfd *abfd)
+bfd_read (void *ptr, bfd_size_type size, bfd *abfd)
 {
   file_ptr nread;
   bfd *element_bfd = abfd;
@@ -279,6 +280,14 @@ bfd_bread (void *ptr, bfd_size_type size, bfd *abfd)
       return -1;
     }
 
+  if (abfd->last_io == bfd_io_write)
+    {
+      abfd->last_io = bfd_io_force;
+      if (bfd_seek (abfd, 0, SEEK_CUR) != 0)
+	return -1;
+    }
+  abfd->last_io = bfd_io_read;
+
   nread = abfd->iovec->bread (abfd, ptr, size);
   if (nread != -1)
     abfd->where += nread;
@@ -288,10 +297,11 @@ bfd_bread (void *ptr, bfd_size_type size, bfd *abfd)
 
 /*
 FUNCTION
-	bfd_bwrite
+	bfd_write
 
 SYNOPSIS
-	bfd_size_type bfd_bwrite (const void *, bfd_size_type, bfd *);
+	bfd_size_type bfd_write (const void *, bfd_size_type, bfd *)
+				ATTRIBUTE_WARN_UNUSED_RESULT;
 
 DESCRIPTION
 	Attempt to write SIZE bytes to ABFD's iostream from PTR.
@@ -299,7 +309,7 @@ DESCRIPTION
 */
 
 bfd_size_type
-bfd_bwrite (const void *ptr, bfd_size_type size, bfd *abfd)
+bfd_write (const void *ptr, bfd_size_type size, bfd *abfd)
 {
   file_ptr nwrote;
 
@@ -312,6 +322,14 @@ bfd_bwrite (const void *ptr, bfd_size_type size, bfd *abfd)
       bfd_set_error (bfd_error_invalid_operation);
       return -1;
     }
+
+  if (abfd->last_io == bfd_io_read)
+    {
+      abfd->last_io = bfd_io_force;
+      if (bfd_seek (abfd, 0, SEEK_CUR) != 0)
+	return -1;
+    }
+  abfd->last_io = bfd_io_write;
 
   nwrote = abfd->iovec->bwrite (abfd, ptr, size);
   if (nwrote != -1)
@@ -331,7 +349,7 @@ FUNCTION
 	bfd_tell
 
 SYNOPSIS
-	file_ptr bfd_tell (bfd *);
+	file_ptr bfd_tell (bfd *) ATTRIBUTE_WARN_UNUSED_RESULT;
 
 DESCRIPTION
 	Return ABFD's iostream file position.
@@ -388,7 +406,7 @@ FUNCTION
 	bfd_stat
 
 SYNOPSIS
-	int bfd_stat (bfd *, struct stat *);
+	int bfd_stat (bfd *, struct stat *) ATTRIBUTE_WARN_UNUSED_RESULT;
 
 DESCRIPTION
 	Call fstat on ABFD's iostream.  Return 0 on success, and a
@@ -421,7 +439,7 @@ FUNCTION
 	bfd_seek
 
 SYNOPSIS
-	int bfd_seek (bfd *, file_ptr, int);
+	int bfd_seek (bfd *, file_ptr, int) ATTRIBUTE_WARN_UNUSED_RESULT;
 
 DESCRIPTION
 	Call fseek on ABFD's iostream.  Return 0 on success, and a
@@ -455,6 +473,13 @@ bfd_seek (bfd *abfd, file_ptr position, int direction)
 
   if (direction != SEEK_CUR)
     position += offset;
+
+  if (((direction == SEEK_CUR && position == 0)
+       || (direction == SEEK_SET && (ufile_ptr) position == abfd->where))
+      && abfd->last_io != bfd_io_force)
+    return 0;
+
+  abfd->last_io = bfd_io_seek;
 
   result = abfd->iovec->bseek (abfd, position, direction);
   if (result != 0)
@@ -615,7 +640,8 @@ FUNCTION
 SYNOPSIS
 	void *bfd_mmap (bfd *abfd, void *addr, bfd_size_type len,
 			int prot, int flags, file_ptr offset,
-			void **map_addr, bfd_size_type *map_len);
+			void **map_addr, bfd_size_type *map_len)
+			ATTRIBUTE_WARN_UNUSED_RESULT;
 
 DESCRIPTION
 	Return mmap()ed region of the file, if possible and implemented.
@@ -802,3 +828,47 @@ const struct bfd_iovec _bfd_memory_iovec =
   &memory_bread, &memory_bwrite, &memory_btell, &memory_bseek,
   &memory_bclose, &memory_bflush, &memory_bstat, &memory_bmmap
 };
+
+/*
+FUNCTION
+	bfd_get_current_time
+
+SYNOPSIS
+	time_t bfd_get_current_time (time_t now);
+
+DESCRIPTION
+	Returns the current time.
+
+	If the environment variable SOURCE_DATE_EPOCH is defined
+	then this is parsed and its value is returned.  Otherwise
+	if the paramter NOW is non-zero, then that is returned.
+	Otherwise the result of the system call "time(NULL)" is
+	returned.
+*/
+
+time_t
+bfd_get_current_time (time_t now)
+{
+  char *source_date_epoch;
+  unsigned long long epoch;
+
+  /* FIXME: We could probably cache this lookup,
+     and the parsing of its value below.  */
+  source_date_epoch = getenv ("SOURCE_DATE_EPOCH");
+
+  if (source_date_epoch == NULL)
+    {
+      if (now)
+	return now;
+      return time (NULL);
+    }
+
+  epoch = strtoull (source_date_epoch, NULL, 0);
+
+  /* If epoch == 0 then something is wrong with SOURCE_DATE_EPOCH,
+     but we do not have an easy way to report it.  Since the presence
+     of the environment variable implies that the user wants
+     deterministic behaviour we just accept the 0 value.  */
+
+  return (time_t) epoch;
+}

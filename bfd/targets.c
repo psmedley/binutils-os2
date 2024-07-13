@@ -1,5 +1,5 @@
 /* Generic target-file-type support for the BFD library.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -770,6 +770,8 @@ extern const bfd_target ia64_elf64_vms_vec;
 extern const bfd_target ia64_pei_vec;
 extern const bfd_target ip2k_elf32_vec;
 extern const bfd_target iq2000_elf32_vec;
+extern const bfd_target kvx_elf32_vec;
+extern const bfd_target kvx_elf64_vec;
 extern const bfd_target lm32_elf32_vec;
 extern const bfd_target lm32_elf32_fdpic_vec;
 extern const bfd_target loongarch_elf64_vec;
@@ -862,6 +864,7 @@ extern const bfd_target riscv_elf32_vec;
 extern const bfd_target riscv_elf64_vec;
 extern const bfd_target riscv_elf32_be_vec;
 extern const bfd_target riscv_elf64_be_vec;
+extern const bfd_target riscv64_pei_vec;
 extern const bfd_target rl78_elf32_vec;
 extern const bfd_target rs6000_xcoff64_vec;
 extern const bfd_target rs6000_xcoff64_aix_vec;
@@ -1130,6 +1133,11 @@ static const bfd_target * const _bfd_target_vector[] =
 	&ip2k_elf32_vec,
 	&iq2000_elf32_vec,
 
+#ifdef BFD64
+	&kvx_elf32_vec,
+	&kvx_elf64_vec,
+#endif
+
 	&lm32_elf32_vec,
 
 	&m32c_elf32_vec,
@@ -1255,6 +1263,7 @@ static const bfd_target * const _bfd_target_vector[] =
 	&riscv_elf64_vec,
 	&riscv_elf32_be_vec,
 	&riscv_elf64_be_vec,
+	&riscv64_pei_vec,
 #endif
 	&rl78_elf32_vec,
 

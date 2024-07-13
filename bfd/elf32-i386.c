@@ -1,5 +1,5 @@
 /* Intel 80386/80486-specific support for 32-bit ELF
-   Copyright (C) 1993-2023 Free Software Foundation, Inc.
+   Copyright (C) 1993-2024 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -1241,6 +1241,12 @@ elf_i386_convert_load_reloc (bfd *abfd, Elf_Internal_Shdr *symtab_hdr,
     return true;
 
   htab = elf_x86_hash_table (link_info, I386_ELF_DATA);
+  if (htab == NULL || ! is_x86_elf (abfd, htab))
+    {
+      bfd_set_error (bfd_error_wrong_format);
+      return false;
+    }
+
   is_pic = bfd_link_pic (link_info);
 
   r_type = *r_type_p;
@@ -1518,6 +1524,10 @@ elf_i386_scan_relocs (bfd *abfd,
 
       r_symndx = ELF32_R_SYM (rel->r_info);
       r_type = ELF32_R_TYPE (rel->r_info);
+
+      /* Don't check R_386_NONE.  */
+      if (r_type == R_386_NONE)
+	continue;
 
       if (r_symndx >= NUM_SHDR_ENTRIES (symtab_hdr))
 	{

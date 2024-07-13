@@ -1,5 +1,5 @@
 /* DWARF 2 support.
-   Copyright (C) 1994-2023 Free Software Foundation, Inc.
+   Copyright (C) 1994-2024 Free Software Foundation, Inc.
 
    Adapted from gdb/dwarf2read.c by Gavin Koch of Cygnus Solutions
    (gavin@cygnus.com).
@@ -3688,7 +3688,7 @@ read_ranges (struct comp_unit *unit, struct arange *arange,
 
       if (low_pc == 0 && high_pc == 0)
 	break;
-      if (low_pc == -1UL && high_pc != -1UL)
+      if (low_pc == (bfd_vma) -1 && high_pc != (bfd_vma) -1)
 	base_address = high_pc;
       else
 	{
@@ -6123,6 +6123,7 @@ _bfd_dwarf2_cleanup_debug_info (bfd *abfd, void **pinfo)
       free (file->dwarf_line_str_buffer);
       free (file->dwarf_str_buffer);
       free (file->dwarf_ranges_buffer);
+      free (file->dwarf_rnglists_buffer);
       free (file->dwarf_line_buffer);
       free (file->dwarf_abbrev_buffer);
       free (file->dwarf_info_buffer);

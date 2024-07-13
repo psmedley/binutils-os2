@@ -1,5 +1,5 @@
 /* x86 specific support for ELF
-   Copyright (C) 2017-2023 Free Software Foundation, Inc.
+   Copyright (C) 2017-2024 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -501,6 +501,9 @@ struct elf_x86_plt_layout
 
   /* 1 has PLT0.  */
   unsigned int has_plt0;
+
+  /* Offset of indirect branch in plt_entry.  */
+  unsigned int plt_indirect_branch_offset;
 
   /* Offsets into plt_entry that are to be replaced with...  */
   unsigned int plt_got_offset;    /* ... address of this symbol in .got. */

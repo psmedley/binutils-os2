@@ -45,7 +45,8 @@ DEVO_SUPPORT="ar-lib ChangeLog ChangeLog.git compile config config-ml.in config.
 	ltmain.sh ltoptions.m4 ltsugar.m4 ltversion.m4 lt~obsolete.m4 \
 	MAINTAINERS Makefile.def Makefile.in Makefile.tpl missing mkdep \
 	mkinstalldirs move-if-change README README-maintainer-mode \
-	SECURITY.txt src-release.sh symlink-tree test-driver ylwrap"
+	SECURITY.txt src-release.sh symlink-tree test-driver ylwrap \
+        multilib.am"
 
 # Files in devo/etc used in any net release.
 ETC_SUPPORT="Makefile.in configure configure.in standards.texi \
@@ -304,7 +305,7 @@ gdb_tar_compress()
 }
 
 # The FSF "binutils" release includes gprof and ld.
-BINUTILS_SUPPORT_DIRS="libsframe bfd gas include libiberty libctf opcodes ld elfcpp gold gprof gprofng intl setup.com makefile.vms cpu zlib"
+BINUTILS_SUPPORT_DIRS="libsframe bfd gas include libiberty libctf opcodes ld elfcpp gold gprof gprofng setup.com makefile.vms cpu zlib"
 binutils_release()
 {
     compressors=$1
@@ -313,7 +314,7 @@ binutils_release()
     tar_compress $package $tool "$BINUTILS_SUPPORT_DIRS" "$compressors"
 }
 
-GAS_SUPPORT_DIRS="bfd include libiberty opcodes intl setup.com makefile.vms zlib"
+GAS_SUPPORT_DIRS="bfd include libiberty opcodes setup.com makefile.vms zlib"
 gas_release()
 {
     compressors=$1
@@ -322,7 +323,7 @@ gas_release()
     tar_compress $package $tool "$GAS_SUPPORT_DIRS" "$compressors"
 }
 
-GDB_SUPPORT_DIRS="libsframe bfd include libiberty libctf opcodes readline sim intl libdecnumber cpu zlib contrib gnulib gdbsupport gdbserver libbacktrace"
+GDB_SUPPORT_DIRS="libsframe bfd include libiberty libctf opcodes readline sim libdecnumber cpu zlib contrib gnulib gdbsupport gdbserver libbacktrace"
 gdb_release()
 {
     compressors=$1
@@ -332,7 +333,7 @@ gdb_release()
 }
 
 # Corresponding to the CVS "sim" module.
-SIM_SUPPORT_DIRS="bfd opcodes libiberty include intl gdb/version.in gdb/common/create-version.sh makefile.vms zlib"
+SIM_SUPPORT_DIRS="libsframe bfd opcodes libiberty libctf/swap.h include gdb/version.in gdb/common/create-version.sh makefile.vms zlib gnulib"
 sim_release()
 {
     compressors=$1

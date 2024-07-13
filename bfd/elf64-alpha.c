@@ -1,5 +1,5 @@
 /* Alpha specific support for 64-bit ELF
-   Copyright (C) 1996-2023 Free Software Foundation, Inc.
+   Copyright (C) 1996-2024 Free Software Foundation, Inc.
    Contributed by Richard Henderson <rth@tamu.edu>.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -1982,9 +1982,9 @@ elf64_alpha_check_relocs (bfd *abfd, struct bfd_link_info *info,
 		{
 		  info->flags |= DF_TEXTREL;
 		  info->callbacks->minfo
-		    (_("%pB: dynamic relocation against `%pT' in "
+		    (_("%pB: dynamic relocation against a local symbol in "
 		       "read-only section `%pA'\n"),
-		     sec->owner, h->root.root.root.string, sec);
+		     sec->owner, sec);
 		}
 	    }
 	}

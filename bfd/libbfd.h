@@ -7,7 +7,7 @@
 /* libbfd.h -- Declarations used by bfd library *implementation*.
    (This include file is not for users of the library.)
 
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
 
    Written by Cygnus Support.
 
@@ -44,10 +44,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* If you want to read and write large blocks, you might want to do it
-   in quanta of this amount */
-#define DEFAULT_BUFFERSIZE 8192
 
 /* Set a tdata field.  Can't use the other macros for this, since they
    do casts, and casting to the left of assignment isn't portable.  */
@@ -890,7 +886,7 @@ _bfd_alloc_and_read (bfd *abfd, bfd_size_type asize, bfd_size_type rsize)
   mem = bfd_alloc (abfd, asize);
   if (mem != NULL)
     {
-      if (bfd_bread (mem, rsize, abfd) == rsize)
+      if (bfd_read (mem, rsize, abfd) == rsize)
 	return mem;
       bfd_release (abfd, mem);
     }
@@ -913,7 +909,7 @@ _bfd_malloc_and_read (bfd *abfd, bfd_size_type asize, bfd_size_type rsize)
   mem = bfd_malloc (asize);
   if (mem != NULL)
     {
-      if (bfd_bread (mem, rsize, abfd) == rsize)
+      if (bfd_read (mem, rsize, abfd) == rsize)
 	return mem;
       free (mem);
     }
@@ -933,14 +929,17 @@ bool bfd_write_bigendian_4byte_int (bfd *, unsigned int) ATTRIBUTE_HIDDEN;
 unsigned int bfd_log2 (bfd_vma x) ATTRIBUTE_HIDDEN;
 
 /* Extracted from bfd.c.  */
-/* A buffer that is freed on bfd_close.  */
-extern char *_bfd_error_buf;
+void _bfd_clear_error_data (void) ATTRIBUTE_HIDDEN;
 
 char *bfd_asprintf (const char *fmt, ...) ATTRIBUTE_HIDDEN;
 
 bfd_error_handler_type _bfd_set_error_handler_caching (bfd *) ATTRIBUTE_HIDDEN;
 
 const char *_bfd_get_error_program_name (void) ATTRIBUTE_HIDDEN;
+
+bool bfd_lock (void) ATTRIBUTE_HIDDEN;
+
+bool bfd_unlock (void) ATTRIBUTE_HIDDEN;
 
 /* Extracted from bfdio.c.  */
 struct bfd_iovec
@@ -1333,12 +1332,9 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_MIPS_TLS_TPREL_LO16",
   "BFD_RELOC_MICROMIPS_TLS_TPREL_LO16",
   "BFD_RELOC_MIPS_EH",
-
   "BFD_RELOC_MIPS_COPY",
   "BFD_RELOC_MIPS_JUMP_SLOT",
-
   "BFD_RELOC_MOXIE_10_PCREL",
-
   "BFD_RELOC_FT32_10",
   "BFD_RELOC_FT32_20",
   "BFD_RELOC_FT32_17",
@@ -1348,7 +1344,6 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_FT32_SC1",
   "BFD_RELOC_FT32_15",
   "BFD_RELOC_FT32_DIFF32",
-
   "BFD_RELOC_FRV_LABEL16",
   "BFD_RELOC_FRV_LABEL24",
   "BFD_RELOC_FRV_LO16",
@@ -1388,7 +1383,6 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_FRV_GETTLSOFF_RELAX",
   "BFD_RELOC_FRV_TLSOFF_RELAX",
   "BFD_RELOC_FRV_TLSMOFF",
-
   "BFD_RELOC_MN10300_GOTOFF24",
   "BFD_RELOC_MN10300_GOT32",
   "BFD_RELOC_MN10300_GOT24",
@@ -1410,7 +1404,6 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_MN10300_TLS_TPOFF",
   "BFD_RELOC_MN10300_32_PCREL",
   "BFD_RELOC_MN10300_16_PCREL",
-
   "BFD_RELOC_386_GOT32",
   "BFD_RELOC_386_PLT32",
   "BFD_RELOC_386_COPY",
@@ -1467,6 +1460,9 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_X86_64_PLT32_BND",
   "BFD_RELOC_X86_64_GOTPCRELX",
   "BFD_RELOC_X86_64_REX_GOTPCRELX",
+  "BFD_RELOC_X86_64_CODE_4_GOTPCRELX",
+  "BFD_RELOC_X86_64_CODE_4_GOTTPOFF",
+  "BFD_RELOC_X86_64_CODE_4_GOTPC32_TLSDESC",
   "BFD_RELOC_NS32K_IMM_8",
   "BFD_RELOC_NS32K_IMM_16",
   "BFD_RELOC_NS32K_IMM_32",
@@ -2281,7 +2277,6 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_MEP_ADDR24A4",
   "BFD_RELOC_MEP_GNU_VTINHERIT",
   "BFD_RELOC_MEP_GNU_VTENTRY",
-
   "BFD_RELOC_METAG_HIADDR16",
   "BFD_RELOC_METAG_LOADDR16",
   "BFD_RELOC_METAG_RELBRANCH",
@@ -2411,11 +2406,6 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_RISCV_ALIGN",
   "BFD_RELOC_RISCV_RVC_BRANCH",
   "BFD_RELOC_RISCV_RVC_JUMP",
-  "BFD_RELOC_RISCV_RVC_LUI",
-  "BFD_RELOC_RISCV_GPREL_I",
-  "BFD_RELOC_RISCV_GPREL_S",
-  "BFD_RELOC_RISCV_TPREL_I",
-  "BFD_RELOC_RISCV_TPREL_S",
   "BFD_RELOC_RISCV_RELAX",
   "BFD_RELOC_RISCV_CFA",
   "BFD_RELOC_RISCV_SUB6",
@@ -2815,7 +2805,6 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_XSTORMY16_24",
   "BFD_RELOC_XSTORMY16_FPTR16",
   "BFD_RELOC_RELC",
-
   "BFD_RELOC_VAX_GLOB_DAT",
   "BFD_RELOC_VAX_JMP_SLOT",
   "BFD_RELOC_VAX_RELATIVE",
@@ -3014,6 +3003,7 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_MICROBLAZE_32_ROSDA",
   "BFD_RELOC_MICROBLAZE_32_RWSDA",
   "BFD_RELOC_MICROBLAZE_32_SYM_OP_SYM",
+  "BFD_RELOC_MICROBLAZE_32_NONE",
   "BFD_RELOC_MICROBLAZE_64_NONE",
   "BFD_RELOC_MICROBLAZE_64_GOTPC",
   "BFD_RELOC_MICROBLAZE_64_GOT",
@@ -3031,6 +3021,91 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_MICROBLAZE_64_TLSTPREL",
   "BFD_RELOC_MICROBLAZE_64_TEXTPCREL",
   "BFD_RELOC_MICROBLAZE_64_TEXTREL",
+  "BFD_RELOC_KVX_RELOC_START",
+  "BFD_RELOC_KVX_NONE",
+  "BFD_RELOC_KVX_16",
+  "BFD_RELOC_KVX_32",
+  "BFD_RELOC_KVX_64",
+  "BFD_RELOC_KVX_S16_PCREL",
+  "BFD_RELOC_KVX_PCREL17",
+  "BFD_RELOC_KVX_PCREL27",
+  "BFD_RELOC_KVX_32_PCREL",
+  "BFD_RELOC_KVX_S37_PCREL_LO10",
+  "BFD_RELOC_KVX_S37_PCREL_UP27",
+  "BFD_RELOC_KVX_S43_PCREL_LO10",
+  "BFD_RELOC_KVX_S43_PCREL_UP27",
+  "BFD_RELOC_KVX_S43_PCREL_EX6",
+  "BFD_RELOC_KVX_S64_PCREL_LO10",
+  "BFD_RELOC_KVX_S64_PCREL_UP27",
+  "BFD_RELOC_KVX_S64_PCREL_EX27",
+  "BFD_RELOC_KVX_64_PCREL",
+  "BFD_RELOC_KVX_S16",
+  "BFD_RELOC_KVX_S32_LO5",
+  "BFD_RELOC_KVX_S32_UP27",
+  "BFD_RELOC_KVX_S37_LO10",
+  "BFD_RELOC_KVX_S37_UP27",
+  "BFD_RELOC_KVX_S37_GOTOFF_LO10",
+  "BFD_RELOC_KVX_S37_GOTOFF_UP27",
+  "BFD_RELOC_KVX_S43_GOTOFF_LO10",
+  "BFD_RELOC_KVX_S43_GOTOFF_UP27",
+  "BFD_RELOC_KVX_S43_GOTOFF_EX6",
+  "BFD_RELOC_KVX_32_GOTOFF",
+  "BFD_RELOC_KVX_64_GOTOFF",
+  "BFD_RELOC_KVX_32_GOT",
+  "BFD_RELOC_KVX_S37_GOT_LO10",
+  "BFD_RELOC_KVX_S37_GOT_UP27",
+  "BFD_RELOC_KVX_S43_GOT_LO10",
+  "BFD_RELOC_KVX_S43_GOT_UP27",
+  "BFD_RELOC_KVX_S43_GOT_EX6",
+  "BFD_RELOC_KVX_64_GOT",
+  "BFD_RELOC_KVX_GLOB_DAT",
+  "BFD_RELOC_KVX_COPY",
+  "BFD_RELOC_KVX_JMP_SLOT",
+  "BFD_RELOC_KVX_RELATIVE",
+  "BFD_RELOC_KVX_S43_LO10",
+  "BFD_RELOC_KVX_S43_UP27",
+  "BFD_RELOC_KVX_S43_EX6",
+  "BFD_RELOC_KVX_S64_LO10",
+  "BFD_RELOC_KVX_S64_UP27",
+  "BFD_RELOC_KVX_S64_EX27",
+  "BFD_RELOC_KVX_S37_GOTADDR_LO10",
+  "BFD_RELOC_KVX_S37_GOTADDR_UP27",
+  "BFD_RELOC_KVX_S43_GOTADDR_LO10",
+  "BFD_RELOC_KVX_S43_GOTADDR_UP27",
+  "BFD_RELOC_KVX_S43_GOTADDR_EX6",
+  "BFD_RELOC_KVX_S64_GOTADDR_LO10",
+  "BFD_RELOC_KVX_S64_GOTADDR_UP27",
+  "BFD_RELOC_KVX_S64_GOTADDR_EX27",
+  "BFD_RELOC_KVX_64_DTPMOD",
+  "BFD_RELOC_KVX_64_DTPOFF",
+  "BFD_RELOC_KVX_S37_TLS_DTPOFF_LO10",
+  "BFD_RELOC_KVX_S37_TLS_DTPOFF_UP27",
+  "BFD_RELOC_KVX_S43_TLS_DTPOFF_LO10",
+  "BFD_RELOC_KVX_S43_TLS_DTPOFF_UP27",
+  "BFD_RELOC_KVX_S43_TLS_DTPOFF_EX6",
+  "BFD_RELOC_KVX_S37_TLS_GD_LO10",
+  "BFD_RELOC_KVX_S37_TLS_GD_UP27",
+  "BFD_RELOC_KVX_S43_TLS_GD_LO10",
+  "BFD_RELOC_KVX_S43_TLS_GD_UP27",
+  "BFD_RELOC_KVX_S43_TLS_GD_EX6",
+  "BFD_RELOC_KVX_S37_TLS_LD_LO10",
+  "BFD_RELOC_KVX_S37_TLS_LD_UP27",
+  "BFD_RELOC_KVX_S43_TLS_LD_LO10",
+  "BFD_RELOC_KVX_S43_TLS_LD_UP27",
+  "BFD_RELOC_KVX_S43_TLS_LD_EX6",
+  "BFD_RELOC_KVX_64_TPOFF",
+  "BFD_RELOC_KVX_S37_TLS_IE_LO10",
+  "BFD_RELOC_KVX_S37_TLS_IE_UP27",
+  "BFD_RELOC_KVX_S43_TLS_IE_LO10",
+  "BFD_RELOC_KVX_S43_TLS_IE_UP27",
+  "BFD_RELOC_KVX_S43_TLS_IE_EX6",
+  "BFD_RELOC_KVX_S37_TLS_LE_LO10",
+  "BFD_RELOC_KVX_S37_TLS_LE_UP27",
+  "BFD_RELOC_KVX_S43_TLS_LE_LO10",
+  "BFD_RELOC_KVX_S43_TLS_LE_UP27",
+  "BFD_RELOC_KVX_S43_TLS_LE_EX6",
+  "BFD_RELOC_KVX_8",
+  "BFD_RELOC_KVX_RELOC_END",
   "BFD_RELOC_AARCH64_RELOC_START",
   "BFD_RELOC_AARCH64_NULL",
   "BFD_RELOC_AARCH64_NONE",
@@ -3346,6 +3421,8 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_TILEGX_IMM8_Y1_TLS_ADD",
   "BFD_RELOC_BPF_64",
   "BFD_RELOC_BPF_DISP32",
+  "BFD_RELOC_BPF_DISPCALL32",
+  "BFD_RELOC_BPF_DISP16",
   "BFD_RELOC_EPIPHANY_SIMM8",
   "BFD_RELOC_EPIPHANY_SIMM24",
   "BFD_RELOC_EPIPHANY_HIGH",
@@ -3442,6 +3519,8 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_LARCH_TLS_DTPREL64",
   "BFD_RELOC_LARCH_TLS_TPREL32",
   "BFD_RELOC_LARCH_TLS_TPREL64",
+  "BFD_RELOC_LARCH_TLS_DESC32",
+  "BFD_RELOC_LARCH_TLS_DESC64",
   "BFD_RELOC_LARCH_MARK_LA",
   "BFD_RELOC_LARCH_MARK_PCREL",
   "BFD_RELOC_LARCH_SOP_PUSH_PCREL",
@@ -3525,6 +3604,23 @@ static const char *const bfd_reloc_code_real_names[] = { "@@uninitialized@@",
   "BFD_RELOC_LARCH_ADD_ULEB128",
   "BFD_RELOC_LARCH_SUB_ULEB128",
   "BFD_RELOC_LARCH_64_PCREL",
+  "BFD_RELOC_LARCH_CALL36",
+  "BFD_RELOC_LARCH_TLS_DESC_PC_HI20",
+  "BFD_RELOC_LARCH_TLS_DESC_PC_LO12",
+  "BFD_RELOC_LARCH_TLS_DESC64_PC_LO20",
+  "BFD_RELOC_LARCH_TLS_DESC64_PC_HI12",
+  "BFD_RELOC_LARCH_TLS_DESC_HI20",
+  "BFD_RELOC_LARCH_TLS_DESC_LO12",
+  "BFD_RELOC_LARCH_TLS_DESC64_LO20",
+  "BFD_RELOC_LARCH_TLS_DESC64_HI12",
+  "BFD_RELOC_LARCH_TLS_DESC_LD",
+  "BFD_RELOC_LARCH_TLS_DESC_CALL",
+  "BFD_RELOC_LARCH_TLS_LE_HI20_R",
+  "BFD_RELOC_LARCH_TLS_LE_ADD_R",
+  "BFD_RELOC_LARCH_TLS_LE_LO12_R",
+  "BFD_RELOC_LARCH_TLS_LD_PCREL20_S2",
+  "BFD_RELOC_LARCH_TLS_GD_PCREL20_S2",
+  "BFD_RELOC_LARCH_TLS_DESC_PCREL20_S2",
  "@@overflow: BFD_RELOC_UNUSED@@",
 };
 #endif

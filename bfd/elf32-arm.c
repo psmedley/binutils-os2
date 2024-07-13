@@ -1,5 +1,5 @@
 /* 32-bit ELF support for ARM
-   Copyright (C) 1998-2023 Free Software Foundation, Inc.
+   Copyright (C) 1998-2024 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -14119,7 +14119,7 @@ set_secondary_compatible_arch (bfd *abfd, int arch)
 
 static int
 tag_cpu_arch_combine (bfd *ibfd, int oldtag, int *secondary_compat_out,
-		      int newtag, int secondary_compat)
+		      int newtag, int secondary_compat, const char* name_table[])
 {
 #define T(X) TAG_CPU_ARCH_##X
   int tagl, tagh, result;
@@ -14436,8 +14436,8 @@ tag_cpu_arch_combine (bfd *ibfd, int oldtag, int *secondary_compat_out,
 
   if (result == -1)
     {
-      _bfd_error_handler (_("error: %pB: conflicting CPU architectures %d/%d"),
-			  ibfd, oldtag, newtag);
+      _bfd_error_handler (_("error: conflicting CPU architectures %s vs %s in %pB"),
+			  name_table[oldtag], name_table[newtag], ibfd);
       return -1;
     }
 
@@ -14632,7 +14632,8 @@ elf32_arm_merge_eabi_attributes (bfd *ibfd, struct bfd_link_info *info)
 	    arch_attr = tag_cpu_arch_combine (ibfd, out_attr[i].i,
 					      &secondary_compat_out,
 					      in_attr[i].i,
-					      secondary_compat);
+					      secondary_compat,
+					      name_table);
 
 	    /* Return with error if failed to merge.  */
 	    if (arch_attr == -1)
@@ -19970,10 +19971,14 @@ read_code16 (const bfd *abfd, const bfd_byte *addr)
    or (bfd_vma) -1 if size can not be determined.  */
 
 static bfd_vma
-elf32_arm_plt0_size (const bfd *abfd, const bfd_byte *addr)
+elf32_arm_plt0_size (const bfd *abfd, const bfd_byte *addr,
+		     bfd_size_type data_size)
 {
   bfd_vma first_word;
   bfd_vma plt0_size;
+
+  if (data_size < 4)
+    return (bfd_vma) -1;
 
   first_word = read_code32 (abfd, addr);
 
@@ -19993,24 +19998,28 @@ elf32_arm_plt0_size (const bfd *abfd, const bfd_byte *addr)
    or (bfd_vma) -1 if size can not be determined.  */
 
 static bfd_vma
-elf32_arm_plt_size (const bfd *abfd, const bfd_byte *start, bfd_vma offset)
+elf32_arm_plt_size (const bfd *abfd, const bfd_byte *start, bfd_vma offset,
+		    bfd_size_type data_size)
 {
   bfd_vma first_insn;
   bfd_vma plt_size = 0;
-  const bfd_byte *addr = start + offset;
 
   /* PLT entry size if fixed on Thumb-only platforms.  */
   if (read_code32 (abfd, start) == elf32_thumb2_plt0_entry[0])
-      return 4 * ARRAY_SIZE (elf32_thumb2_plt_entry);
+    return 4 * ARRAY_SIZE (elf32_thumb2_plt_entry);
 
   /* Respect Thumb stub if necessary.  */
-  if (read_code16 (abfd, addr) == elf32_arm_plt_thumb_stub[0])
+  if (offset + 2 > data_size)
+    return (bfd_vma) -1;
+  if (read_code16 (abfd, start + offset) == elf32_arm_plt_thumb_stub[0])
     {
       plt_size += 2 * ARRAY_SIZE (elf32_arm_plt_thumb_stub);
     }
 
   /* Strip immediate from first add.  */
-  first_insn = read_code32 (abfd, addr + plt_size) & 0xffffff00;
+  if (offset + plt_size + 4 > data_size)
+    return (bfd_vma) -1;
+  first_insn = read_code32 (abfd, start + offset + plt_size) & 0xffffff00;
 
 #ifdef FOUR_WORD_PLT
   if (first_insn == elf32_arm_plt_entry[0])
@@ -20087,7 +20096,7 @@ elf32_arm_get_synthetic_symtab (bfd *abfd,
 	size += sizeof ("+0x") - 1 + 8;
     }
 
-  offset = elf32_arm_plt0_size (abfd, data);
+  offset = elf32_arm_plt0_size (abfd, data, plt->size);
   if (offset == (bfd_vma) -1
       || (s = *ret = (asymbol *) bfd_malloc (size)) == NULL)
     {
@@ -20102,7 +20111,7 @@ elf32_arm_get_synthetic_symtab (bfd *abfd,
     {
       size_t len;
 
-      bfd_vma plt_size = elf32_arm_plt_size (abfd, data, offset);
+      bfd_vma plt_size = elf32_arm_plt_size (abfd, data, offset, plt->size);
       if (plt_size == (bfd_vma) -1)
 	break;
 
@@ -20663,16 +20672,17 @@ elf32_arm_merge_private_bfd_data (bfd *ibfd, struct bfd_link_info *info)
 
   if (!elf_flags_init (obfd))
     {
-      /* If the input is the default architecture and had the default
-	 flags then do not bother setting the flags for the output
-	 architecture, instead allow future merges to do this.  If no
-	 future merges ever set these flags then they will retain their
-	 uninitialised values, which surprise surprise, correspond
-	 to the default values.  */
-      if (bfd_get_arch_info (ibfd)->the_default
-	  && elf_elfheader (ibfd)->e_flags == 0)
-	return true;
+      /* If the input has no flags set, then do not set the output flags.
+	 This will allow future bfds to determine the desired output flags.
+	 If no input bfds have any flags set, then neither will the output bfd.
 
+	 Note - we used to restrict this test to when the input architecture
+	 variant was the default variant, but this does not allow for
+	 linker scripts which override the default.  See PR 28910 for an
+	 example.  */
+      if (in_flags == 0)
+	return true;
+      
       elf_flags_init (obfd) = true;
       elf_elfheader (obfd)->e_flags = in_flags;
 

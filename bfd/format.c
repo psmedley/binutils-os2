@@ -1,5 +1,5 @@
 /* Generic BFD support for file formats.
-   Copyright (C) 1990-2023 Free Software Foundation, Inc.
+   Copyright (C) 1990-2024 Free Software Foundation, Inc.
    Written by Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -163,10 +163,16 @@ io_reinit (bfd *abfd, struct bfd_preserve *preserve)
   if (abfd->iovec != preserve->iovec)
     {
       /* Handle file backed to in-memory transition.  bfd_cache_close
-	 won't do anything unless abfd->iovec is the cache_iovec.  */
+	 won't do anything unless abfd->iovec is the cache_iovec.
+	 Don't be tempted to call iovec->bclose here.  We don't want
+	 to call memory_bclose, which would free the bim.  The bim
+	 must be kept if bfd_check_format_matches is going to decide
+	 later that the PE format needing it is in fact the correct
+	 target match.  */
       bfd_cache_close (abfd);
       abfd->iovec = preserve->iovec;
       abfd->iostream = preserve->iostream;
+
       /* Handle in-memory to file backed transition.  */
       if ((abfd->flags & BFD_CLOSED_BY_CACHE) != 0
 	  && (abfd->flags & BFD_IN_MEMORY) != 0
@@ -359,7 +365,7 @@ bfd_check_format_matches (bfd *abfd, bfd_format format, char ***matching)
   /* If the target type was explicitly specified, just check that target.  */
   if (!abfd->target_defaulted)
     {
-      if (bfd_seek (abfd, (file_ptr) 0, SEEK_SET) != 0)	/* rewind! */
+      if (bfd_seek (abfd, 0, SEEK_SET) != 0)	/* rewind! */
 	goto err_ret;
 
       cleanup = BFD_SEND_FMT (abfd, _bfd_check_format, (abfd));
@@ -425,7 +431,7 @@ bfd_check_format_matches (bfd *abfd, bfd_format format, char ***matching)
       /* Change BFD's target temporarily.  */
       abfd->xvec = *target;
 
-      if (bfd_seek (abfd, (file_ptr) 0, SEEK_SET) != 0)
+      if (bfd_seek (abfd, 0, SEEK_SET) != 0)
 	goto err_ret;
 
       cleanup = BFD_SEND_FMT (abfd, _bfd_check_format, (abfd));
@@ -573,7 +579,7 @@ bfd_check_format_matches (bfd *abfd, bfd_format format, char ***matching)
 	{
 	  bfd_reinit (abfd, initial_section_id, &preserve, cleanup);
 	  bfd_release (abfd, preserve.marker);
-	  if (bfd_seek (abfd, (file_ptr) 0, SEEK_SET) != 0)
+	  if (bfd_seek (abfd, 0, SEEK_SET) != 0)
 	    goto err_ret;
 	  cleanup = BFD_SEND_FMT (abfd, _bfd_check_format, (abfd));
 	  BFD_ASSERT (cleanup != NULL);

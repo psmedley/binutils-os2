@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2023 Free Software Foundation, Inc.
+# Copyright (C) 2012-2024 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ if { [istarget "pdp11-*-*"] } then {
     run_dump_test eqv-dot
 }
 
-if { ![istarget "bfin-*-*"] && ![istarget "bpf-*-*"]  } then {
+if { ![istarget "bfin-*-*"] } then {
     gas_test "assign-ok.s" "" "" "== assignment support"
 }
 gas_test_error "assign-bad.s" "" "== assignment for symbol already set"
@@ -403,8 +403,7 @@ if {  ([istarget "i*86-*-*pe*"] && ![istarget "i*86-*-openbsd*"]) \
   gas_test "fastcall.s" ""   "" "fastcall labels"
 }
 
-if { ![istarget "bfin-*-*"] && ![istarget "nds32*-*-*"] \
-    && ![istarget "bpf-*-*"] } then {
+if { ![istarget "bfin-*-*"] && ![istarget "nds32*-*-*"] } then {
     run_dump_test assign
 }
 run_dump_test sleb128
@@ -469,6 +468,11 @@ setup_xfail "tic30-*-*"
 run_list_test cond-2 "-al"
 setup_xfail "tic30-*-*"
 run_list_test linefile ""
+
+# Again, .byte does not emit 8 bits on either tic4x or tic54x.
+if { ![istarget "tic4x*-*-*"] && ![istarget "tic54x*-*-*"] } {
+    run_list_test const-1 "-alm"
+}
 
 run_list_test macro "-alm"
 

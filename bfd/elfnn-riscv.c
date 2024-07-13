@@ -1,5 +1,5 @@
 /* RISC-V-specific support for NN-bit ELF.
-   Copyright (C) 2011-2023 Free Software Foundation, Inc.
+   Copyright (C) 2011-2024 Free Software Foundation, Inc.
 
    Contributed by Andrew Waterman (andrew@sifive.com).
    Based on TILE-Gx and MIPS targets.
@@ -129,9 +129,6 @@
 	(NEED_RELOC) = true; \
     } \
   while (0)
-
-/* Internal relocations used exclusively by the relaxation pass.  */
-#define R_RISCV_DELETE (R_RISCV_max + 1)
 
 #define ARCH_SIZE NN
 
@@ -1737,7 +1734,10 @@ perform_relocation (const reloc_howto_type *howto,
 {
   if (howto->pc_relative)
     value -= sec_addr (input_section) + rel->r_offset;
-  value += rel->r_addend;
+
+  /* PR31179, ignore the non-zero addend of R_RISCV_SUB_ULEB128.  */
+  if (ELFNN_R_TYPE (rel->r_info) != R_RISCV_SUB_ULEB128)
+    value += rel->r_addend;
 
   switch (ELFNN_R_TYPE (rel->r_info))
     {
@@ -1818,10 +1818,7 @@ perform_relocation (const reloc_howto_type *howto,
 	value = ENCODE_CITYPE_LUI_IMM (RISCV_CONST_HIGH_PART (value));
       break;
 
-    /* SUB_ULEB128 must be applied after SET_ULEB128, so we only write the
-       value back for SUB_ULEB128 should be enough.  */
-    case R_RISCV_SET_ULEB128:
-      break;
+    /* R_RISCV_SET_ULEB128 won't go into here.  */
     case R_RISCV_SUB_ULEB128:
       {
 	unsigned int len = 0;
@@ -2514,7 +2511,7 @@ riscv_elf_relocate_section (bfd *output_bfd,
 	  else
 	    {
 	      msg = ("Mismatched R_RISCV_SET_ULEB128, it must be paired with"
-		     "and applied before R_RISCV_SUB_ULEB128");
+		     " and applied before R_RISCV_SUB_ULEB128");
 	      r = bfd_reloc_dangerous;
 	    }
 	  break;
@@ -2523,14 +2520,40 @@ riscv_elf_relocate_section (bfd *output_bfd,
 	  if (uleb128_set_rel != NULL
 	      && uleb128_set_rel->r_offset == rel->r_offset)
 	    {
-	      relocation = uleb128_set_vma - relocation;
+	      relocation = uleb128_set_vma - relocation
+			   + uleb128_set_rel->r_addend;
 	      uleb128_set_vma = 0;
 	      uleb128_set_rel = NULL;
+
+	      /* PR31179, the addend of SUB_ULEB128 should be zero if using
+		 .uleb128, but we make it non-zero by accident in assembler,
+		 so just ignore it in perform_relocation, and make assembler
+		 continue doing the right thing.  Don't reset the addend of
+		 SUB_ULEB128 to zero here since it will break the --emit-reloc,
+		 even though the non-zero addend is unexpected.
+
+		 We encourage people to rebuild their stuff to get the
+		 non-zero addend of SUB_ULEB128, but that might need some
+		 times, so report warnings to inform people need to rebuild
+		 if --check-uleb128 is enabled.  However, since the failed
+		 .reloc cases for ADD/SET/SUB/ULEB128 are rarely to use, it
+		 may acceptable that stop supproting them until people rebuld
+		 their stuff, maybe half-year or one year later.  I believe
+		 this might be the least harmful option that we should go.
+
+		 Or maybe we should teach people that don't write the
+		 .reloc R_RISCV_SUB* with non-zero constant, and report
+		 warnings/errors in assembler.  */
+	      if (htab->params->check_uleb128
+		  && rel->r_addend != 0)
+		_bfd_error_handler (_("%pB: warning: R_RISCV_SUB_ULEB128 with"
+				      " non-zero addend, please rebuild by"
+				      " binutils 2.42 or up"), input_bfd);
 	    }
 	  else
 	    {
 	      msg = ("Mismatched R_RISCV_SUB_ULEB128, it must be paired with"
-		     "and applied after R_RISCV_SET_ULEB128");
+		     " and applied after R_RISCV_SET_ULEB128");
 	      r = bfd_reloc_dangerous;
 	    }
 	  break;
@@ -5123,7 +5146,13 @@ _bfd_riscv_relax_section (bfd *abfd, asection *sec,
 	  if (h != NULL && h->type == STT_GNU_IFUNC)
 	    continue;
 
+	  /* Maybe we should check UNDEFWEAK_NO_DYNAMIC_RELOC here?  But that
+	     will break the undefweak relaxation testcases, so just make sure
+	     we won't do relaxations for linker_def symbols in short-term.  */
 	  if (h->root.type == bfd_link_hash_undefweak
+	      /* The linker_def symbol like __ehdr_start that may be undefweak
+		 for now, but will be guaranteed to be defined later.  */
+	      && !h->root.linker_def
 	      && (relax_func == _bfd_riscv_relax_lui
 		  || relax_func == _bfd_riscv_relax_pc))
 	    {
@@ -5423,7 +5452,8 @@ riscv_maybe_function_sym (const asymbol *sym,
 			  bfd_vma *code_off)
 {
   if (sym->flags & BSF_LOCAL
-      && riscv_elf_is_mapping_symbols (sym->name))
+      && (riscv_elf_is_mapping_symbols (sym->name)
+	  || _bfd_elf_is_local_label_name (sec->owner, sym->name)))
     return 0;
 
   return _bfd_elf_maybe_function_sym (sym, sec, code_off);

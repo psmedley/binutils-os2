@@ -1,5 +1,5 @@
 /* BFD back-end for verilog hex memory dump files.
-   Copyright (C) 2009-2023 Free Software Foundation, Inc.
+   Copyright (C) 2009-2024 Free Software Foundation, Inc.
    Written by Anthony Green <green@moxielogic.com>
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -200,7 +200,7 @@ verilog_write_address (bfd *abfd, bfd_vma address)
   *dst++ = '\n';
   wrlen = dst - buffer;
 
-  return bfd_bwrite ((void *) buffer, wrlen, abfd) == wrlen;
+  return bfd_write (buffer, wrlen, abfd) == wrlen;
 }
 
 /* Write a record of type, of the supplied number of bytes. The
@@ -288,7 +288,7 @@ verilog_write_record (bfd *abfd,
   *dst++ = '\n';
   wrlen = dst - buffer;
 
-  return bfd_bwrite ((void *) buffer, wrlen, abfd) == wrlen;
+  return bfd_write (buffer, wrlen, abfd) == wrlen;
 }
 
 static bool
