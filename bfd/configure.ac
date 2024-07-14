@@ -879,7 +879,9 @@ changequote([,])dnl
 	  CORE_HEADER='"hosts/x86-64linux.h"'
 	esac
 	;;
+changequote(,)dnl
   i[3456]86-*-os2*)
+changequote([,])dnl
 	COREFILE=trad-core.lo
 	TRAD_HEADER='"hosts/i386emx.h"'
 	;;
