@@ -1366,10 +1366,10 @@ gas_init (void)
      being open above this point.  stdoutput must be open for anything
      that might use stdoutput objalloc memory, eg. calling bfd_alloc
      or creating global symbols (via bfd_make_empty_symbol).  */
-  xatexit (output_file_close);
 #ifndef EMX
-  output_file_create (out_file_name);
+  xatexit (output_file_close);
 #endif
+  output_file_create (out_file_name);
   gas_assert (stdoutput != 0);
 
   /* Must be called before output_file_close.  xexit calls the xatexit
@@ -1540,7 +1540,7 @@ main (int argc, char ** argv)
   listing_print (listing_filename, argv_orig);
 #endif
 #ifdef EMX
-  output_file_create (out_file_name);
+  output_file_close();
 #endif
 #ifdef EMX
   if (keep_it && emx_omf)
@@ -1551,7 +1551,7 @@ main (int argc, char ** argv)
       i = 0;
       args[i++] = "emxomf";
       if (emx_strip)
-      args[i++] = "-s";
+        args[i++] = "-s";
       args[i++] = "-o";
       args[i++] = omf_file_name;
       args[i++] = out_file_name;

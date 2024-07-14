@@ -103,7 +103,9 @@ output_file_close (void)
   now_subseg = 0;
 
   filename = out_file_name;
+#ifndef __OS2__
   out_file_name = NULL;
+#endif
   if (!keep_it && filename)
     unlink_if_ordinary (filename);
 
