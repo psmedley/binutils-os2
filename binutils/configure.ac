@@ -380,6 +380,7 @@ changequote([,])dnl
     arm-wince-pe* | arm-*-wince | arm*-*-cegcc* | arm*-*-mingw32ce*)
 	BUILD_DLLTOOL='$(DLLTOOL_PROG)$(EXEEXT)'
 	if test -z "$DLLTOOL_DEFAULT"; then
+	    DLLTOOL_DEFAULT="-DDLLTOOL_DEFAULT_ARM_WINCE"
 	fi
 	DLLTOOL_DEFS="$DLLTOOL_DEFS -DDLLTOOL_ARM_WINCE -DDLLTOOL_ARM"
 	BUILD_WINDRES='$(WINDRES_PROG)$(EXEEXT)'
@@ -476,7 +477,6 @@ changequote([,])dnl
 	od_vectors="$od_vectors objdump_private_desc_mach_o"
 	;;
     esac
-fi
 done
 
 # Uniq objdump private vector, build objdump target ofiles.
