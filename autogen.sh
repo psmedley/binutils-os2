@@ -4,7 +4,7 @@
 
 olddir=`pwd`
 
-dirs=". bfd binutils etc gas gprof intl ld libiberty opcodes libctf"
+dirs=". bfd binutils etc gas gprof intl ld libiberty opcodes libctf libsframe"
 
 for dir in $dirs; do
   if [ "$dir" != "." ]; then
