@@ -226,7 +226,7 @@ MY(object_p) (abfd)
   (void)_fseek_hdr(bfd_cache_lookup(abfd));
   add = bfd_tell (abfd) - org_pos;
 
-  if (bfd_bread ((void *) &exec_bytes, EXEC_BYTES_SIZE, abfd)
+  if (bfd_read ((void *) &exec_bytes, EXEC_BYTES_SIZE, abfd)
       != EXEC_BYTES_SIZE)
   {
     if (bfd_get_error () != bfd_error_system_call)
@@ -249,7 +249,7 @@ MY(object_p) (abfd)
   const bfd_target *target;
   bfd_size_type amt = EXEC_BYTES_SIZE;
 
-  if (bfd_bread ((void *) &exec_bytes, amt, abfd) != amt)
+  if (bfd_read ((void *) &exec_bytes, amt, abfd) != amt)
     {
       if (bfd_get_error () != bfd_error_system_call)
 	bfd_set_error (bfd_error_wrong_format);
