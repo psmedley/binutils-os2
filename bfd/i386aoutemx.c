@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #endif
 
 
-/* Avoid multiple defininitions from aoutx if supporting standarad a.out
+/* Avoid multiple defininitions from aoutx if supporting standard a.out
    as well as our own.  */
 /* Do not "beautify" the CONCAT* macro args.  Traditional C will not
    remove whitespace added here, and thus will fail to concatenate
