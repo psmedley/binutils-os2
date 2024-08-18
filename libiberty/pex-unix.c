@@ -703,6 +703,7 @@ pex_unix_exec_child (struct pex_obj *obj ATTRIBUTE_UNUSED,
 	{
 	  *err = ret;
 	  *errmsg = "posix_spawnp";
+	  pid = -1; /* The value of pid is unspecified on failure.  */
 	  goto exit;
 	}
     }
@@ -713,6 +714,7 @@ pex_unix_exec_child (struct pex_obj *obj ATTRIBUTE_UNUSED,
 	{
 	  *err = ret;
 	  *errmsg = "posix_spawn";
+	  pid = -1;
 	  goto exit;
 	}
     }
