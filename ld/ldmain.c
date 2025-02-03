@@ -1,5 +1,5 @@
 /* Main program of GNU linker.
-   Copyright (C) 1991-2024 Free Software Foundation, Inc.
+   Copyright (C) 1991-2025 Free Software Foundation, Inc.
    Written by Steve Chamberlain steve@cygnus.com
 
    This file is part of the GNU Binutils.
@@ -194,6 +194,7 @@ write_dependency_file (void)
   out = fopen (config.dependency_file, FOPEN_WT);
   if (out == NULL)
     {
+      bfd_set_error (bfd_error_system_call);
       einfo (_("%F%P: cannot open dependency file %s: %E\n"),
 	     config.dependency_file);
     }
@@ -306,6 +307,9 @@ main (int argc, char **argv)
 
   xatexit (ld_cleanup);
 
+  /* Remove temporary object-only files.  */
+  xatexit (cmdline_remove_object_only_files);
+
   /* Set up the sysroot directory.  */
   ld_sysroot = get_sysroot (argc, argv);
   if (*ld_sysroot)
@@ -395,8 +399,8 @@ main (int argc, char **argv)
   emulation = get_emulation (argc, argv);
   ldemul_choose_mode (emulation);
   default_target = ldemul_choose_target (argc, argv);
-  lang_init ();
-  ldexp_init ();
+  lang_init (false);
+  ldexp_init (false);
   ldemul_before_parse ();
   lang_has_input_file = false;
   parse_args (argc, argv);
@@ -576,7 +580,7 @@ main (int argc, char **argv)
     fprintf (stderr, "lookup = %p val %lx\n", h, h ? h->u.def.value : 1);
   }
 #endif
-  ldexp_finish ();
+  ldexp_finish (false);
   lang_finish ();
 
   if (config.dependency_file != NULL)
@@ -604,6 +608,8 @@ main (int argc, char **argv)
       /* Perform the final actions on output file
        * (Added by the EMX/OS2 port) */
       ldemul_finish_link (output_filename);
+
+      link_info.output_bfd = NULL;
 
       /* If the --force-exe-suffix is enabled, and we're making an
 	 executable file and it doesn't end in .exe, copy it to one
@@ -651,6 +657,9 @@ main (int argc, char **argv)
 	    }
 	}
     }
+
+  if (config.emit_gnu_object_only)
+    cmdline_emit_object_only_section ();
 
   if (config.stats)
     {
@@ -959,6 +968,8 @@ add_archive_element (struct bfd_link_info *info,
 	  *subsbfd = input->the_bfd;
 	}
     }
+  else
+    cmdline_check_object_only_section (input->the_bfd, false);
 #endif /* BFD_SUPPORTS_PLUGINS */
 
   if (link_info.input_bfds_tail == &input->the_bfd->link.next

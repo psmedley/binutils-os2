@@ -1,5 +1,5 @@
 /* read.h - of read.c
-   Copyright (C) 1986-2024 Free Software Foundation, Inc.
+   Copyright (C) 1986-2025 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -37,16 +37,6 @@ extern bool input_from_string;
 #define SKIP_ALL_WHITESPACE() SKIP_WHITESPACE()
 #endif
 
-#define SKIP_WHITESPACE_AFTER_NAME()		\
-  do						\
-    {						\
-      if (* input_line_pointer == '"')		\
-	++ input_line_pointer;			\
-      if (* input_line_pointer == ' ')		\
-	++ input_line_pointer;			\
-    }						\
-  while (0)
-
 #define	LEX_NAME	(1)	/* may continue a name */
 #define LEX_BEGIN_NAME	(2)	/* may begin a name */
 #define LEX_END_NAME	(4)	/* ends a name */
@@ -57,6 +47,14 @@ extern bool input_from_string;
   ( lex_type[(unsigned char) (c)] & LEX_NAME       )
 #define is_name_ender(c) \
   ( lex_type[(unsigned char) (c)] & LEX_END_NAME   )
+
+/* The distinction of "line" and "statement" sadly is blurred by unhelpful
+   naming of e.g. the underlying array.  Most users really mean "end of
+   statement".  Going forward only these wrappers are supposed to be used.  */
+#define is_end_of_stmt(c) \
+  (is_end_of_line[(unsigned char) (c)])
+#define is_end_of_line(c) \
+  (is_end_of_line[(unsigned char) (c)] == 1)
 
 #ifndef is_a_char
 #define CHAR_MASK	(0xff)

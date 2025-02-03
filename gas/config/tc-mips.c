@@ -1,5 +1,5 @@
 /* tc-mips.c -- assemble code for a MIPS chip.
-   Copyright (C) 1993-2024 Free Software Foundation, Inc.
+   Copyright (C) 1993-2025 Free Software Foundation, Inc.
    Contributed by the OSF and Ralph Campbell.
    Written by Keith Knowles and Ralph Campbell, working independently.
    Modified for ECOFF and R4000 support by Ian Lance Taylor of Cygnus
@@ -1450,7 +1450,7 @@ static const struct mips_cpu_info *mips_cpu_info_from_isa (int);
 static const struct mips_cpu_info *mips_cpu_info_from_arch (int);
 
 /* Command-line options.  */
-const char *md_shortopts = "O::g::G:";
+const char md_shortopts[] = "O::g::G:";
 
 enum options
   {
@@ -1585,7 +1585,7 @@ enum options
     OPTION_END_OF_ENUM
   };
 
-struct option md_longopts[] =
+const struct option md_longopts[] =
 {
   /* Options which specify architecture.  */
   {"march", required_argument, NULL, OPTION_MARCH},
@@ -1738,7 +1738,7 @@ struct option md_longopts[] =
 
   {NULL, no_argument, NULL, 0}
 };
-size_t md_longopts_size = sizeof (md_longopts);
+const size_t md_longopts_size = sizeof (md_longopts);
 
 /* Information about either an Application Specific Extension or an
    optional architecture feature that, for simplicity, we treat in the
@@ -10831,13 +10831,10 @@ macro (struct mips_cl_insn *ip, char *str)
       if (mips_opts.micromips)
 	micromips_label_expr (&label_expr);
       else
-	label_expr.X_add_number = (mips_use_trap ()
-				   ? (dbl ? 12 : 8) : (dbl ? 20 : 16));
+	label_expr.X_add_number = mips_use_trap () ? 8 : 16;
       macro_build (&label_expr, "bne", "s,t,p", op[2], AT);
       if (dbl)
 	{
-	  expr1.X_add_number = 1;
-	  load_register (AT, &expr1, dbl);
 	  macro_build (NULL, "dsll32", SHFT_FMT, AT, AT, 31);
 	}
       else
@@ -16512,8 +16509,8 @@ s_mips_globl (int x ATTRIBUTE_UNUSED)
       symbolP = symbol_find_or_make (name);
       S_SET_EXTERNAL (symbolP);
 
-      *input_line_pointer = c;
-      SKIP_WHITESPACE_AFTER_NAME ();
+      restore_line_pointer (c);
+      SKIP_WHITESPACE ();
 
       if (!is_end_of_line[(unsigned char) *input_line_pointer]
 	  && (*input_line_pointer != ','))
@@ -17572,9 +17569,9 @@ s_mips_weakext (int ignore ATTRIBUTE_UNUSED)
   c = get_symbol_name (&name);
   symbolP = symbol_find_or_make (name);
   S_SET_WEAK (symbolP);
-  *input_line_pointer = c;
+  restore_line_pointer (c);
 
-  SKIP_WHITESPACE_AFTER_NAME ();
+  SKIP_WHITESPACE ();
 
   if (! is_end_of_line[(unsigned char) *input_line_pointer])
     {
@@ -18384,9 +18381,10 @@ tc_gen_reloc (asection *section ATTRIBUTE_UNUSED, fixS *fixp)
   arelent *reloc;
   bfd_reloc_code_real_type code;
 
-  memset (retval, 0, sizeof(retval));
-  reloc = retval[0] = XCNEW (arelent);
-  reloc->sym_ptr_ptr = XNEW (asymbol *);
+  memset (retval, 0, sizeof (retval));
+  reloc = notes_alloc (sizeof (arelent));
+  reloc->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
+  retval[0] = reloc;
   *reloc->sym_ptr_ptr = symbol_get_bfdsym (fixp->fx_addsy);
   reloc->address = fixp->fx_frag->fr_address + fixp->fx_where;
 

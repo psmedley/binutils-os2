@@ -1,5 +1,5 @@
 /* read.c - read a source file -
-   Copyright (C) 1986-2024 Free Software Foundation, Inc.
+   Copyright (C) 1986-2025 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -265,6 +265,9 @@ static void poend (void);
 static size_t get_macro_line_sb (sb *);
 static void generate_file_debug (void);
 static char *_find_end_of_line (char *, int, int, int);
+#if defined (TE_PE) && defined (O_secrel)
+static void s_cv_comp (int sign);
+#endif
 
 void
 read_begin (void)
@@ -285,7 +288,8 @@ read_begin (void)
   /* Use more.  FIXME-SOMEDAY.  */
 
   if (flag_mri)
-    lex_type['?'] = 3;
+    lex_type['?'] = LEX_BEGIN_NAME | LEX_NAME;
+
   stabs_begin ();
 
 #ifndef WORKING_DOT_WORD
@@ -326,6 +330,7 @@ read_end (void)
   _obstack_free (&cond_obstack, NULL);
   free (current_name);
   free (current_label);
+  free (include_dirs);
 }
 
 #ifndef TC_ADDRESS_BYTES
@@ -368,6 +373,10 @@ static const pseudo_typeS potable[] = {
   {"comm", s_comm, 0},
   {"common", s_mri_common, 0},
   {"common.s", s_mri_common, 1},
+#if defined (TE_PE) && defined (O_secrel)
+  {"cv_scomp", s_cv_comp, 1},
+  {"cv_ucomp", s_cv_comp, 0},
+#endif
   {"data", s_data, 0},
   {"dc", cons, 2},
   {"dc.a", cons, 0},
@@ -866,6 +875,29 @@ do_align (unsigned int n, char *fill, unsigned int len, unsigned int max)
     record_alignment (now_seg, n - OCTETS_PER_BYTE_POWER);
 }
 
+/* Find first <eol><next_char>NO_APP<eol>, if any, in the supplied buffer.
+   Return NULL if there's none, or else the position of <next_char>.  */
+static char *
+find_no_app (const char *s, char next_char)
+{
+  const char *start = s;
+  const char srch[] = { next_char, 'N', 'O', '_', 'A', 'P', 'P', '\0' };
+
+  for (;;)
+    {
+      char *ends = strstr (s, srch);
+
+      if (ends == NULL)
+	break;
+      if (is_end_of_line (ends[sizeof (srch) - 1])
+	  && (ends == start || is_end_of_line (ends[-1])))
+	return ends;
+      s = ends + sizeof (srch) - 1;
+    }
+
+  return NULL;
+}
+
 /* We read the file, putting things into a web that represents what we
    have been reading.  */
 void
@@ -902,7 +934,7 @@ read_a_source_file (const char *name)
 #endif
       while (input_line_pointer < buffer_limit)
 	{
-	  bool was_new_line;
+	  char was_new_line;
 	  /* We have more of this buffer to parse.  */
 
 	  /* We now have input_line_pointer->1st char of next line.
@@ -955,6 +987,61 @@ read_a_source_file (const char *name)
 		listing_newline (NULL);
 	    }
 #endif
+
+	  next_char = *input_line_pointer;
+	  if (was_new_line == 1
+             && (strchr (line_comment_chars, '#')
+		  ? next_char == '#'
+		  : next_char && strchr (line_comment_chars, next_char)))
+	    {
+	      /* Its a comment.  Check for APP followed by NO_APP.  */
+	      sb sbuf;
+	      char *ends;
+	      size_t len;
+
+	      s = input_line_pointer + 1;
+	      if (!startswith (s, "APP") || !is_end_of_line (s[3]))
+		{
+		  /* We ignore it.  Note: Not ignore_rest_of_line ()!  */
+		  while (s <= buffer_limit)
+		    if (is_end_of_line (*s++))
+		      break;
+		  input_line_pointer = s;
+		  continue;
+		}
+	      s += 4;
+
+	      ends = find_no_app (s, next_char);
+	      len = ends ? ends - s : buffer_limit - s;
+
+	      sb_build (&sbuf, len + 100);
+	      sb_add_buffer (&sbuf, s, len);
+	      if (!ends)
+		{
+		  /* The end of the #APP wasn't in this buffer.  We
+		     keep reading in buffers until we find the #NO_APP
+		     that goes with this #APP  There is one.  The specs
+		     guarantee it...  */
+		  do
+		    {
+		      buffer_limit = input_scrub_next_buffer (&buffer);
+		      if (!buffer_limit)
+			break;
+		      ends = find_no_app (buffer, next_char);
+		      len = ends ? ends - buffer : buffer_limit - buffer;
+		      sb_add_buffer (&sbuf, buffer, len);
+		    }
+		  while (!ends);
+		}
+	      sb_add_char (&sbuf, '\n');
+
+	      input_line_pointer = ends ? ends + 8 : NULL;
+	      input_scrub_include_sb (&sbuf, input_line_pointer, expanding_app);
+	      sb_kill (&sbuf);
+	      buffer_limit = input_scrub_next_buffer (&input_line_pointer);
+	      continue;
+	    }
+
 	  if (was_new_line)
 	    {
 	      line_label = NULL;
@@ -1318,48 +1405,13 @@ read_a_source_file (const char *name)
 	    }
 
 	  if (next_char && strchr (line_comment_chars, next_char))
-	    {			/* Its a comment.  Better say APP or NO_APP.  */
-	      sb sbuf;
-	      char *ends;
-	      size_t len;
-
+	    {
+	      /* Its a comment, ignore it.  Note: Not ignore_rest_of_line ()!  */
 	      s = input_line_pointer;
-	      if (!startswith (s, "APP\n"))
-		{
-		  /* We ignore it.  */
-		  ignore_rest_of_line ();
-		  continue;
-		}
-	      bump_line_counters ();
-	      s += 4;
-
-	      ends = strstr (s, "#NO_APP\n");
-	      len = ends ? ends - s : buffer_limit - s;
-
-	      sb_build (&sbuf, len + 100);
-	      sb_add_buffer (&sbuf, s, len);
-	      if (!ends)
-		{
-		  /* The end of the #APP wasn't in this buffer.  We
-		     keep reading in buffers until we find the #NO_APP
-		     that goes with this #APP  There is one.  The specs
-		     guarantee it...  */
-		  do
-		    {
-		      buffer_limit = input_scrub_next_buffer (&buffer);
-		      if (!buffer_limit)
-			break;
-		      ends = strstr (buffer, "#NO_APP\n");
-		      len = ends ? ends - buffer : buffer_limit - buffer;
-		      sb_add_buffer (&sbuf, buffer, len);
-		    }
-		  while (!ends);
-		}
-
-	      input_line_pointer = ends ? ends + 8 : NULL;
-	      input_scrub_include_sb (&sbuf, input_line_pointer, expanding_none);
-	      sb_kill (&sbuf);
-	      buffer_limit = input_scrub_next_buffer (&input_line_pointer);
+	      while (s <= buffer_limit)
+		if (is_end_of_line (*s++))
+		  break;
+	      input_line_pointer = s;
 	      continue;
 	    }
 
@@ -2809,6 +2861,7 @@ s_mri (int ignore ATTRIBUTE_UNUSED)
 #ifdef TC_M68K
       flag_m68k_mri = 1;
 #endif
+      lex_type['?'] = LEX_BEGIN_NAME | LEX_NAME;
     }
   else
     {
@@ -2816,6 +2869,7 @@ s_mri (int ignore ATTRIBUTE_UNUSED)
 #ifdef TC_M68K
       flag_m68k_mri = 0;
 #endif
+      lex_type['?'] = LEX_QM;
     }
 
   /* Operator precedence changes in m68k MRI mode, so we need to
@@ -3046,8 +3100,8 @@ s_purgem (int ignore ATTRIBUTE_UNUSED)
       SKIP_WHITESPACE ();
       c = get_symbol_name (& name);
       delete_macro (name);
-      *input_line_pointer = c;
-      SKIP_WHITESPACE_AFTER_NAME ();
+      restore_line_pointer (c);
+      SKIP_WHITESPACE ();
     }
   while (*input_line_pointer++ == ',');
 
@@ -3092,9 +3146,9 @@ do_repeat (size_t count, const char *start, const char *end,
   sb one;
   sb many;
 
-  if (((ssize_t) count) < 0)
+  if (count > 0x7fffffff)
     {
-      as_bad (_("negative count for %s - ignored"), start);
+      as_bad (_("excessive count %zu for %s - ignored"), count, start);
       count = 0;
     }
 
@@ -3246,9 +3300,8 @@ assign_symbol (char *name, int mode)
 	  symbol_set_frag (symbolP, dummy_frag);
 	}
 #endif
-#if defined (OBJ_COFF) && !defined (TE_PE)
-      /* "set" symbols are local unless otherwise specified.  */
-      SF_SET_LOCAL (symbolP);
+#ifdef obj_assign_symbol
+      obj_assign_symbol (symbolP);
 #endif
     }
 
@@ -3561,8 +3614,7 @@ s_nop (int ignore ATTRIBUTE_UNUSED)
 #endif
       /* md_assemble might modify its argument, so
 	 we must pass it a string that is writable.  */
-      if (asprintf (&nop, "%s", md_single_noop_insn) < 0)
-	as_fatal ("%s", xstrerror (errno));
+      nop = xasprintf ("%s", md_single_noop_insn);
 
       /* Some targets assume that they can update input_line_pointer
 	 inside md_assemble, and, worse, that they can leave it
@@ -3976,7 +4028,7 @@ demand_empty_rest_of_line (void)
   /* Return pointing just after end-of-line.  */
 }
 
-/* Silently advance to the end of line.  Use this after already having
+/* Silently advance to the end of a statement.  Use this after already having
    issued an error about something bad.  Like demand_empty_rest_of_line,
    this function may leave input_line_pointer one after buffer_limit;
    Don't call it from within expression parsing code in an attempt to
@@ -3986,9 +4038,9 @@ void
 ignore_rest_of_line (void)
 {
   while (input_line_pointer <= buffer_limit)
-    if (is_end_of_line[(unsigned char) *input_line_pointer++])
+    if (is_end_of_stmt (*input_line_pointer++))
       break;
-  /* Return pointing just after end-of-line.  */
+  /* Return pointing just after end-of-statement.  */
 }
 
 /* Sets frag for given symbol to zero_address_frag, except when the
@@ -4019,7 +4071,7 @@ pseudo_set (symbolS *symbolP)
   if (!S_IS_FORWARD_REF (symbolP))
     (void) expression (&exp);
   else
-    (void) deferred_expression (&exp);
+    (void) expr (0, &exp, expr_defer_incl_dot);
 
   if (exp.X_op == O_illegal)
     as_bad (_("illegal expression"));
@@ -4301,7 +4353,7 @@ s_reloc (int ignore ATTRIBUTE_UNUSED)
     { "64", BFD_RELOC_64 }
   };
 
-  reloc = XNEW (struct reloc_list);
+  reloc = notes_alloc (sizeof (*reloc));
 
   if (flag_mri)
     stop = mri_comment_field (&stopc);
@@ -4358,7 +4410,7 @@ s_reloc (int ignore ATTRIBUTE_UNUSED)
     }
   else
     reloc->u.a.howto = bfd_reloc_name_lookup (stdoutput, r_name);
-  *input_line_pointer = c;
+  restore_line_pointer (c);
   if (reloc->u.a.howto == NULL)
     {
       as_bad (_("unrecognized reloc type"));
@@ -4366,7 +4418,7 @@ s_reloc (int ignore ATTRIBUTE_UNUSED)
     }
 
   exp.X_op = O_absent;
-  SKIP_WHITESPACE_AFTER_NAME ();
+  SKIP_WHITESPACE ();
   if (*input_line_pointer == ',')
     {
       ++input_line_pointer;
@@ -4380,7 +4432,6 @@ s_reloc (int ignore ATTRIBUTE_UNUSED)
       as_bad (_("bad reloc expression"));
     err_out:
       ignore_rest_of_line ();
-      free (reloc);
       if (flag_mri)
 	mri_comment_end (stop, stopc);
       return;
@@ -4434,8 +4485,7 @@ emit_expr_with_reloc (expressionS *exp,
     return;
 
   frag_grow (nbytes);
-  dot_value = frag_now_fix ();
-  dot_frag = frag_now;
+  symbol_set_value_now (&dot_symbol);
 
 #ifndef NO_LISTING
 #ifdef OBJ_ELF
@@ -5415,6 +5465,97 @@ s_leb128 (int sign)
   demand_empty_rest_of_line ();
 }
 
+#if defined (TE_PE) && defined (O_secrel)
+
+/* Generate the appropriate fragments for a given expression to emit a
+   cv_comp value.  SIGN is 1 for cv_scomp, 0 for cv_ucomp.  */
+
+static void
+emit_cv_comp_expr (expressionS *exp, int sign)
+{
+  operatorT op = exp->X_op;
+
+  if (op == O_absent || op == O_illegal)
+    {
+      as_warn (_("zero assumed for missing expression"));
+      exp->X_add_number = 0;
+      op = O_constant;
+    }
+  else if (op == O_big)
+    {
+      as_bad (_("number invalid"));
+      exp->X_add_number = 0;
+      op = O_constant;
+    }
+  else if (op == O_register)
+    {
+      as_warn (_("register value used as expression"));
+      op = O_constant;
+    }
+
+  if (now_seg == absolute_section)
+    {
+      if (op != O_constant || exp->X_add_number != 0)
+	as_bad (_("attempt to store value in absolute section"));
+      abs_section_offset++;
+      return;
+    }
+
+  if ((op != O_constant || exp->X_add_number != 0) && in_bss ())
+    as_bad (_("attempt to store non-zero value in section `%s'"),
+	    segment_name (now_seg));
+
+  /* Let the backend know that subsequent data may be byte aligned.  */
+#ifdef md_cons_align
+  md_cons_align (1);
+#endif
+
+  if (op == O_constant)
+    {
+      offsetT value = exp->X_add_number;
+      unsigned int size;
+      char *p;
+
+      /* If we've got a constant, emit the thing directly right now.  */
+
+      size = sizeof_cv_comp (value, sign);
+      p = frag_more (size);
+      if (output_cv_comp (p, value, sign) > size)
+	abort ();
+    }
+  else
+    {
+      /* Otherwise, we have to create a variable sized fragment and
+	 resolve things later.  */
+
+      frag_var (rs_cv_comp, 4, 0, sign, make_expr_symbol (exp), 0, NULL);
+    }
+}
+
+/* Parse the .cv_ucomp and .cv_scomp pseudos.  */
+
+static void
+s_cv_comp (int sign)
+{
+  expressionS exp;
+
+#ifdef md_flush_pending_output
+  md_flush_pending_output ();
+#endif
+
+  do
+    {
+      expression (&exp);
+      emit_cv_comp_expr (&exp, sign);
+    }
+  while (*input_line_pointer++ == ',');
+
+  input_line_pointer--;
+  demand_empty_rest_of_line ();
+}
+
+#endif /* TE_PE && O_secrel */
+
 /* Code for handling base64 encoded strings.
    Based upon code in sharutils' lib/base64.c source file, written by
    Simon Josefsson.  Which was partially adapted from GNU MailUtils
@@ -6485,25 +6626,19 @@ do_s_func (int end_p, const char *default_prefix)
 
       delim1 = get_symbol_name (& name);
       name = xstrdup (name);
-      *input_line_pointer = delim1;
-      SKIP_WHITESPACE_AFTER_NAME ();
+      restore_line_pointer (delim1);
+      SKIP_WHITESPACE ();
       if (*input_line_pointer != ',')
 	{
 	  if (default_prefix)
-	    {
-	      if (asprintf (&label, "%s%s", default_prefix, name) == -1)
-		as_fatal ("%s", xstrerror (errno));
-	    }
+	    label = xasprintf ("%s%s", default_prefix, name);
 	  else
 	    {
 	      char leading_char = bfd_get_symbol_leading_char (stdoutput);
 	      /* Missing entry point, use function's name with the leading
 		 char prepended.  */
 	      if (leading_char)
-		{
-		  if (asprintf (&label, "%c%s", leading_char, name) == -1)
-		    as_fatal ("%s", xstrerror (errno));
-		}
+		label = xasprintf ("%c%s", leading_char, name);
 	      else
 		label = xstrdup (name);
 	    }

@@ -1,5 +1,5 @@
 /* tc-v850.c -- Assembler code for the NEC V850
-   Copyright (C) 1996-2024 Free Software Foundation, Inc.
+   Copyright (C) 1996-2025 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -1515,9 +1515,9 @@ parse_register_list (unsigned long *insn,
   return NULL;
 }
 
-const char *md_shortopts = "m:";
+const char md_shortopts[] = "m:";
 
-struct option md_longopts[] =
+const struct option md_longopts[] =
 {
 #define OPTION_DISP_SIZE_DEFAULT_22 (OPTION_MD_BASE)
   {"disp-size-default-22", no_argument, NULL, OPTION_DISP_SIZE_DEFAULT_22},
@@ -1526,7 +1526,7 @@ struct option md_longopts[] =
   {NULL, no_argument, NULL, 0}
 };
 
-size_t md_longopts_size = sizeof (md_longopts);
+const size_t md_longopts_size = sizeof (md_longopts);
 
 static bool v850_data_8 = false;
 
@@ -3329,10 +3329,10 @@ tc_gen_reloc (asection *seg ATTRIBUTE_UNUSED, fixS *fixp)
 {
   arelent *reloc;
 
-  reloc		      = XNEW (arelent);
-  reloc->sym_ptr_ptr  = XNEW (asymbol *);
+  reloc = notes_alloc (sizeof (arelent));
+  reloc->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
   *reloc->sym_ptr_ptr = symbol_get_bfdsym (fixp->fx_addsy);
-  reloc->address      = fixp->fx_frag->fr_address + fixp->fx_where;
+  reloc->address = fixp->fx_frag->fr_address + fixp->fx_where;
 
   if (   fixp->fx_r_type == BFD_RELOC_VTABLE_ENTRY
       || fixp->fx_r_type == BFD_RELOC_VTABLE_INHERIT
@@ -3359,9 +3359,6 @@ tc_gen_reloc (asection *seg ATTRIBUTE_UNUSED, fixS *fixp)
 		    /* xgettext:c-format  */
 		    _("reloc %d not supported by object file format"),
 		    (int) fixp->fx_r_type);
-
-      xfree (reloc);
-
       return NULL;
     }
 

@@ -1,5 +1,5 @@
 /* TI C6X assembler.
-   Copyright (C) 2010-2024 Free Software Foundation, Inc.
+   Copyright (C) 2010-2025 Free Software Foundation, Inc.
    Contributed by Joseph Myers <joseph@codesourcery.com>
    		  Bernd Schmidt  <bernds@codesourcery.com>
 
@@ -48,7 +48,7 @@ const char line_separator_chars[] = "@";
 const char EXP_CHARS[] = "eE";
 const char FLT_CHARS[] = "dDfF";
 
-const char *md_shortopts = "";
+const char md_shortopts[] = "";
 
 enum
   {
@@ -63,7 +63,7 @@ enum
     OPTION_MGENERATE_REL
   };
 
-struct option md_longopts[] =
+const struct option md_longopts[] =
   {
     { "march", required_argument, NULL, OPTION_MARCH },
     { "mbig-endian", no_argument, NULL, OPTION_MBIG_ENDIAN },
@@ -76,7 +76,7 @@ struct option md_longopts[] =
     { "mgenerate-rel", no_argument, NULL, OPTION_MGENERATE_REL },
     { NULL, no_argument, NULL, 0 }
   };
-size_t md_longopts_size = sizeof (md_longopts);
+const size_t md_longopts_size = sizeof (md_longopts);
 
 /* The instructions enabled based only on the selected architecture
    (all instructions, if no architecture specified).  */
@@ -786,7 +786,6 @@ md_begin (void)
   scom_section.name           = ".scommon";
   scom_section.output_section = & scom_section;
   scom_section.symbol         = & scom_symbol;
-  scom_section.symbol_ptr_ptr = & scom_section.symbol;
   scom_symbol                 = * bfd_com_section_ptr->symbol;
   scom_symbol.name            = ".scommon";
   scom_symbol.section         = & scom_section;
@@ -4501,8 +4500,8 @@ tc_gen_reloc (asection *section ATTRIBUTE_UNUSED, fixS *fixp)
   asymbol *symbol;
   bfd_reloc_code_real_type r_type;
 
-  reloc = XNEW (arelent);
-  reloc->sym_ptr_ptr = XNEW (asymbol *);
+  reloc = notes_alloc (sizeof (arelent));
+  reloc->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
   symbol = symbol_get_bfdsym (fixp->fx_addsy);
   *reloc->sym_ptr_ptr = symbol;
   reloc->address = fixp->fx_frag->fr_address + fixp->fx_where;

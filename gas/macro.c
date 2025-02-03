@@ -1,5 +1,5 @@
 /* macro.c - macro support for gas
-   Copyright (C) 1994-2024 Free Software Foundation, Inc.
+   Copyright (C) 1994-2025 Free Software Foundation, Inc.
 
    Written by Steve and Judy Chamberlain of Cygnus Support,
       sac@cygnus.com
@@ -220,6 +220,11 @@ buffer_and_nest (const char *from, const char *to, sb *ptr,
 		{
 		  /* Reset the string to not include the ending rune.  */
 		  ptr->len = line_start;
+
+		  /* With the ending directive consumed here, announce the
+		     line for macro-expanded listings. */
+		  if (listing & LISTING_MACEXP)
+		    listing_newline (NULL);
 		  break;
 		}
 	    }

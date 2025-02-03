@@ -101,7 +101,7 @@ is respectively less than, matching, or greater than the array member.
 
 @end deftypefn
 
-@c argv.c:138
+@c argv.c:129
 @deftypefn Extension char** buildargv (char *@var{sp})
 
 Given a pointer to a string, parse the string extracting fields
@@ -192,7 +192,7 @@ Concatenate zero or more of strings and return the result in freshly
 
 @end deftypefn
 
-@c argv.c:485
+@c argv.c:474
 @deftypefn Extension int countargv (char * const *@var{argv})
 
 Return the number of elements in @var{argv}.
@@ -257,7 +257,7 @@ symbolic name or message.
 
 @end deftypefn
 
-@c argv.c:339
+@c argv.c:337
 @deftypefn Extension void expandargv (int *@var{argcp}, char ***@var{argvp})
 
 The @var{argcp} and @code{argvp} arguments are pointers to the usual
@@ -1934,7 +1934,7 @@ does the return value.  The third argument is unused in @libib{}.
 
 @end deftypefn
 
-@c argv.c:289
+@c argv.c:287
 @deftypefn Extension int writeargv (char * const *@var{argv}, FILE *@var{file})
 
 Write each member of ARGV, handling all necessary quoting, to the file

@@ -1,5 +1,5 @@
 /* tc-score7.c -- Assembler for Score7
-   Copyright (C) 2009-2024 Free Software Foundation, Inc.
+   Copyright (C) 2009-2025 Free Software Foundation, Inc.
    Contributed by:
    Brain.lin (brain.lin@sunplusct.com)
    Mei Ligang (ligang@sunnorth.com.cn)
@@ -5912,7 +5912,7 @@ s7_s_score_lcomm (int bytes_p)
 
   c = get_symbol_name (&name);
   p = input_line_pointer;
-  *p = c;
+  restore_line_pointer (c);
 
   if (name == p)
     {
@@ -5921,7 +5921,7 @@ s7_s_score_lcomm (int bytes_p)
       return;
     }
 
-  SKIP_WHITESPACE_AFTER_NAME ();
+  SKIP_WHITESPACE ();
 
   /* Accept an optional comma after the name.  The comma used to be
      required, but Irix 5 cc does not generate it.  */
@@ -6013,18 +6013,6 @@ s7_s_score_lcomm (int bytes_p)
         }
 
       record_alignment (bss_seg, align);
-    }
-  else
-    {
-      /* Assume some objects may require alignment on some systems.  */
-#if defined (TC_ALPHA) && ! defined (VMS)
-      if (temp > 1)
-        {
-          align = ffs (temp) - 1;
-          if (temp % (1 << align))
-            abort ();
-        }
-#endif
     }
 
   *p = 0;
@@ -6825,10 +6813,10 @@ s7_gen_reloc (asection * section ATTRIBUTE_UNUSED, fixS * fixp)
   bfd_reloc_code_real_type code;
   const char *type;
 
-  reloc = retval[0] = XNEW (arelent);
+  reloc = notes_alloc (sizeof (arelent));
+  reloc->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
+  retval[0] = reloc;
   retval[1] = NULL;
-
-  reloc->sym_ptr_ptr = XNEW (asymbol *);
   *reloc->sym_ptr_ptr = symbol_get_bfdsym (fixp->fx_addsy);
   reloc->address = fixp->fx_frag->fr_address + fixp->fx_where;
   reloc->addend = fixp->fx_offset;
@@ -6856,9 +6844,9 @@ s7_gen_reloc (asection * section ATTRIBUTE_UNUSED, fixS * fixp)
       newval |= (((off >> 14) & 0x3) << 16);
       s7_number_to_chars (buf, newval, s7_INSN_SIZE);
 
-      retval[1] = XNEW (arelent);
+      retval[1] = notes_alloc (sizeof (arelent));
+      retval[2]->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
       retval[2] = NULL;
-      retval[1]->sym_ptr_ptr = XNEW (asymbol *);
       *retval[1]->sym_ptr_ptr = symbol_get_bfdsym (fixp->fx_addsy);
       retval[1]->address = (reloc->address + s7_RELAX_RELOC2 (fixp->fx_frag->fr_subtype));
 

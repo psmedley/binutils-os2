@@ -1,5 +1,5 @@
 /* sb.c - string buffer manipulation routines
-   Copyright (C) 1994-2024 Free Software Foundation, Inc.
+   Copyright (C) 1994-2025 Free Software Foundation, Inc.
 
    Written by Steve and Judy Chamberlain of Cygnus Support,
       sac@cygnus.com
@@ -173,7 +173,7 @@ sb_reset (sb *ptr)
 /* Add character c to the end of the sb at ptr.  */
 
 void
-sb_add_char (sb *ptr, size_t c)
+sb_add_char (sb *ptr, char c)
 {
   sb_check (ptr, 1);
   ptr->ptr[ptr->len++] = c;

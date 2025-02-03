@@ -1,5 +1,5 @@
 # Expect script for ld-x86_64 tests
-#   Copyright (C) 2002-2024 Free Software Foundation, Inc.
+#   Copyright (C) 2002-2025 Free Software Foundation, Inc.
 #
 # This file is part of the GNU Binutils.
 #
@@ -321,6 +321,7 @@ run_dump_test "hidden2"
 run_dump_test "hidden3"
 run_dump_test "hidden4"
 run_dump_test "hidden5"
+run_dump_test "hidden6"
 run_dump_test "protected1"
 run_dump_test "protected2"
 run_dump_test "protected3"
@@ -540,10 +541,16 @@ run_dump_test "pr31868c-x32"
 run_dump_test "tlsie5"
 run_dump_test "tlsdesc3"
 run_dump_test "tlsdesc4"
+run_dump_test "tlsdesc5"
+run_dump_test "pr32191"
+run_dump_test "pr32191-x32"
 
 if { ![skip_sframe_tests] } {
     run_dump_test "sframe-simple-1"
     run_dump_test "sframe-plt-1"
+    run_dump_test "sframe-ibt-plt-1"
+    run_dump_test "sframe-pltgot-1"
+    run_dump_test "sframe-pltgot-2"
 }
 
 if ![istarget "x86_64-*-linux*"] {
@@ -777,9 +784,9 @@ proc undefined_weak {cflags ldflags} {
 
     if { [string match "*-fPIE*" $cflags]
 	 && ![string match "*nodynamic-undefined-weak*" $ldflags] } {
-	set weak_symbol "Weak defined"
+	set weak_symbol "Weak defined\n"
     } else {
-	set weak_symbol "Weak undefined"
+	set weak_symbol "Weak undefined\n"
     }
 
     run_cc_link_tests [list \
@@ -1218,7 +1225,7 @@ if { [isnative] && [check_compiler_available] } {
 	] \
 	[list \
 	    "Build pr22393-3a.so" \
-	    "-shared -Wl,-z,separate-code,-z,max-page-size=0x1000" \
+	    "-shared -Wl,-z,separate-code,-z,max-page-size=0x1000,--no-rosegment" \
 	    "-fPIC -Wa,-mx86-used-note=yes" \
 	    {pr22393-3a.c} \
 	    {{readelf -lW pr22393-3a.rd} \
@@ -1227,7 +1234,7 @@ if { [isnative] && [check_compiler_available] } {
 	] \
 	[list \
 	    "Build pr22393-3a-now.so" \
-	    "-shared -Wl,-z,separate-code,-z,now,-z,max-page-size=0x1000" \
+	    "-shared -Wl,-z,separate-code,-z,now,-z,max-page-size=0x1000,--no-rosegment" \
 	    "-fPIC -Wa,-mx86-used-note=yes" \
 	    {pr22393-3a.c} \
 	    {{readelf -lW pr22393-3a.rd} \
@@ -1236,7 +1243,7 @@ if { [isnative] && [check_compiler_available] } {
 	] \
 	[list \
 	    "Build pr22393-3" \
-	    "$NOPIE_LDFLAGS -Wl,-z,separate-code,-z,max-page-size=0x1000,--no-as-needed tmpdir/pr22393-3a.so" \
+	    "$NOPIE_LDFLAGS -Wl,-z,separate-code,-z,max-page-size=0x1000,--no-rosegment,--no-as-needed tmpdir/pr22393-3a.so" \
 	    "$NOPIE_CFLAGS -Wa,-mx86-used-note=yes" \
 	    {pr22393-3b.c} \
 	    {{readelf -lW pr22393-3a.rd} \
@@ -1245,7 +1252,7 @@ if { [isnative] && [check_compiler_available] } {
 	] \
 	[list \
 	    "Build pr22393-3 (PIE)" \
-	    "-pie -Wl,-z,separate-code,-z,max-page-size=0x1000,--no-as-needed tmpdir/pr22393-3a-now.so" \
+	    "-pie -Wl,-z,separate-code,-z,max-page-size=0x1000,--no-rosegment,--no-as-needed tmpdir/pr22393-3a-now.so" \
 	    "-fPIE -Wa,-mx86-used-note=yes" \
 	    {pr22393-3b.c} \
 	    {{readelf -lW pr22393-3a.rd} \
@@ -1254,7 +1261,7 @@ if { [isnative] && [check_compiler_available] } {
 	] \
 	[list \
 	    "Build pr22393-3 (static)" \
-	    "-static -Wl,-z,separate-code,-z,max-page-size=0x1000" \
+	    "-static -Wl,-z,separate-code,-z,max-page-size=0x1000,--no-rosegment" \
 	    "-Wa,-mx86-used-note=yes" \
 	    {pr22393-3a.c pr22393-3b.c} \
 	    {{readelf -lW pr22393-3a.rd} \
@@ -1919,6 +1926,22 @@ if { [isnative] && [check_compiler_available] } {
 	    "protected-data-2d" \
 	    "pass.out" \
 	    "-fPIE" \
+	] \
+	[list \
+	    "Run pr32189" \
+	    "$NOPIE_LDFLAGS -nostdlib -nostartfiles" \
+	    "" \
+	    { pr32189.s } \
+	    "pr32189" \
+	    "pass.out" \
+	] \
+	[list \
+	    "Run plt3" \
+	    "$NOPIE_LDFLAGS -nostdlib -nostartfiles" \
+	    "" \
+	    { plt3.s } \
+	    "plt3" \
+	    "pass.out" \
 	] \
     ]
 

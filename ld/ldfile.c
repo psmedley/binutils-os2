@@ -1,5 +1,5 @@
 /* Linker file opening and searching.
-   Copyright (C) 1991-2024 Free Software Foundation, Inc.
+   Copyright (C) 1991-2025 Free Software Foundation, Inc.
 
    This file is part of the GNU Binutils.
 
@@ -40,6 +40,12 @@
 #include "plugin.h"
 #endif /* BFD_SUPPORTS_PLUGINS */
 
+bool ldfile_assumed_script = false;
+const char *ldfile_output_machine_name = "";
+unsigned long ldfile_output_machine;
+enum bfd_architecture ldfile_output_architecture;
+search_dirs_type *search_head;
+
 #ifdef VMS
 static char *slash = "";
 #else
@@ -56,13 +62,8 @@ typedef struct search_arch
   struct search_arch *next;
 } search_arch_type;
 
-bool                   ldfile_assumed_script = false;
-const char *           ldfile_output_machine_name = "";
-unsigned long          ldfile_output_machine;
-enum bfd_architecture  ldfile_output_architecture;
-search_dirs_type *     search_head;
-
 static search_dirs_type **search_tail_ptr = &search_head;
+static search_dirs_type *script_search;
 static search_arch_type *search_arch_head;
 static search_arch_type **search_arch_tail_ptr = &search_arch_head;
 
@@ -109,7 +110,7 @@ ldfile_add_remap (const char * pattern, const char * renamed)
     }
 }
 
-void
+static void
 ldfile_remap_input_free (void)
 {
   while (input_remaps != NULL)
@@ -303,20 +304,21 @@ is_sysrooted_pathname (const char *name)
 }
 
 /* Adds NAME to the library search path.
-   Makes a copy of NAME using xmalloc().
-   Returns a pointer to the newly created search_dirs_type structure
-   or NULL if there was a problem.  */
+   Makes a copy of NAME using xmalloc().  */
 
-search_dirs_type *
-ldfile_add_library_path (const char *name, enum search_dir_source source)
+void
+ldfile_add_library_path (const char *name, bool cmdline)
 {
   search_dirs_type *new_dirs;
 
-  if (source != search_dir_cmd_line && config.only_cmd_line_lib_dirs)
-    return NULL;
+  if (!cmdline && config.only_cmd_line_lib_dirs)
+    return;
 
   new_dirs = (search_dirs_type *) xmalloc (sizeof (search_dirs_type));
-  new_dirs->source = source;
+  new_dirs->next = NULL;
+  new_dirs->cmdline = cmdline;
+  *search_tail_ptr = new_dirs;
+  search_tail_ptr = &new_dirs->next;
 
   /* If a directory is marked as honoring sysroot, prepend the sysroot path
      now.  */
@@ -326,25 +328,18 @@ ldfile_add_library_path (const char *name, enum search_dir_source source)
     new_dirs->name = concat (ld_sysroot, name + strlen ("$SYSROOT"), (const char *) NULL);
   else
     new_dirs->name = xstrdup (name);
+}
 
-  /* Accumulate script and command line sourced
-     search paths at the end of the current list.  */
-#if BFD_SUPPORTS_PLUGINS
-  /* PR 31904: But put plugin sourced paths at the start of the list.  */
-  if (source == search_dir_plugin)
+static void
+ldfile_library_path_free (search_dirs_type **root)
+{
+  search_dirs_type *ent;
+  while ((ent = *root) != NULL)
     {
-      new_dirs->next = search_head;
-      search_head = new_dirs;
+      *root = ent->next;
+      free ((void *) ent->name);
+      free (ent);
     }
-  else
-#endif
-    {
-      new_dirs->next = NULL;
-      *search_tail_ptr = new_dirs;
-      search_tail_ptr = &new_dirs->next;
-    }
-
-  return new_dirs;
 }
 
 /* Try to open a BFD for a lang_input_statement.  */
@@ -370,9 +365,9 @@ ldfile_try_open_bfd (const char *attempt,
       return false;
     }
 
-  /* PR 30568: Do not track plugin generated object files.  */
+  /* PR 30568: Do not track lto generated temporary object files.  */
 #if BFD_SUPPORTS_PLUGINS
-  if (entry->plugin != NULL)
+  if (!entry->flags.lto_output)
 #endif
     track_dependency_files (attempt);
 
@@ -383,7 +378,7 @@ ldfile_try_open_bfd (const char *attempt,
   entry->the_bfd->is_linker_input = 1;
 
 #if BFD_SUPPORTS_PLUGINS
-  if (entry->plugin != NULL)
+  if (entry->flags.lto_output)
     entry->the_bfd->lto_output = 1;
 #endif
 
@@ -550,6 +545,8 @@ ldfile_try_open_bfd (const char *attempt,
       && !no_more_claiming
       && bfd_check_format (entry->the_bfd, bfd_object))
     plugin_maybe_claim (entry);
+  else
+    cmdline_check_object_only_section (entry->the_bfd, false);
 #endif /* BFD_SUPPORTS_PLUGINS */
 
   /* It opened OK, the format checked out, and the plugins have had
@@ -593,14 +590,6 @@ ldfile_open_file_search (const char *arch,
   for (search = search_head; search != NULL; search = search->next)
     {
       char *string;
-
-#if BFD_SUPPORTS_PLUGINS
-      /* PR 31904: Only check a plugin sourced search
-	 directory if the file is from the same plugin.  */
-      if (search->source == search_dir_plugin
-	  && entry->plugin != search->plugin)
-	continue;
-#endif
 
       if (entry->flags.dynamic && !bfd_link_relocatable (&link_info))
 	{
@@ -798,6 +787,12 @@ ldfile_open_file (lang_input_statement_type *entry)
 	  else
 	    einfo (_("%P: cannot find %s: %E\n"), entry->local_sym_name);
 
+	  /* Be kind to users who are creating static executables, but
+	     have forgotten to install the necessary static libraries.  */
+	  if (entry->flags.dynamic == false && startswith (entry->local_sym_name, "-l"))
+	    einfo (_("%P: have you installed the static version of the %s library ?\n"),
+		     entry->local_sym_name + 2);
+
 	  /* PR 25747: Be kind to users who forgot to add the
 	     "lib" prefix to their library when it was created.  */
 	  for (arch = search_arch_head; arch != NULL; arch = arch->next)
@@ -914,7 +909,6 @@ ldfile_find_command_file (const char *name,
   search_dirs_type *search;
   FILE *result = NULL;
   char *path;
-  static search_dirs_type *script_search;
 
   if (!default_only)
     {
@@ -931,8 +925,9 @@ ldfile_find_command_file (const char *name,
 	{
 	  search_dirs_type **save_tail_ptr = search_tail_ptr;
 	  search_tail_ptr = &script_search;
-	  (void) ldfile_add_library_path (script_dir, search_dir_cmd_line);
+	  ldfile_add_library_path (script_dir, true);
 	  search_tail_ptr = save_tail_ptr;
+	  free (script_dir);
 	}
     }
 
@@ -945,11 +940,6 @@ ldfile_find_command_file (const char *name,
        search != NULL;
        search = search->next)
     {
-#if BFD_SUPPORTS_PLUGINS
-      /* Do not search for linker commands in plugin sourced search directories.  */
-      if (search->source == search_dir_plugin)
-	continue;
-#endif
       path = concat (search->name, slash, name, (const char *) NULL);
       result = try_open (path, sysrooted);
       free (path);
@@ -987,9 +977,6 @@ ldfile_open_command_file_1 (const char *name, enum script_open_style open_how)
 	}
     }
 
-  /* FIXME: This memory is never freed, but that should not really matter.
-     It will be released when the linker exits, and it is unlikely to ever
-     be more than a few tens of bytes.  */
   len = strlen (name);
   script = xmalloc (sizeof (*script) + len);
   script->next = processed_scripts;
@@ -1012,6 +999,17 @@ ldfile_open_command_file_1 (const char *name, enum script_open_style open_how)
   lineno = 1;
 
   saved_script_handle = ldlex_input_stack;
+}
+
+static void
+ldfile_script_free (struct script_name_list **root)
+{
+  struct script_name_list *ent;
+  while ((ent = *root) != NULL)
+    {
+      *root = ent->next;
+      free (ent);
+    }
 }
 
 /* Open command file NAME in the current directory, -L directories,
@@ -1058,6 +1056,18 @@ ldfile_add_arch (const char *in_name)
 
 }
 
+static void
+ldfile_arch_free (search_arch_type **root)
+{
+  search_arch_type *ent;
+  while ((ent = *root) != NULL)
+    {
+      *root = ent->next;
+      free (ent->name);
+      free (ent);
+    }
+}
+
 /* Set the output architecture.  */
 
 void
@@ -1075,4 +1085,18 @@ ldfile_set_output_arch (const char *string, enum bfd_architecture defarch)
     ldfile_output_architecture = defarch;
   else
     einfo (_("%F%P: cannot represent machine `%s'\n"), string);
+}
+
+/* Tidy up memory.  */
+
+void
+ldfile_free (void)
+{
+  ldfile_remap_input_free ();
+  ldfile_library_path_free (&script_search);
+  search_tail_ptr = &search_head;
+  ldfile_library_path_free (&search_head);
+  search_arch_tail_ptr = &search_arch_head;
+  ldfile_arch_free (&search_arch_head);
+  ldfile_script_free (&processed_scripts);
 }

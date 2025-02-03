@@ -1,4 +1,4 @@
-# Copyright (C) 1993-2024 Free Software Foundation, Inc.
+# Copyright (C) 1993-2025 Free Software Foundation, Inc.
 #
 # This file is part of the GNU Binutils.
 #
@@ -275,27 +275,6 @@ proc is_generic { } {
     return 0
 }
 
-# Return true if target uses elf.em.
-proc uses_elf_em { } {
-    if { ![is_elf_format] || [is_generic] } {
-	return 0
-    }
-
-    # These targets don't use elf.em.
-    if { [istarget "fr30-*-*"]
-	 || [istarget "frv-*-elf"]
-	 || [istarget "ft32-*-*"]
-	 || [istarget "iq2000-*-*"]
-	 || [istarget "mn10200-*-*"]
-	 || [istarget "moxie-*-moxiebox*"]
-	 || [istarget "msp430-*-*"]
-	 || [istarget "mt-*-*"] } {
-	return 0
-    }
-
-    return 1
-}
-
 # True if the object format is ELF with unused section symbols.
 proc is_elf_unused_section_symbols {} {
     global AS ASFLAGS READELF
@@ -427,6 +406,25 @@ proc check_relro_support { } {
 	}
     }
     return $relro_available_saved
+}
+
+proc check_memory_seal_support { } {
+    global memory_seal_available_saved
+    global ld
+
+    if {![info exists memory_seal_available_saved]} {
+	remote_file host delete nomemory_seal
+	set ld_output [remote_exec host $ld "-z nomemory-seal"]
+	if { [string first "not supported" $ld_output] >= 0
+	     || [string first "unrecognized option" $ld_output] >= 0
+	     || [string first "-z nomemory-seal ignored" $ld_output] >= 0
+	     || [string first "cannot find nomemory-seal" $ld_output] >= 0 } {
+	    set memory_seal_available_saved 0
+	} else {
+	    set memory_seal_available_saved 1
+	}
+    }
+    return $memory_seal_available_saved
 }
 
 # Check for support of the .noinit section, used for data that is not
@@ -814,6 +812,9 @@ proc prune_dump_output { output } {
 #       the "as" flags for their corresponding files, and any extra processing
 #       (e.g. with "ld" and "objcopy") is repeated for each test.
 #
+#   dlltool: FLAGS
+#       Before linking, run dlltool with FLAGS.
+#
 #   ld: FLAGS
 #	Link assembled files using FLAGS, in the order of the "source"
 #	directives, when using multiple files.
@@ -915,6 +916,9 @@ proc prune_dump_output { output } {
 #	Run this test and it is is expected to fail on a specified list
 #	of targets.
 #
+#   noxfail: GLOB|PROC ...
+#	Of targets that match the xfail list, this list won't fail.
+#
 #   error: REGEX
 #	An error with message matching REGEX must be emitted for the test
 #	to pass.  The DUMPPROG, addr2line, nm, objdump, readelf and size
@@ -956,7 +960,7 @@ proc run_dump_test { name {extra_options {}} } {
     global ELFEDIT ELFEDITFLAGS LD LDFLAGS NM NMFLAGS OBJCOPY OBJCOPYFLAGS
     global OBJDUMP OBJDUMPFLAGS READELF READELFFLAGS STRIP STRIPFLAGS
     global SIZE SIZEFLAGS
-    global copyfile env runtests srcdir subdir verbose
+    global copyfile env runtests srcdir subdir verbose base_dir
     global DT_RELR_LDFLAGS NO_DT_RELR_LDFLAGS
 
     if [string match "*/*" $name] {
@@ -990,6 +994,7 @@ proc run_dump_test { name {extra_options {}} } {
     set as_final_flags {}
     set as_additional_flags {}
     set opts(cc) {}
+    set opts(dlltool) {}
     set opts(dump) {}
     set opts(elfedit) {}
     set opts(error) {}
@@ -1018,6 +1023,7 @@ proc run_dump_test { name {extra_options {}} } {
     set opts(warning) {}
     set opts(warning_output) {}
     set opts(xfail) {}
+    set opts(noxfail) {}
 
     set in_extra 0
     foreach i [concat $opt_array {{} {}} $extra_options] {
@@ -1036,16 +1042,19 @@ proc run_dump_test { name {extra_options {}} } {
 	# Allow more substitutions, including tcl functions, for as, ld,
 	# and cc.  Not done in general because extra quoting is needed for glob
 	# args used for example in binutils-all/remove-relocs-04.d.
-	if { $opt_name == "as" || $opt_name == "ld" || $opt_name == "cc" } {
+	if { $opt_name == "as" || $opt_name == "ld" || $opt_name == "ld_after_inputfiles" || $opt_name == "cc" } {
 	    set opt_val [subst $opt_val]
 	} else {
 	    # Just substitute $srcdir and $subdir
 	    regsub -all {\$srcdir} "$opt_val" "$srcdir" opt_val
 	    regsub -all {\$subdir} "$opt_val" "$subdir" opt_val
+	    regsub -all {\$\{srcdir\}} "$opt_val" "$srcdir" opt_val
+	    regsub -all {\$\{subdir\}} "$opt_val" "$subdir" opt_val
 	}
 
 	switch -- $opt_name {
 	    xfail {}
+	    noxfail {}
 	    target {}
 	    alltargets {}
 	    notarget {}
@@ -1311,6 +1320,12 @@ proc run_dump_test { name {extra_options {}} } {
 	    break
 	}
     }
+    foreach targ $opts(noxfail) {
+	if [match_target $targ] {
+	    clear_xfail "*-*-*"
+	    break
+	}
+    }
 
     foreach as_flags $as_final_flags {
 	# Assemble each file.
@@ -1381,6 +1396,19 @@ proc run_dump_test { name {extra_options {}} } {
 	    }
 	}
 
+	# Run dlltool.
+	if { $cmdret == 0 && $opts(dlltool) != "" } {
+	    set dlltool [findfile $base_dir/../binutils/dlltool]
+	    set cmd "$dlltool -S $AS $opts(dlltool)"
+	    send_log "$cmd\n"
+	    set cmdret [remote_exec host [concat sh -c [list "$cmd 2>&1"]] "" "/dev/null" "dump.tmp"]
+	    remote_upload host "dump.tmp"
+	    append comp_output [prune_warnings [file_contents "dump.tmp"]]
+	    remote_file host delete "dump.tmp"
+	    remote_file build delete "dump.tmp"
+	    set cmdret [lindex $cmdret 0]
+	}
+
 	# Perhaps link the file(s).
 	if { $cmdret == 0 && $run_ld } {
 	    set objfile "tmpdir/dump"
@@ -1391,6 +1419,9 @@ proc run_dump_test { name {extra_options {}} } {
 	    set ld "$LD"
 	    if [check_relro_support] {
 		set ld_extra_opt "-z norelro"
+	    }
+	    if [check_memory_seal_support] {
+		append ld_extra_opt " -z nomemory-seal"
 	    }
 
 	    # Add -L$srcdir/$subdir so that the linker command can use
@@ -1536,12 +1567,16 @@ proc run_dump_test { name {extra_options {}} } {
 		verbose -log "$exitstat with: <$comp_output>, no expected output"
 	    }
 
-	    if { (($want_out(source) == "") == ($comp_output == "")) \
-		     && (($cmdret == 0) == ($want_out(terminal) == 0)) \
-		     && ((($want_out(source) == "regex") \
-			      && [regexp -- $want_out(regex) $comp_output]) \
-			     || (($want_out(source) == "file") \
-				     && (![regexp_diff "tmpdir/ld.messages" "$srcdir/$subdir/$want_out(file)"]))) } {
+	    set ok 0
+	    if { ($cmdret == 0) == ($want_out(terminal) == 0) } {
+		switch $want_out(source) {
+		    regex { set ok [regexp -- $want_out(regex) $comp_output] }
+		    file  { set ok [expr ![regexp_diff tmpdir/ld.messages \
+					   $srcdir/$subdir/$want_out(file)]] }
+		    ""    { set ok [string equal $comp_output ""] }
+		}
+	    }
+	    if { $ok } {
 		# We have the expected output.
 		if { $want_out(terminal) || $dumpprogram == "" } {
 		    pass $testname

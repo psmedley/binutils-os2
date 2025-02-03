@@ -2839,7 +2839,7 @@ yyreduce:
 
   case 73: /* ifile_p1: SEARCH_DIR '(' filename ')'  */
 #line 324 "ldgram.y"
-                { ldfile_add_library_path ((yyvsp[-1].name), search_dir_linker_script); }
+                { ldfile_add_library_path ((yyvsp[-1].name), false); }
 #line 2844 "ldgram.c"
     break;
 

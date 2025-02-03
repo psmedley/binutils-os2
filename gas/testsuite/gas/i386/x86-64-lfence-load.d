@@ -1,4 +1,4 @@
-#as: -mlfence-after-load=yes
+#as: -mlfence-after-load=yes -march=+mpx
 #objdump: -dw
 #warning_output: lfence-load.e
 #name: x86-64 -mlfence-after-load=yes
@@ -35,6 +35,7 @@ Disassembly of section .text:
  +[a-f0-9]+:	0f 0d 4d 00          	prefetchw 0x0\(%rbp\)
  +[a-f0-9]+:	0f 18 3d 78 56 34 12 	prefetchit0 0x12345678\(%rip\)        # [0-9a-f]+ <_start\+0x[0-9a-f]+>
  +[a-f0-9]+:	0f 18 35 78 56 34 12 	prefetchit1 0x12345678\(%rip\)        # [0-9a-f]+ <_start\+0x[0-9a-f]+>
+ +[a-f0-9]+:	0f 18 65 00          	prefetchrst2 0x0\(%rbp\)
  +[a-f0-9]+:	0f a1                	pop    %fs
  +[a-f0-9]+:	0f ae e8             	lfence
  +[a-f0-9]+:	9d                   	popf

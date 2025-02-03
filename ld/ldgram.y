@@ -1,5 +1,5 @@
 /* A YACC grammar to parse a superset of the AT&T linker scripting language.
-   Copyright (C) 1991-2024 Free Software Foundation, Inc.
+   Copyright (C) 1991-2025 Free Software Foundation, Inc.
    Written by Steve Chamberlain of Cygnus Support (steve@cygnus.com).
 
    This file is part of the GNU Binutils.
@@ -321,7 +321,7 @@ ifile_p1:
 	|	TARGET_K '(' NAME ')'
 		{ lang_add_target($3); }
 	|	SEARCH_DIR '(' filename ')'
-		{ ldfile_add_library_path ($3, search_dir_linker_script); }
+		{ ldfile_add_library_path ($3, false); }
 	|	OUTPUT '(' filename ')'
 		{ lang_add_output($3, 1); }
 	|	OUTPUT_FORMAT '(' NAME ')'

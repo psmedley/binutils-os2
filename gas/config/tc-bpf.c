@@ -1,5 +1,5 @@
 /* tc-bpf.c -- Assembler for the Linux eBPF.
-   Copyright (C) 2019-2024 Free Software Foundation, Inc.
+   Copyright (C) 2019-2025 Free Software Foundation, Inc.
    Contributed by Oracle, Inc.
 
    This file is part of GAS, the GNU Assembler.
@@ -126,7 +126,7 @@ enum options
   OPTION_NO_RELAX,
 };
 
-struct option md_longopts[] =
+const struct option md_longopts[] =
 {
   { "EL", no_argument, NULL, OPTION_LITTLE_ENDIAN },
   { "EB", no_argument, NULL, OPTION_BIG_ENDIAN },
@@ -137,9 +137,9 @@ struct option md_longopts[] =
   { NULL,          no_argument, NULL, 0 },
 };
 
-size_t md_longopts_size = sizeof (md_longopts);
+const size_t md_longopts_size = sizeof (md_longopts);
 
-const char * md_shortopts = "";
+const char md_shortopts[] = "";
 
 /* BPF supports little-endian and big-endian variants.  The following
    global records what endianness to use.  It can be configured using
@@ -346,7 +346,9 @@ tc_gen_reloc (asection *sec ATTRIBUTE_UNUSED, fixS *fixP)
   bfd_reloc_code_real_type r_type = fixP->fx_r_type;
   arelent *reloc;
 
-  reloc = XNEW (arelent);
+  reloc = notes_alloc (sizeof (arelent));
+  reloc->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
+  *reloc->sym_ptr_ptr = symbol_get_bfdsym (fixP->fx_addsy);
 
   if (fixP->fx_pcrel)
    {
@@ -366,11 +368,6 @@ tc_gen_reloc (asection *sec ATTRIBUTE_UNUSED, fixS *fixP)
 		    _("relocation is not supported"));
       return NULL;
     }
-
-  //XXX  gas_assert (!fixP->fx_pcrel == !reloc->howto->pc_relative);
-
-  reloc->sym_ptr_ptr = XNEW (asymbol *);
-  *reloc->sym_ptr_ptr = symbol_get_bfdsym (fixP->fx_addsy);
 
   /* Use fx_offset for these cases.  */
   if (fixP->fx_r_type == BFD_RELOC_VTABLE_ENTRY

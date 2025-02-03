@@ -1,6 +1,6 @@
 /* This is the machine dependent code of the Visium Assembler.
 
-   Copyright (C) 2005-2024 Free Software Foundation, Inc.
+   Copyright (C) 2005-2025 Free Software Foundation, Inc.
 
    This file is part of GAS, the GNU Assembler.
 
@@ -53,9 +53,8 @@
 
 
 /* This string holds the chars that always start a comment. If the
-   pre-processor is disabled, these aren't very useful. The macro
-   tc_comment_chars points to this.  */
-const char *visium_comment_chars = "!;";
+   pre-processor is disabled, these aren't very useful.  */
+const char comment_chars[] = "!;";
 
 /* This array holds the chars that only start a comment at the beginning
    of a line.  If the line seems to have the form '# 123 filename' .line
@@ -112,9 +111,8 @@ tc_gen_reloc (asection *section ATTRIBUTE_UNUSED, fixS *fixp)
   arelent *reloc;
   bfd_reloc_code_real_type code;
 
-  reloc = XNEW (arelent);
-
-  reloc->sym_ptr_ptr = XNEW (asymbol *);
+  reloc = notes_alloc (sizeof (arelent));
+  reloc->sym_ptr_ptr = notes_alloc (sizeof (asymbol *));
   *reloc->sym_ptr_ptr = symbol_get_bfdsym (fixp->fx_addsy);
   reloc->address = fixp->fx_frag->fr_address + fixp->fx_where;
 
@@ -219,14 +217,14 @@ md_undefined_symbol (char *name ATTRIBUTE_UNUSED)
 }
 
 /* The parse options.  */
-const char *md_shortopts = "m:";
+const char md_shortopts[] = "m:";
 
-struct option md_longopts[] =
+const struct option md_longopts[] =
 {
   {NULL, no_argument, NULL, 0}
 };
 
-size_t md_longopts_size = sizeof (md_longopts);
+const size_t md_longopts_size = sizeof (md_longopts);
 
 struct visium_option_table
 {
